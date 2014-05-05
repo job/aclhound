@@ -2,7 +2,7 @@ allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
 deny tcp src 2.2.2.2 dst 2.2.2.2
 allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-10
 allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
-allow tcp src group mp-servers dst 10.0.0.0/8
-deny tcp src group bgp-peers port any dst group mp-servers port group webpoorten # nog een keer
+allow tcp src @mp-servers dst 10.0.0.0/8
+deny tcp src @bgp-peers port any dst @mp-servers port @webpoorten # nog een keer
 allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4
 allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
