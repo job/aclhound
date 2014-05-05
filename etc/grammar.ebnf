@@ -1,9 +1,27 @@
 (*
 This grammer defines the aclhound normalised syntax
 
-allow|deny tcp|udp|icmp|any src $prefix|$ip|group $hostgroup|any [port $number|$range|include/$inc|any] 
-                        dst $prefix|$ip|group $hostgroup|any [port $number|$range|include/$inc|any]
-                        [ stateful ] [ expire 20140504 ] [ # comment ]
+1 rule per line
+
+< allow | deny > \
+< tcp | udp | icmp | any > \
+src < prefix | $ip | group $hostgroup | any > [ port number | range | group $portgroup | any ]
+dst < prefix | $ip | group $hostgroup | any > [ port number | range | group $portgroup | any ]
+[ stateful ] \
+[ expire 20140504 ] \
+[ # comment ]
+
+Valid examples:
+
+    allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
+    deny tcp src 2.2.2.2 dst 2.2.2.2
+    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-10
+    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
+    allow tcp src group mp-servers dst 10.0.0.0/8
+    deny tcp src group bgp-peers port any dst group mp-servers port group webports # another comment
+    allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4
+    allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
+
 *)
 
 start
