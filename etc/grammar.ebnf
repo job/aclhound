@@ -1,0 +1,126 @@
+(*
+This grammer defines the aclhound normalised syntax
+
+allow|deny tcp|udp|icmp|any src $prefix|$ip|group $hostgroup|any [port $number|$range|include/$inc|any] 
+                        dst $prefix|$ip|group $hostgroup|any [port $number|$range|include/$inc|any]
+                        [ stateful ] [ expire 20140504 ] [ # comment ]
+*)
+
+start
+    =
+    @{rule}+
+    $
+    ;
+
+rule
+    =
+    action:action_expr >> protocol:protocol_expr >>
+    source:source_expr >> destination:dst_expr >> state:state_expr
+    expire:expire_expr >> comment:comment_expr
+    ;
+
+state_expr
+    =
+    [ "stateful" ]
+    ;
+
+expire_expr
+    =
+    [ "expire" @date ]
+    ;
+
+date
+    =
+    ?/[0-9]{8}/?
+    ;
+
+action_expr
+    =
+    "allow" | "deny"
+    ;
+
+protocol_expr
+    =
+    "icmp" | "udp" | "tcp" | "any"
+    ;
+
+comment_expr
+    =
+    [ "#" @?/.*[\n]?/? ]
+    ;
+
+string
+    =
+    ?/[a-zA-Z0-9\-]+/?
+    ;
+
+source_expr
+    =
+    "src" >> @endpoint_expr @portgroup_expr
+    ;
+
+dst_expr
+    =
+    "dst" >> @endpoint_expr @portgroup_expr
+    ;
+
+endpoint_expr
+    =
+    ip:prefix | wildcard:"any" | group:group_expr
+    ;
+
+group_expr
+    =
+    "group" >> @string
+    ;
+
+portgroup_expr
+    =
+    [ "port" @port_term ]
+    ;
+    
+port_term
+    =
+    l4_any:"any"
+    | l4_group:group_expr
+    | l4_ports:{port_atoms}
+    ;
+
+prefix
+    =
+    "10.0.0.0/8" | "1.1.1.1/32" | "1.1.1.1" | "2.2.2.2"
+    ;
+
+number
+    =
+    NUMBER
+    ;
+
+NUMBER
+    =
+    ?/[0-9]+/?
+    ;
+
+port_atoms
+    =
+    @port_expr { "," @port_expr}+
+    | port_expr
+    ;
+
+port_expr
+    =
+    range:port_range
+    | port_number
+    ;
+
+port_range
+    =
+    @NUMBER "-" @NUMBER
+    ;
+
+port_number
+    =
+    NUMBER
+    ;
+
+
