@@ -1,5 +1,5 @@
 (*
-This grammer defines the aclhound normalised syntax
+This grammar defines the aclhound normalised syntax
 
 1 rule per line
 
@@ -127,8 +127,7 @@ NUMBER
 
 port_atoms
     =
-    @port_expr { "," @port_expr}+
-    | port_expr
+    @+:port_expr { "," @+:port_expr}*
     ;
 
 port_expr
