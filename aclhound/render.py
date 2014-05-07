@@ -15,8 +15,15 @@ class Render():
             return False
         return getattr(self, 'output_' + vendor)(*largs, **kwargs)
 
-    def output_cisco(self, **kwargs):
+    def output_ciscoios(self, **kwargs):
         return self.data
+
+    def output_ciscoasa(self, **kwargs):
+        return self.data
+
+    def output_juniper(self, **kwargs):
+        return self.data
+
 
     def __str__(self):
         return '\n'.join(self.output(vendor=self.vendor, family=self.family))
