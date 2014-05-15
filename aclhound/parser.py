@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.125.16.02.56'
+__version__ = '14.132.06.27.59'
 
 
 class grammarParser(Parser):
@@ -101,6 +101,10 @@ class grammarParser(Parser):
         self._pattern(r'[a-zA-Z0-9\-]+')
 
     @rule_def
+    def _address_string_(self):
+        self._pattern(r'[a-fA-F0-9\.:\/]+')
+
+    @rule_def
     def _source_expr_(self):
         self._token('src')
         self._cut()
@@ -165,27 +169,6 @@ class grammarParser(Parser):
             self._error('expecting one of: any')
 
     @rule_def
-    def _prefix_(self):
-        with self._choice():
-            with self._option():
-                self._token('10.0.0.0/8')
-            with self._option():
-                self._token('1.1.1.1/32')
-            with self._option():
-                self._token('1.1.1.1')
-            with self._option():
-                self._token('2.2.2.2')
-            self._error('expecting one of: 10.0.0.0/8 1.1.1.1 1.1.1.1/32 2.2.2.2')
-
-    @rule_def
-    def _number_(self):
-        self._NUMBER_()
-
-    @rule_def
-    def _NUMBER_(self):
-        self._pattern(r'[0-9]+')
-
-    @rule_def
     def _port_atoms_(self):
         self._port_expr_()
         self.ast.add_list('@', self.last_node)
@@ -212,10 +195,21 @@ class grammarParser(Parser):
         self._token('-')
         self._NUMBER_()
         self.ast['@'] = self.last_node
+        self._cut()
 
     @rule_def
     def _port_number_(self):
         self._NUMBER_()
+        self._cut()
+
+    @rule_def
+    def _prefix_(self):
+        self._address_string_()
+        self._cut()
+
+    @rule_def
+    def _NUMBER_(self):
+        self._pattern(r'[0-9]+')
 
 
 class grammarSemanticParser(CheckSemanticsMixin, grammarParser):
@@ -250,6 +244,9 @@ class grammarSemantics(object):
     def string(self, ast):
         return ast
 
+    def address_string(self, ast):
+        return ast
+
     def source_expr(self, ast):
         return ast
 
@@ -271,15 +268,6 @@ class grammarSemantics(object):
     def port_term(self, ast):
         return ast
 
-    def prefix(self, ast):
-        return ast
-
-    def number(self, ast):
-        return ast
-
-    def NUMBER(self, ast):
-        return ast
-
     def port_atoms(self, ast):
         return ast
 
@@ -290,6 +278,12 @@ class grammarSemantics(object):
         return ast
 
     def port_number(self, ast):
+        return ast
+
+    def prefix(self, ast):
+        return ast
+
+    def NUMBER(self, ast):
         return ast
 
 

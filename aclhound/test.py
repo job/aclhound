@@ -19,7 +19,7 @@ def main(filename, startrule, trace=False, whitespace=None):
             ast = parser.parse(line, startrule)
             acl.add(ast)
 
-    print(acl.output(vendor="cisco"))
+#    print(acl.output(vendor="ciscoios"))
 
 if __name__ == '__main__':
     main('test.acl', 'start')

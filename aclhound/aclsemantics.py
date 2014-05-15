@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from grako.exceptions import FailedParse
-from grako.buffering import Buffer
+from grako.exceptions import FailedSemantics
+import ipaddr
 
 class grammarSemantics(object):
     def start(self, ast):
@@ -53,9 +53,10 @@ class grammarSemantics(object):
         return ast
 
     def prefix(self, ast):
-        return ast
-
-    def number(self, ast):
+        try:
+            ipaddr.IPNetwork(ast)
+        except:
+            raise FailedSemantics('Not a valid IP address or prefix!')
         return ast
 
     def NUMBER(self, ast):
@@ -68,12 +69,17 @@ class grammarSemantics(object):
         return ast
 
     def port_range(self, ast):
-        # low, high = map(int, ast.split('-'))
-        # if low > high:
-        # print(Buffer(ast).line_info(ast))
+        low, high = map(int, ast)
+        if low > high:
+            raise FailedSemantics('First port cannot be higher than second \
+port in a range expression')
+            pass
         return ast
 
     def port_number(self, ast):
+        port = int(ast)
+        if not 0 < port < 2 ** 16:
+            raise FailedSemantics('Port number must be between 0 and 2^16')
         return ast
 
 if __name__ == '__main__':

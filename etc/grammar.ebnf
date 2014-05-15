@@ -72,6 +72,11 @@ string
     ?/[a-zA-Z0-9\-]+/?
     ;
 
+address_string
+    =
+    ?/[a-fA-F0-9\.:\/]+/?
+    ;
+
 source_expr
     =
     "src" >> @endpoint_tuple
@@ -110,21 +115,6 @@ port_term
     | ports:{port_atoms}
     ;
 
-prefix
-    =
-    "10.0.0.0/8" | "1.1.1.1/32" | "1.1.1.1" | "2.2.2.2"
-    ;
-
-number
-    =
-    NUMBER
-    ;
-
-NUMBER
-    =
-    ?/[0-9]+/?
-    ;
-
 port_atoms
     =
     @+:port_expr { "," @+:port_expr}*
@@ -138,11 +128,22 @@ port_expr
 
 port_range
     =
-    @NUMBER "-" @NUMBER
+    @NUMBER "-" @NUMBER >>
     ;
 
 port_number
     =
-    NUMBER
+    NUMBER >>
     ;
+
+prefix
+    =
+    address_string >>
+    ;
+
+NUMBER
+    =
+    ?/[0-9]+/?
+    ;
+
 
