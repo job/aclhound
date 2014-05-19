@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.132.06.27.59'
+__version__ = '14.139.14.35.23'
 
 
 class grammarParser(Parser):
@@ -186,6 +186,7 @@ class grammarParser(Parser):
                 self.ast['range'] = self.last_node
             with self._option():
                 self._port_number_()
+                self.ast['single'] = self.last_node
             self._error('no available options')
 
     @rule_def

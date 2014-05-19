@@ -63,7 +63,22 @@ class grammarSemantics(object):
         return ast
 
     def port_atoms(self, ast):
-        return ast
+        ports = []
+        """[u'80']
+        [u'5000']
+        [AST({u'range': [u'1', u'10']})]
+        [AST({u'range': [u'5', u'10']})]
+        [u'1']
+        [u'2', AST({u'range': [u'1', u'2']}), u'4']
+        [u'1']
+        [u'2', u'2', u'3', u'4']"""
+        for atom in ast:
+            if 'single' in atom:
+                ports.append(int(atom['single']))
+            if 'range' in atom:
+                low, high = map(int, atom['range'])
+                ports = ports + range(low, high + 1)
+        return list(set(ports))
 
     def port_expr(self, ast):
         return ast

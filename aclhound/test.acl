@@ -1,7 +1,7 @@
 allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
-deny icmp src 2.2.2.2 dst 2.2.2.2 port 5000
-allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 1-10
-allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
+deny icmp src 2.2.2.2 dst 2.2.2.2 port 5000 
+allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 11,15,1-10,2,11
+allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20150531
 allow tcp src @mp-servers dst 10.0.0.0/8
 deny tcp src @bgp-peers port any dst @mp-servers port @webpoorten # nog een keer
 allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4

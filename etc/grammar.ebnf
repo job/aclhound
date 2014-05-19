@@ -123,7 +123,7 @@ port_atoms
 port_expr
     =
     range:port_range
-    | port_number
+    | single:port_number
     ;
 
 port_range
