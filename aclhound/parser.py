@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.139.14.35.23'
+__version__ = '14.140.13.48.00'
 
 
 class grammarParser(Parser):
@@ -158,13 +158,14 @@ class grammarParser(Parser):
         with self._choice():
             with self._option():
                 self._token('any')
+                self.ast.add_list('ports', self.last_node)
             with self._option():
                 self._group_expr_()
                 self.ast['include'] = self.last_node
             with self._option():
-                def block2():
+                def block3():
                     self._port_atoms_()
-                self._closure(block2)
+                self._closure(block3)
                 self.ast['ports'] = self.last_node
             self._error('expecting one of: any')
 

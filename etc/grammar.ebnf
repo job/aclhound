@@ -110,7 +110,7 @@ portgroup_expr
     
 port_term
     =
-    "any"
+    ports+:"any"
     | include:group_expr
     | ports:{port_atoms}
     ;

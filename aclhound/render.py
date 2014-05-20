@@ -35,11 +35,7 @@ class Render():
         policy = self.data
         for rule in policy:
             rule = rule[0]
-            if rule['source']['l4'] == "any":
-                    s_port = ['any']
-            for s_port in rule['destination']['l4']['ports']:
-                if rule['destination']['l4']['ports'] == "any":
-                    d_port = ['any']
+            for s_port in rule['source']['l4']['ports']:
                 for d_port in rule['destination']['l4']['ports']:
                     print "ip access-list test.acl",
                     if rule['action'] == "allow":
@@ -63,8 +59,6 @@ class Render():
                             print rule['destination']['l3']['ip'],
                     else:
                         print "object-group %s" % rule['destination']['l3']['include'],
-                    print d_port
-
             print ""
         return self.data
 
