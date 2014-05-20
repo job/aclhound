@@ -38,6 +38,10 @@ class grammarSemantics(object):
         return ast
 
     def endpoint_tuple(self, ast):
+        # when port specifications are omitted any is assumed
+        if not ast['l4']:
+            ast['l4'] = {}
+            ast['l4']['ports'] = ["any"]
         return ast
 
     def endpoint_expr(self, ast):

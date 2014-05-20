@@ -18,8 +18,7 @@ def main(filename, startrule, trace=False, whitespace=None):
         if line.startswith(('allow', 'deny')):
             ast = parser.parse(line, startrule)
             acl.add(ast)
-    import json
-    print(json.dumps(acl.output(vendor="ciscoios"), indent=2))
+    print(acl.output(vendor="ciscoasa"))
 
 if __name__ == '__main__':
     main('test.acl', 'start')
