@@ -23,6 +23,7 @@ git clone https://github.com/job/aclhound.git
 cd aclhound
 virtual env .
 source ./bin/activate
+pip install -r requirements.txt
 ./bin/test.py
 ```
 
