@@ -15,4 +15,15 @@ Supported Devices
 * Cisco VSS
 * Juniper
 
+Installation notes
+------------------
+
+```
+git clone https://github.com/job/aclhound.git
+cd aclhound
+virtual env .
+source ./bin/activate
+./bin/test.py
+```
+
 [1]: http://www.lsi.us.es/~quivir/sergio/DEPEND09.pdf "AFPL2"
