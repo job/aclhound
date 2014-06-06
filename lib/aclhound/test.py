@@ -42,7 +42,7 @@ def main(filename, startrule, trace=False, whitespace=None):
         if line.startswith(('allow', 'deny')):
             ast = parser.parse(line, startrule)
             acl.add(ast)
-    print(acl.output(vendor="ciscoasa"))
+    print("\n".join(acl.output(vendor="ciscoasa")))
 
 if __name__ == '__main__':
-    main('examples/test.acl', 'start')
+    main('etc/policy/test.acl', 'start')

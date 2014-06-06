@@ -57,36 +57,56 @@ class Render():
 
     def output_ciscoasa(self, **kwargs):
         policy = self.data
+        config_blob = []
         for rule in policy:
             rule = rule[0]
-            print rule
-            print ""
-            for s_port in rule['source']['l4']['ports']:
-                for d_port in rule['destination']['l4']['ports']:
-                    print "ip access-list test.acl",
+            # FIXME
+            #   - wrap in function
+            #   - remove hardcoded paths
+            if "include" in rule['source']['l4']:
+                include_file = open("/home/job/source/aclhound/etc/objects/" + rule['source']['l4']['include'] + ".ports")
+                s_ports = []
+                for line in include_file.readlines():
+                    s_ports.append(line.strip())
+            else:
+                s_ports = rule['source']['l4']['ports']
+
+            if "include" in rule['destination']['l4']:
+                include_file = open("/home/job/source/aclhound/etc/objects/" + rule['destination']['l4']['include'] + ".ports")
+                d_ports = []
+                for line in include_file.readlines():
+                    d_ports.append(line.strip())
+            else:
+                d_ports = rule['destination']['l4']['ports']
+
+            for s_port in s_ports:
+                for d_port in d_ports:
+                    line = "ip access-list test.acl "
                     if rule['action'] == "allow":
-                        action = "permit"
+                        action = "permit "
                     else:
-                        action = "deny"
-                    print action,
-                    print rule['protocol'],
+                        action = "deny "
+                    line += action
+                    line += rule['protocol'] + " "
                     if "ip" in rule['source']['l3']:
                         if ipaddr.IPNetwork(rule['source']['l3']['ip']).prefixlen in [32, 128]:
-                            print "host %s" % rule['source']['l3']['ip'],
+                            line += "host %s " % rule['source']['l3']['ip']
                         else:
-                            print rule['source']['l3']['ip'],
+                            line += rule['source']['l3']['ip'] + " "
                     else:
-                        print "object-group %s" % rule['source']['l3']['include'],
-                    print s_port,
+                        line += "object-group %s " % rule['source']['l3']['include']
+                    line += str(s_port) + " "
                     if "ip" in rule['destination']['l3']:
                         if ipaddr.IPNetwork(rule['destination']['l3']['ip']).prefixlen in [32, 128]:
-                            print "host %s" % rule['destination']['l3']['ip'],
+                            line += "host %s " % rule['destination']['l3']['ip']
                         else:
-                            print rule['destination']['l3']['ip'],
+                            line += rule['destination']['l3']['ip'] + " "
                     else:
-                        print "object-group %s" % rule['destination']['l3']['include'],
-            print ""
-        return self.data
+                        line += "object-group %s " % rule['destination']['l3']['include']
+                    line += str(d_port)
+                    if line not in config_blob:
+                        config_blob.append(line)
+        return config_blob
 
     def output_juniper(self, **kwargs):
         return self.data

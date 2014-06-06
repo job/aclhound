@@ -37,8 +37,8 @@ pip install -r requirements.txt
 Copyright and license
 ---------------------
 
-Code and documentation copyright 2014 Job Snijders. Code and docs released
-under the BSD 2-Clause license.
+Copyright 2014 Job Snijders. Code and documentation released under the BSD
+2-Clause license.
 
 
 [1]: http://www.lsi.us.es/~quivir/sergio/DEPEND09.pdf "AFPL2"
