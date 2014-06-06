@@ -1,0 +1,5 @@
+- when a policy file has an IPv4 or IPv6 address, the whole policy
+  should be in that AFI
+- add grouping of port ranges in efficient way
+- add greater/then lesser/then to the language
+

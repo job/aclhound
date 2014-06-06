@@ -1,0 +1,8 @@
+doc/*
+!doc/aclhound.7
+!doc/aclhound.rst
+bin/*
+!bin/test.py
+lib/*
+!lib/aclhound/*
+include/*

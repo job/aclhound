@@ -21,7 +21,7 @@ Installation notes
 ```
 git clone https://github.com/job/aclhound.git
 cd aclhound
-virtual env .
+virtualenv .
 source ./bin/activate
 pip install -r requirements.txt
 ./bin/test.py
