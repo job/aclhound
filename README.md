@@ -13,5 +13,6 @@ Supported Devices
 
 * Cisco ASA
 * Cisco VSS
+* Juniper
 
 [1]: http://www.lsi.us.es/~quivir/sergio/DEPEND09.pdf "AFPL2"

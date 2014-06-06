@@ -21,4 +21,4 @@ def main(filename, startrule, trace=False, whitespace=None):
     print(acl.output(vendor="ciscoasa"))
 
 if __name__ == '__main__':
-    main('test.acl', 'start')
+    main('examples/test.acl', 'start')

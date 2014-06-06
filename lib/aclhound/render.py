@@ -35,6 +35,8 @@ class Render():
         policy = self.data
         for rule in policy:
             rule = rule[0]
+            print rule
+            print ""
             for s_port in rule['source']['l4']['ports']:
                 for d_port in rule['destination']['l4']['ports']:
                     print "ip access-list test.acl",
