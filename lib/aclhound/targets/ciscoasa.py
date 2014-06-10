@@ -58,6 +58,8 @@ def render(self, **kwargs):
 
         # FIXME
         #   - remove hardcoded paths
+        #   - move this to generic render module instead of per target
+        #       'include' expansion
         s_hosts = embed_includes(rule, "source", "l3")
         s_ports = embed_includes(rule, "source", "l4")
         d_hosts = embed_includes(rule, "destination", "l3")
@@ -74,20 +76,27 @@ def render(self, **kwargs):
                             action = "deny "
                         line += action
                         line += rule['protocol'] + " "
+
                         if s_host == u'any':
                             line += "any "
                         elif ipaddr.IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host
                         else:
                             line += s_host + " "
-                        line += str(s_port) + " "
+
+                        if s_port != u"any":
+                            line += str(s_port) + " "
+
                         if d_host == u'any':
                             line += "any "
                         elif ipaddr.IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host
                         else:
                             line += d_host + " "
-                        line += str(d_port) + " "
+
+                        if d_port != u"any":
+                            line += str(d_port) + " "
+
                         if line not in config_blob:
                             config_blob.append(line)
     return config_blob
