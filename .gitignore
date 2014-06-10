@@ -3,6 +3,8 @@ doc/*
 !doc/aclhound.rst
 bin/*
 !bin/test.py
-lib/*
+!lib/aclhound/targets/*
 !lib/aclhound/*
+lib/python2.7
 include/*
+*.pyc

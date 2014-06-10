@@ -37,7 +37,7 @@ from pprint import pprint
 def main(filename, startrule, trace=False, whitespace=None):
     f = open(filename)
     parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
-    acl = Render()
+    acl = Render(name="test")
     for line in f.readlines():
         if line.startswith(('allow', 'deny')):
             ast = parser.parse(line, startrule)
