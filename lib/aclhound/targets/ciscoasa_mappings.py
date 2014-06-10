@@ -70,7 +70,7 @@ mapping['tcp'] = {
     1521: "sqlnet",
     1720: "h323",
     1723: "pptp",
-    2049: "nfs"
+    2049: "nfs",
     2748: "ctiqbe",
     5190: "aol",
     5631: "pcanywhere-data"
@@ -105,14 +105,14 @@ mapping['udp'] = {
     750: "kerberos",
     1645: "radius",
     1646: "radius-acct",
-    2049: "nfs"
+    2049: "nfs",
     5510: "secureid-udp",
-    5632: "pcanywhere-status",
+    5632: "pcanywhere-status"
 }
 
 mapping['icmp'] = {
     0: "echo-reply",
-    3: "unreachable"
+    3: "unreachable",
     4: "source-quench",
     5: "redirect",
     6: "alternate-address",
@@ -129,5 +129,23 @@ mapping['icmp'] = {
     18: "mask-reply",
     30: "traceroute",
     31: "conversion-error",
-    32: "mobile-redirect",
+    32: "mobile-redirect"
+}
+
+mapping['icmpv6'] = {
+    1: "unreachable",
+    2: "packet-too-big",
+    3: "time-exceeded",
+    4: "parameter-problem",
+    128: "echo",
+    129: "echo-reply",
+    130: "membership-query",
+    131: "membership-report",
+    132: "membership-reduction",
+    133: "router-solicitation",
+    134: "router-advertisement",
+    135: "neighbor-solicitation",
+    136: "neighbor-advertisement",
+    137: "neighbor-redirect",
+    138: "router-renumbering"
 }
