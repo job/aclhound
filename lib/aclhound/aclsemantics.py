@@ -26,9 +26,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from grako.exceptions import FailedSemantics
+from grako.grammars import ModelContext
+
 import ipaddr
 
 class grammarSemantics(object):
+    def __init__(self):
+        self._protocol = None
+
     def start(self, ast):
         return ast
 
@@ -44,10 +49,28 @@ class grammarSemantics(object):
     def date(self, ast):
         return ast
 
+    def icmp_parameter(self, ast):
+        if not ast:
+            return "any"
+        if 0 <= int(ast) < 255:
+            return int(ast)
+        else:
+            raise FailedSemantics('ICMP code/type must be between 0 and 255')
+
     def action_expr(self, ast):
         return ast
 
     def protocol_expr(self, ast):
+        if "icmp" in ast:
+            self._protocol = "icmp"
+        elif ast == u'udp':
+            self._protocol = "udp"
+        elif ast == u'tcp':
+            self._protocol = "tcp"
+        elif ast == u'any':
+            self._protocol = "any"
+        else:
+            raise FailedSemantics('No idea what protocol we are dealing with here')
         return ast
 
     def comment_expr(self, ast):
@@ -64,6 +87,8 @@ class grammarSemantics(object):
 
     def endpoint_tuple(self, ast):
         # when port specifications are omitted any is assumed
+        if self._protocol not in ["tcp", "udp"] and ast['l4'] is not None:
+            raise FailedSemantics('Cannot combine layer 4 information (ports) with ICMP protocol')
         if not ast['l4']:
             ast['l4'] = {}
             ast['l4']['ports'] = ["any"]

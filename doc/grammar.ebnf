@@ -70,7 +70,20 @@ action_expr
 
 protocol_expr
     =
-    "icmp" | "udp" | "tcp" | "any"
+    icmp:icmp_expr >>
+    | "udp" >>
+    | "tcp" >>
+    | "any" >>
+    ;
+
+icmp_expr
+    =
+   "icmp" icmp_type:icmp_parameter icmp_code:icmp_parameter
+    ;
+
+icmp_parameter
+    =
+    [ number ]
     ;
 
 comment_expr
@@ -106,7 +119,7 @@ endpoint_tuple
 
 endpoint_expr
     =
-    ip:prefix | wildcard:"any" | include:group_expr
+    ip:"any" | ip:prefix | include:group_expr
     ;
 
 group_expr
@@ -134,7 +147,7 @@ port_atoms
 port_expr
     =
     range:port_range
-    | single:port_number
+    | single:number
     ;
 
 port_range
@@ -142,7 +155,7 @@ port_range
     @NUMBER "-" @NUMBER >>
     ;
 
-port_number
+number
     =
     NUMBER >>
     ;

@@ -1,8 +1,11 @@
 allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # this is a comment
-deny icmp src 10.2.2.2 dst 2.2.2.3
 allow tcp src 10.10.2.1 dst 10.0.0.0/8 port 11,15,1-10,2,11 # ranges are accepted as well, the compiler removes redundant stuff
-allow tcp src 10.2.10.3 dst 10.0.0.0/8 port 5-10 expire 20150531 # because of offline processing we can expire firewall rules
+allow udp src 10.2.10.3 dst 10.0.0.0/8 port 5-10 expire 20150531 # because of offline processing we can expire firewall rules
 allow tcp src @mp-servers dst 10.0.0.0/8 # the @ sign will include either a host or port group object
 deny tcp src @bgp-peers port any dst @mp-servers port @webpoorten # this generates two lines because of the @webpoorten include
 allow tcp src 2.2.2.4 port 1 dst 10.0.0.0/8 port 2,1-2,4 # duplicate lines are removed
 allow tcp src 2.2.2.4 port 1 dst 10.0.0.0/8 port 2,2,3,4
+deny icmp src 10.2.2.2 dst 2.2.2.3
+deny icmp 1 src 10.2.2.2 dst 2.2.2.3
+deny icmp 128 0 src 10.2.2.2 dst 2.2.2.3
+deny any src any dst any

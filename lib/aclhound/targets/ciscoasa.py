@@ -51,6 +51,11 @@ def render(self, **kwargs):
 
     for rule in policy:
         rule = rule[0]
+        if "icmp" in rule['protocol']:
+            line = "access-list %s icmp " % self.name
+            config_blob.append(line)
+            continue
+
         # FIXME
         #   - remove hardcoded paths
         s_hosts = embed_includes(rule, "source", "l3")
@@ -62,19 +67,23 @@ def render(self, **kwargs):
             for d_port in d_ports:
                 for s_host in s_hosts:
                     for d_host in d_hosts:
-                        line = "ip access-list %s " % self.name
+                        line = "access-list %s " % self.name
                         if rule['action'] == "allow":
                             action = "permit "
                         else:
                             action = "deny "
                         line += action
                         line += rule['protocol'] + " "
-                        if ipaddr.IPNetwork(s_host).prefixlen in [32, 128]:
+                        if s_host == u'any':
+                            line += "any "
+                        elif ipaddr.IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host
                         else:
                             line += s_host + " "
                         line += str(s_port) + " "
-                        if ipaddr.IPNetwork(d_host).prefixlen in [32, 128]:
+                        if d_host == u'any':
+                            line += "any "
+                        elif ipaddr.IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host
                         else:
                             line += d_host + " "

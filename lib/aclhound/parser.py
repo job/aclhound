@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.157.14.01.09'
+__version__ = '14.161.15.31.05'
 
 
 class grammarParser(Parser):
@@ -80,14 +80,32 @@ class grammarParser(Parser):
     def _protocol_expr_(self):
         with self._choice():
             with self._option():
-                self._token('icmp')
+                self._icmp_expr_()
+                self.ast['icmp'] = self.last_node
+                self._cut()
             with self._option():
                 self._token('udp')
+                self._cut()
             with self._option():
                 self._token('tcp')
+                self._cut()
             with self._option():
                 self._token('any')
-            self._error('expecting one of: udp any icmp tcp')
+                self._cut()
+            self._error('expecting one of: udp any tcp')
+
+    @rule_def
+    def _icmp_expr_(self):
+        self._token('icmp')
+        self._icmp_parameter_()
+        self.ast['icmp_type'] = self.last_node
+        self._icmp_parameter_()
+        self.ast['icmp_code'] = self.last_node
+
+    @rule_def
+    def _icmp_parameter_(self):
+        with self._optional():
+            self._number_()
 
     @rule_def
     def _comment_expr_(self):
@@ -129,11 +147,11 @@ class grammarParser(Parser):
     def _endpoint_expr_(self):
         with self._choice():
             with self._option():
-                self._prefix_()
+                self._token('any')
                 self.ast['ip'] = self.last_node
             with self._option():
-                self._token('any')
-                self.ast['wildcard'] = self.last_node
+                self._prefix_()
+                self.ast['ip'] = self.last_node
             with self._option():
                 self._group_expr_()
                 self.ast['include'] = self.last_node
@@ -186,7 +204,7 @@ class grammarParser(Parser):
                 self._port_range_()
                 self.ast['range'] = self.last_node
             with self._option():
-                self._port_number_()
+                self._number_()
                 self.ast['single'] = self.last_node
             self._error('no available options')
 
@@ -200,7 +218,7 @@ class grammarParser(Parser):
         self._cut()
 
     @rule_def
-    def _port_number_(self):
+    def _number_(self):
         self._NUMBER_()
         self._cut()
 
@@ -238,6 +256,12 @@ class grammarSemantics(object):
         return ast
 
     def protocol_expr(self, ast):
+        return ast
+
+    def icmp_expr(self, ast):
+        return ast
+
+    def icmp_parameter(self, ast):
         return ast
 
     def comment_expr(self, ast):
@@ -279,7 +303,7 @@ class grammarSemantics(object):
     def port_range(self, ast):
         return ast
 
-    def port_number(self, ast):
+    def number(self, ast):
         return ast
 
     def prefix(self, ast):
