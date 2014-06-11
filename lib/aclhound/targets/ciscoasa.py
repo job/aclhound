@@ -39,10 +39,6 @@ def render(self, **kwargs):
             config_blob.append(line)
             continue
 
-        # FIXME
-        #   - remove hardcoded paths
-        #   - move this to generic render module instead of per target
-        #       'include' expansion
         s_hosts = rule['source']['l3']['ip']
         s_ports = rule['source']['l4']['ports']
         d_hosts = rule['destination']['l3']['ip']

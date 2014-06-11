@@ -39,20 +39,6 @@ class Render():
         self.data = []
         self.name = name
 
-#    def embed_includes(ast_element, direction, layer):
-#        if "include" in ast_element[direction][layer]:
-#            include_file = open("etc/objects/" +
-#                                ast_element[direction][layer]["include"]
-#                                + "." + layer_map[layer])
-#            elements = []
-#            for line in include_file.readlines():
-#                elements.append(line.strip())
-#            return elements
-#        elif "ip" in ast_element[direction][layer]:
-#            return [ast_element[direction][layer]["ip"]]
-#        elif "ports" in ast_element[direction][layer]:
-#            return ast_element[direction][layer]["ports"]
-#
     def add(self, ast):
         # only add policy to object if it is not expired
         expire = ast[0]['expire']
