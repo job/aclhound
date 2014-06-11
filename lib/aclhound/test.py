@@ -34,12 +34,20 @@ from aclsemantics import grammarSemantics
 from render import Render
 from pprint import pprint
 
+import sys
+
+
 def main(filename, startrule, trace=False, whitespace=None):
     policy = []
     seen = [filename]
 
     def walk_file(filename, seen=[], policy=[]):
-        f = open(filename).read().splitlines()
+        try:
+            f = open(filename).read().splitlines()
+        except IOError:
+            print("filename %s referenced in %s does not exist"
+                  % (filename, seen[-2]))
+            sys.exit()
         for line in f:
             if line.startswith('@'):
                 filename = "etc/policy/%s" \
@@ -59,4 +67,8 @@ def main(filename, startrule, trace=False, whitespace=None):
     print("\n".join(acl.output(vendor="ciscoasa")))
 
 if __name__ == '__main__':
-    main('etc/policy/otherpolicy', 'start')
+    if len(sys.argv) is 2:
+        filename = sys.argv[1]
+    else:
+        filename = 'etc/policy/test.acl'
+    main(filename, 'start')

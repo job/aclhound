@@ -11,15 +11,24 @@ can be deployed on firewall devices.
 Table of contents
 -----------------
 
+- [Design goals](#design-goals)
 - [Supported devices](#supported-devices)
 - [Installation notes](#installation-notes)
 - [Copyright and license](#copyright-and-license)
+
+Design goals
+------------
+
+ACLHound is designed to assist humans in managing hundreds of ACLs across 
+tens of devices. One key focus point is maximum re-usability of ACL 
+components such as groups of hosts, groups of ports and the policies 
+themselves.
 
 Supported devices 
 -----------------
 
 * Cisco ASA
-* Cisco VSS
+* Cisco VSS (IOS)
 * Juniper
 
 Installation notes
