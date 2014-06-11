@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.161.15.31.05'
+__version__ = '14.162.14.31.50'
 
 
 class grammarParser(Parser):
@@ -96,11 +96,18 @@ class grammarParser(Parser):
 
     @rule_def
     def _icmp_expr_(self):
-        self._token('icmp')
-        self._icmp_parameter_()
-        self.ast['icmp_type'] = self.last_node
-        self._icmp_parameter_()
-        self.ast['icmp_code'] = self.last_node
+        with self._choice():
+            with self._option():
+                self._token('icmp')
+                self._group_expr_()
+                self.ast['include'] = self.last_node
+            with self._option():
+                self._token('icmp')
+                self._icmp_parameter_()
+                self.ast['icmp_type'] = self.last_node
+                self._icmp_parameter_()
+                self.ast['icmp_code'] = self.last_node
+            self._error('no available options')
 
     @rule_def
     def _icmp_parameter_(self):
@@ -144,14 +151,23 @@ class grammarParser(Parser):
         self.ast['l4'] = self.last_node
 
     @rule_def
+    def _endpoint_list_(self):
+        def block1():
+            self._prefix_()
+        self._positive_closure(block1)
+
+        self.ast['@'] = self.last_node
+        self._check_eof()
+
+    @rule_def
     def _endpoint_expr_(self):
         with self._choice():
             with self._option():
                 self._token('any')
-                self.ast['ip'] = self.last_node
+                self.ast.add_list('ip', self.last_node)
             with self._option():
                 self._prefix_()
-                self.ast['ip'] = self.last_node
+                self.ast.add_list('ip', self.last_node)
             with self._option():
                 self._group_expr_()
                 self.ast['include'] = self.last_node
@@ -280,6 +296,9 @@ class grammarSemantics(object):
         return ast
 
     def endpoint_tuple(self, ast):
+        return ast
+
+    def endpoint_list(self, ast):
         return ast
 
     def endpoint_expr(self, ast):

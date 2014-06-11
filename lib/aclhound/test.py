@@ -35,14 +35,28 @@ from render import Render
 from pprint import pprint
 
 def main(filename, startrule, trace=False, whitespace=None):
-    f = open(filename)
+    policy = []
+    seen = [filename]
+
+    def walk_file(filename, seen=[], policy=[]):
+        f = open(filename).read().splitlines()
+        for line in f:
+            if line.startswith('@'):
+                filename = "etc/policy/%s" \
+                    % line.split('#')[0][1:]
+                if filename not in seen:
+                    seen.append(filename)
+                    policy = policy + walk_file(filename, seen, policy)
+            elif line.startswith(('allow', 'deny')) and line not in policy:
+                policy.append(line)
+        return policy
+
     parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
     acl = Render(name="test")
-    for line in f.readlines():
-        if line.startswith(('allow', 'deny')):
-            ast = parser.parse(line, startrule)
-            acl.add(ast)
+    for line in walk_file(filename, seen):
+        ast = parser.parse(line, startrule)
+        acl.add(ast)
     print("\n".join(acl.output(vendor="ciscoasa")))
 
 if __name__ == '__main__':
-    main('etc/policy/test.acl', 'start')
+    main('etc/policy/otherpolicy', 'start')

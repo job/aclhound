@@ -1,0 +1,2 @@
+allow tcp src 1.2.3.4 port 666 dst 8.8.8.8
+@test.acl

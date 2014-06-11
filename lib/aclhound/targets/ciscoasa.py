@@ -27,27 +27,10 @@
 
 import ipaddr
 
+
 def render(self, **kwargs):
     policy = self.data
     config_blob = []
-
-    layer_map = {"l3": "hosts",
-                 "l4": "ports"
-                 }
-
-    def embed_includes(ast_element, direction, layer):
-        if "include" in ast_element[direction][layer]:
-            include_file = open("etc/objects/" +
-                                ast_element[direction][layer]["include"]
-                                + "." + layer_map[layer])
-            elements = []
-            for line in include_file.readlines():
-                elements.append(line.strip())
-            return elements
-        elif "ip" in ast_element[direction][layer]:
-            return [ast_element[direction][layer]["ip"]]
-        elif "ports" in ast_element[direction][layer]:
-            return ast_element[direction][layer]["ports"]
 
     for rule in policy:
         rule = rule[0]
@@ -60,10 +43,10 @@ def render(self, **kwargs):
         #   - remove hardcoded paths
         #   - move this to generic render module instead of per target
         #       'include' expansion
-        s_hosts = embed_includes(rule, "source", "l3")
-        s_ports = embed_includes(rule, "source", "l4")
-        d_hosts = embed_includes(rule, "destination", "l3")
-        d_ports = embed_includes(rule, "destination", "l4")
+        s_hosts = rule['source']['l3']['ip']
+        s_ports = rule['source']['l4']['ports']
+        d_hosts = rule['destination']['l3']['ip']
+        d_ports = rule['destination']['l4']['ports']
 
         for s_port in s_ports:
             for d_port in d_ports:

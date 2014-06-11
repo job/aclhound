@@ -26,9 +26,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from grako.exceptions import FailedSemantics
-from grako.grammars import ModelContext
+from parser import grammarParser
 
 import ipaddr
+import re
 
 class grammarSemantics(object):
     def __init__(self):
@@ -95,6 +96,28 @@ class grammarSemantics(object):
         return ast
 
     def endpoint_expr(self, ast):
+        # allow recursion in host expressions
+        if u'include' in ast:
+            hosts = []
+            includes = []
+            object_name = 'etc/objects/%s.hosts' % ast['include']
+            includes.append(object_name)
+            for include in includes:
+                try:
+                    file_h = open(include).read().splitlines()
+                except IOError:
+                    print "could not open file: %s" % include
+                for line in file_h:
+                    if line.startswith('@'):
+                        include_name = 'etc/objects/%s.hosts' \
+                            % line.split('#')[0].strip()[1:]
+                        if include_name not in includes:
+                            includes.append(include_name)
+                    else:
+                        hosts.append(line)
+            hosts = "\n".join(set(hosts))
+            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
+            ast = {'ip': p.parse(hosts, 'endpoint_list')}
         return ast
 
     def group_expr(self, ast):
@@ -104,6 +127,27 @@ class grammarSemantics(object):
         return ast
 
     def port_term(self, ast):
+        if u'include' in ast:
+            ports = []
+            includes = []
+            object_name = 'etc/objects/%s.ports' % ast['include']
+            includes.append(object_name)
+            for include in includes:
+                try:
+                    file_h = open(include).read().splitlines()
+                except IOError:
+                    print "could not open file: %s" % include
+                for line in file_h:
+                    if line.startswith('@'):
+                        include_name = 'etc/objects/%s.ports' \
+                            % line.split('#')[0].strip()[1:]
+                        if include_name not in includes:
+                            includes.append(include_name)
+                    else:
+                        ports.append(line)
+            ports = "\n".join(set(ports))
+            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
+            ast = p.parse(ports, 'port_term')
         return ast
 
     def prefix(self, ast):

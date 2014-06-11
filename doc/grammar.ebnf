@@ -78,7 +78,8 @@ protocol_expr
 
 icmp_expr
     =
-   "icmp" icmp_type:icmp_parameter icmp_code:icmp_parameter
+    "icmp" include:group_expr
+    | "icmp" icmp_type:icmp_parameter icmp_code:icmp_parameter
     ;
 
 icmp_parameter
@@ -116,10 +117,17 @@ endpoint_tuple
     l3:endpoint_expr l4:portgroup_expr
     ;
 
+endpoint_list
+    =
+    @{prefix}+
+    $
+    ;
 
 endpoint_expr
     =
-    ip:"any" | ip:prefix | include:group_expr
+    ip+:"any"
+    | ip+:prefix
+    | include:group_expr
     ;
 
 group_expr
@@ -131,7 +139,7 @@ portgroup_expr
     =
     [ "port" @port_term ]
     ;
-    
+
 port_term
     =
     ports+:"any"
