@@ -50,6 +50,31 @@ class grammarSemantics(object):
     def date(self, ast):
         return ast
 
+    def icmp_expr(self, ast):
+#        if u'include' in ast:
+#            icmp_p = []
+#            includes = []
+#            object_name = 'etc/objects/%s.icmp' % ast['include']
+#            includes.append(object_name)
+#            for include in includes:
+#                try:
+#                    file_h = open(include).read().splitlines()
+#                except IOError:
+#                    print "could not open file: %s" % include
+#                for line in file_h:
+#                    if line.startswith('@'):
+#                        include_name = 'etc/objects/%s.icmp' \
+#                            % line.split('#')[0].strip()[1:]
+#                        if include_name not in includes:
+#                            includes.append(include_name)
+#                    else:
+#                        icmp_p.append(line)
+#            icmp = "\n".join(set(icmp_p))
+#            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
+#            ast = {'icmp': p.parse(icmp, 'icmp_expr')}
+#            print ast
+        return ast
+
     def icmp_parameter(self, ast):
         if not ast:
             return "any"
