@@ -78,8 +78,13 @@ protocol_expr
 
 icmp_expr
     =
-    "icmp" include:group_expr
-    | "icmp" icmp_type:icmp_parameter icmp_code:icmp_parameter
+    "icmp" icmp_term
+    ;
+
+icmp_term
+    =
+    include:group_expr >>
+    | icmp_type:icmp_parameter icmp_code:icmp_parameter
     ;
 
 icmp_parameter
@@ -94,7 +99,7 @@ comment_expr
 
 string
     =
-    ?/[a-zA-Z0-9\-]+/?
+    ?/[a-zA-Z0-9_-]+/?
     ;
 
 address_string
@@ -155,12 +160,17 @@ port_atoms
 port_expr
     =
     range:port_range
-    | single:number
+    | single:port_number
     ;
 
 port_range
     =
     @NUMBER "-" @NUMBER >>
+    ;
+
+port_number
+    =
+    NUMBER >>
     ;
 
 number

@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.162.14.31.50'
+__version__ = '14.167.10.59.20'
 
 
 class grammarParser(Parser):
@@ -96,13 +96,17 @@ class grammarParser(Parser):
 
     @rule_def
     def _icmp_expr_(self):
+        self._token('icmp')
+        self._icmp_term_()
+
+    @rule_def
+    def _icmp_term_(self):
         with self._choice():
             with self._option():
-                self._token('icmp')
                 self._group_expr_()
                 self.ast['include'] = self.last_node
+                self._cut()
             with self._option():
-                self._token('icmp')
                 self._icmp_parameter_()
                 self.ast['icmp_type'] = self.last_node
                 self._icmp_parameter_()
@@ -123,7 +127,7 @@ class grammarParser(Parser):
 
     @rule_def
     def _string_(self):
-        self._pattern(r'[a-zA-Z0-9\-]+')
+        self._pattern(r'[a-zA-Z0-9_-]+')
 
     @rule_def
     def _address_string_(self):
@@ -220,7 +224,7 @@ class grammarParser(Parser):
                 self._port_range_()
                 self.ast['range'] = self.last_node
             with self._option():
-                self._number_()
+                self._port_number_()
                 self.ast['single'] = self.last_node
             self._error('no available options')
 
@@ -231,6 +235,11 @@ class grammarParser(Parser):
         self._token('-')
         self._NUMBER_()
         self.ast['@'] = self.last_node
+        self._cut()
+
+    @rule_def
+    def _port_number_(self):
+        self._NUMBER_()
         self._cut()
 
     @rule_def
@@ -277,6 +286,9 @@ class grammarSemantics(object):
     def icmp_expr(self, ast):
         return ast
 
+    def icmp_term(self, ast):
+        return ast
+
     def icmp_parameter(self, ast):
         return ast
 
@@ -320,6 +332,9 @@ class grammarSemantics(object):
         return ast
 
     def port_range(self, ast):
+        return ast
+
+    def port_number(self, ast):
         return ast
 
     def number(self, ast):

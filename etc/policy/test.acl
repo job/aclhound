@@ -8,5 +8,5 @@ allow tcp src 2.2.2.4 port 1 dst 10.0.0.0/8 port 2,2,3,4
 deny icmp src 10.2.2.2 dst 2.2.2.3
 deny icmp 1 src 10.2.2.2 dst 2.2.2.3
 deny icmp 128 0 src 10.2.2.2 dst 2.2.2.3
-deny icmp @common-icmp src 10.2.2.2 dst 2.2.2.3
+deny icmp @common_icmp src 10.2.2.2 dst 2.2.2.3
 deny any src any dst any

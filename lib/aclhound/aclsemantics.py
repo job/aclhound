@@ -30,6 +30,8 @@ from parser import grammarParser
 
 import ipaddr
 import re
+import sys
+
 
 class grammarSemantics(object):
     def __init__(self):
@@ -51,28 +53,30 @@ class grammarSemantics(object):
         return ast
 
     def icmp_expr(self, ast):
-#        if u'include' in ast:
-#            icmp_p = []
-#            includes = []
-#            object_name = 'etc/objects/%s.icmp' % ast['include']
-#            includes.append(object_name)
-#            for include in includes:
-#                try:
-#                    file_h = open(include).read().splitlines()
-#                except IOError:
-#                    print "could not open file: %s" % include
-#                for line in file_h:
-#                    if line.startswith('@'):
-#                        include_name = 'etc/objects/%s.icmp' \
-#                            % line.split('#')[0].strip()[1:]
-#                        if include_name not in includes:
-#                            includes.append(include_name)
-#                    else:
-#                        icmp_p.append(line)
-#            icmp = "\n".join(set(icmp_p))
-#            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
-#            ast = {'icmp': p.parse(icmp, 'icmp_expr')}
-#            print ast
+        print ast
+        if u'include' in ast:
+            icmp_p = []
+            includes = []
+            object_name = 'etc/objects/%s.icmp' % ast['include']
+            includes.append(object_name)
+            for include in includes:
+                try:
+                    file_h = open(include).read().splitlines()
+                except IOError:
+                    print "could not open file: %s" % include
+                    sys.exit(2)
+                for line in file_h:
+                    if line.startswith('@'):
+                        include_name = 'etc/objects/%s.icmp' \
+                            % line.split('#')[0].strip()[1:]
+                        if include_name not in includes:
+                            includes.append(include_name)
+                    else:
+                        icmp_p.append(line)
+            icmp = "\n".join(set(icmp_p))
+            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
+            ast = {'icmp': p.parse(icmp, 'icmp_term')}
+            print ast
         return ast
 
     def icmp_parameter(self, ast):
@@ -82,6 +86,9 @@ class grammarSemantics(object):
             return int(ast)
         else:
             raise FailedSemantics('ICMP code/type must be between 0 and 255')
+
+    def icmp_term(self, ast):
+        return ast
 
     def action_expr(self, ast):
         return ast
@@ -132,6 +139,7 @@ class grammarSemantics(object):
                     file_h = open(include).read().splitlines()
                 except IOError:
                     print "could not open file: %s" % include
+                    sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
                         include_name = 'etc/objects/%s.hosts' \
@@ -162,6 +170,7 @@ class grammarSemantics(object):
                     file_h = open(include).read().splitlines()
                 except IOError:
                     print "could not open file: %s" % include
+                    sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
                         include_name = 'etc/objects/%s.ports' \
@@ -219,6 +228,16 @@ port in a range expression')
         if not 0 < port < 2 ** 16:
             raise FailedSemantics('Port number must be between 0 and 2^16')
         return ast
+
+    def address_string(self, ast):
+        return ast
+
+    def endpoint_list(self, ast):
+        return ast
+
+    def number(self, ast):
+        return ast
+
 
 if __name__ == '__main__':
     pass

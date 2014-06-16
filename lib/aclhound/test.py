@@ -59,7 +59,7 @@ def main(filename, startrule, trace=False, whitespace=None):
                 policy.append(line)
         return policy
 
-    parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
+    parser = grammarParser(parseinfo=True, semantics=grammarSemantics())
     acl = Render(name="test")
     for line in walk_file(filename, seen):
         ast = parser.parse(line, startrule)
