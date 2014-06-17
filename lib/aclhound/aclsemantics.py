@@ -83,7 +83,7 @@ class grammarSemantics(object):
                         if include_name not in includes:
                             includes.append(include_name)
                     else:
-                        icmp_p.append(line.split('#')[0])
+                        icmp_p.append(line.split('#')[0].strip())
             icmp = "\n".join(set(icmp_p))
             p = grammarParser(parseinfo=False, trace=True,
                               semantics=grammarSemantics())
