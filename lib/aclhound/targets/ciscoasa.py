@@ -28,6 +28,8 @@
 import ipaddr
 from grako.contexts import Closure
 
+#FIXME figure out extended versus standard access-lists
+#FIXME deal with deny any any any which ASA compresses
 
 def render(self, **kwargs):
     policy = self.data
