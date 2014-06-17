@@ -43,8 +43,11 @@ def render(self, **kwargs):
         # deal with ICMP
         if "icmp" in rule['protocol']:
             policy = rule['protocol']['icmp']
+            # FIXME this should happen in render or aclsemantics
             if not isinstance(policy, Closure):
                 policy = [policy]
+
+            # cycle through all ICMP related elements in the AST
             for entry in policy:
                 for s_host in s_hosts:
                     for d_host in d_hosts:

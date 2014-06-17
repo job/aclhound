@@ -1,2 +1,0 @@
-include ip test.acl
-include ipv6 test.acl
