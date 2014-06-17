@@ -65,7 +65,6 @@ class grammarSemantics(object):
         return ast
 
     def icmp_term(self, ast):
-        print ast
         if u'include' in ast:
             icmp_p = []
             includes = []
@@ -84,7 +83,7 @@ class grammarSemantics(object):
                         if include_name not in includes:
                             includes.append(include_name)
                     else:
-                        icmp_p.append(line)
+                        icmp_p.append(line.split('#')[0])
             icmp = "\n".join(set(icmp_p))
             p = grammarParser(parseinfo=False, trace=True,
                               semantics=grammarSemantics())
@@ -148,7 +147,7 @@ class grammarSemantics(object):
                         if include_name not in includes:
                             includes.append(include_name)
                     else:
-                        hosts.append(line)
+                        hosts.append(line.split('#')[0])
             hosts = "\n".join(set(hosts))
             p = grammarParser(parseinfo=False, semantics=grammarSemantics())
             ast = {'ip': p.parse(hosts, 'endpoint_list')}
@@ -179,7 +178,7 @@ class grammarSemantics(object):
                         if include_name not in includes:
                             includes.append(include_name)
                     else:
-                        ports.append(line)
+                        ports.append(line.split('#')[0])
             ports = "\n".join(set(ports))
             p = grammarParser(parseinfo=False, semantics=grammarSemantics())
             ast = p.parse(ports, 'port_term')

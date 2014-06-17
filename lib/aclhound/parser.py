@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.168.12.45.21'
+__version__ = '14.168.13.49.46'
 
 
 class grammarParser(Parser):
@@ -115,6 +115,10 @@ class grammarParser(Parser):
             with self._option():
                 self._group_expr_()
                 self.ast['include'] = self.last_node
+                self._cut()
+            with self._option():
+                self._icmp_parameter_()
+                self.ast['icmp_type'] = self.last_node
                 self._cut()
             with self._option():
                 self._icmp_parameter_()

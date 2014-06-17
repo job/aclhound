@@ -1,0 +1,3 @@
+80.80.80.80     # primary webserver
+80.80.80.81     # secondary webserver
+@caching_servers

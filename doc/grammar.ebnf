@@ -31,8 +31,6 @@ Valid examples:
     allow icmp 128 0 src any dst 192.0.2.0/24 # icmpv6 echo request
     allow icmp 129 0 src 192.0.2.0/24 dst any # icmpv6 echo reply
 
-# FIXME add icmp logic
-
 *)
 
 start
@@ -90,6 +88,7 @@ icmp_terms
 icmp_term
     =
     include:group_expr >>
+    | icmp_type:icmp_parameter >>
     | icmp_type:icmp_parameter icmp_code:icmp_parameter >>
     | "any" >>
     ;

@@ -56,8 +56,9 @@ def render(self, **kwargs):
                         if entry == u'any':
                             continue
                         else:
-                            line += "%s %s" \
-                                % (entry['icmp_type'], entry['icmp_code'])
+                            line += "%s" % entry['icmp_type']
+                            if entry['icmp_code']:
+                                line += entry['icmp_code']
                     config_blob.append(line)
             # jump out of the loop because we have nothing to do with
             # L4 when doing ICMP

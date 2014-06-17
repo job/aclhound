@@ -70,5 +70,5 @@ if __name__ == '__main__':
     if len(sys.argv) is 2:
         filename = sys.argv[1]
     else:
-        filename = 'etc/policy/test.acl'
+        filename = 'etc/policy/example.acl'
     main(filename, 'start')
