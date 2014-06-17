@@ -26,6 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import ipaddr
+from grako.contexts import Closure
 
 
 def render(self, **kwargs):
@@ -34,21 +35,43 @@ def render(self, **kwargs):
 
     for rule in policy:
         rule = rule[0]
+        s_hosts = rule['source']['l3']['ip']
+        d_hosts = rule['destination']['l3']['ip']
+
+        # deal with ICMP
         if "icmp" in rule['protocol']:
-            line = "access-list %s icmp " % self.name
-            config_blob.append(line)
+            policy = rule['protocol']['icmp']
+            if not isinstance(policy, Closure):
+                policy = [policy]
+            for entry in policy:
+                for s_host in s_hosts:
+                    for d_host in d_hosts:
+                        if rule['action'] == "allow":
+                            action = "permit"
+                        else:
+                            action = "deny"
+                        line = "access-list %s extended %s icmp " \
+                            % (self.name, action)
+                        line += "%s %s " % (s_host, d_host)
+                        if entry == u'any':
+                            continue
+                        else:
+                            line += "%s %s" \
+                                % (entry['icmp_type'], entry['icmp_code'])
+                    config_blob.append(line)
+            # jump out of the loop because we have nothing to do with
+            # L4 when doing ICMP
             continue
 
-        s_hosts = rule['source']['l3']['ip']
+        # layer 3 and 4
         s_ports = rule['source']['l4']['ports']
-        d_hosts = rule['destination']['l3']['ip']
         d_ports = rule['destination']['l4']['ports']
 
         for s_port in s_ports:
             for d_port in d_ports:
                 for s_host in s_hosts:
                     for d_host in d_hosts:
-                        line = "access-list %s " % self.name
+                        line = "access-list %s extended " % self.name
                         if rule['action'] == "allow":
                             action = "permit "
                         else:
@@ -79,4 +102,3 @@ def render(self, **kwargs):
                         if line not in config_blob:
                             config_blob.append(line)
     return config_blob
-

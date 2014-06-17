@@ -78,18 +78,25 @@ protocol_expr
 
 icmp_expr
     =
-    "icmp" icmp_term
+    "icmp" @icmp_term
+    ;
+
+icmp_terms
+    =
+    @{icmp_term}+
+    $
     ;
 
 icmp_term
     =
     include:group_expr >>
-    | icmp_type:icmp_parameter icmp_code:icmp_parameter
+    | icmp_type:icmp_parameter icmp_code:icmp_parameter >>
+    | "any" >>
     ;
 
 icmp_parameter
     =
-    [ number ]
+    number
     ;
 
 comment_expr

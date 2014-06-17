@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.167.10.59.20'
+__version__ = '14.168.12.45.21'
 
 
 class grammarParser(Parser):
@@ -98,6 +98,16 @@ class grammarParser(Parser):
     def _icmp_expr_(self):
         self._token('icmp')
         self._icmp_term_()
+        self.ast['@'] = self.last_node
+
+    @rule_def
+    def _icmp_terms_(self):
+        def block1():
+            self._icmp_term_()
+        self._positive_closure(block1)
+
+        self.ast['@'] = self.last_node
+        self._check_eof()
 
     @rule_def
     def _icmp_term_(self):
@@ -111,12 +121,15 @@ class grammarParser(Parser):
                 self.ast['icmp_type'] = self.last_node
                 self._icmp_parameter_()
                 self.ast['icmp_code'] = self.last_node
-            self._error('no available options')
+                self._cut()
+            with self._option():
+                self._token('any')
+                self._cut()
+            self._error('expecting one of: any')
 
     @rule_def
     def _icmp_parameter_(self):
-        with self._optional():
-            self._number_()
+        self._number_()
 
     @rule_def
     def _comment_expr_(self):
@@ -284,6 +297,9 @@ class grammarSemantics(object):
         return ast
 
     def icmp_expr(self, ast):
+        return ast
+
+    def icmp_terms(self, ast):
         return ast
 
     def icmp_term(self, ast):

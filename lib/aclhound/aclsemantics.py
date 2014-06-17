@@ -53,6 +53,18 @@ class grammarSemantics(object):
         return ast
 
     def icmp_expr(self, ast):
+        return ast
+
+    def icmp_parameter(self, ast):
+        if 0 <= int(ast) < 255:
+            return int(ast)
+        else:
+            raise FailedSemantics('ICMP code/type must be between 0 and 255')
+
+    def icmp_terms(self, ast):
+        return ast
+
+    def icmp_term(self, ast):
         print ast
         if u'include' in ast:
             icmp_p = []
@@ -74,20 +86,9 @@ class grammarSemantics(object):
                     else:
                         icmp_p.append(line)
             icmp = "\n".join(set(icmp_p))
-            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
-            ast = {'icmp': p.parse(icmp, 'icmp_term')}
-            print ast
-        return ast
-
-    def icmp_parameter(self, ast):
-        if not ast:
-            return "any"
-        if 0 <= int(ast) < 255:
-            return int(ast)
-        else:
-            raise FailedSemantics('ICMP code/type must be between 0 and 255')
-
-    def icmp_term(self, ast):
+            p = grammarParser(parseinfo=False, trace=True,
+                              semantics=grammarSemantics())
+            ast = p.parse(icmp, 'icmp_terms')
         return ast
 
     def action_expr(self, ast):
