@@ -13,7 +13,7 @@ from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 
-__version__ = '14.168.13.49.46'
+__version__ = '14.181.10.11.19'
 
 
 class grammarParser(Parser):
@@ -48,6 +48,8 @@ class grammarParser(Parser):
         self._expire_expr_()
         self.ast['expire'] = self.last_node
         self._cut()
+        self._log_expr_()
+        self._cut()
         self._comment_expr_()
         self.ast['comment'] = self.last_node
 
@@ -55,6 +57,11 @@ class grammarParser(Parser):
     def _state_expr_(self):
         with self._optional():
             self._token('stateful')
+
+    @rule_def
+    def _log_expr_(self):
+        with self._optional():
+            self._token('log')
 
     @rule_def
     def _expire_expr_(self):
@@ -286,6 +293,9 @@ class grammarSemantics(object):
         return ast
 
     def state_expr(self, ast):
+        return ast
+
+    def log_expr(self, ast):
         return ast
 
     def expire_expr(self, ast):

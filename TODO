@@ -1,5 +1,5 @@
-- when a policy file has an IPv4 or IPv6 address, the whole policy
-  should be in that AFI
 - add grouping of port ranges in efficient way
 - add greater/then lesser/then to the language
-
+- add 'log' and 'disable' keyword
+- 1 input policy will generate two ACLs, one for IPv4 and one for IPv6
+    * in config decide what the v4 or v6 suffix/prefix is

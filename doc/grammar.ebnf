@@ -8,13 +8,13 @@ This grammar defines the aclhound normalised syntax
 src < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ]
 dst < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ]
 [ stateful ] \
-[ expire 20140504 ] \
+[ expire 20140504 ] [ log ] \
 [ # comment ]
 
 < allow | deny > < icmp > [ type ] [ code ]
 src < prefix | $ip | @hostgroup | any > 
 dst < prefix | $ip | @hostgroup | any >
-[ expire 20140504 ] \
+[ expire 20140504 ] [ log ] \
 [ # comment ]
 
 
@@ -43,12 +43,17 @@ rule
     =
     action:action_expr >> protocol:protocol_expr >>
     source:source_expr >> destination:dst_expr >> state:state_expr
-    expire:expire_expr >> comment:comment_expr
+    expire:expire_expr >> log_expr >> comment:comment_expr
     ;
 
 state_expr
     =
     [ "stateful" ]
+    ;
+
+log_expr
+    =
+    [ "log" ]
     ;
 
 expire_expr

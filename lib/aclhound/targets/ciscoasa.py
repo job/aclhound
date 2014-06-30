@@ -104,7 +104,7 @@ def render(self, **kwargs):
                             line += d_host + " "
 
                         if d_port != u"any":
-                            line += str(d_port) + " "
+                            line += "eq %s" % str(d_port)
 
                         if line not in config_blob:
                             config_blob.append(line)

@@ -210,6 +210,7 @@ class grammarSemantics(object):
             if 'range' in atom:
                 low, high = map(int, atom['range'])
                 ports = ports + range(low, high + 1)
+        print ast
         return list(set(ports))
 
     def port_expr(self, ast):
@@ -220,7 +221,7 @@ class grammarSemantics(object):
         if low > high:
             raise FailedSemantics('First port cannot be higher than second \
 port in a range expression')
-            pass
+            sys.exit(2)
         return ast
 
     def port_number(self, ast):
