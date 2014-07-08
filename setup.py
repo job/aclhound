@@ -2,6 +2,15 @@ from setuptools import setup, find_packages
 import os
 import sys
 
+version = "0.1"
+
+if sys.argv[-1] == 'publish':
+    os.system('python2.7 setup.py sdist upload')
+    print("You probably want to also tag the version now:")
+    print("  git tag -a %s -m 'version %s'" % (version, version))
+    print("  git push --tags")
+    sys.exit()
+
 setup(name="aclhound",
       version='0.1',
       description='ACL compiler',
@@ -13,7 +22,7 @@ setup(name="aclhound",
       install_requires=['grako==2.4.1', 'ipaddr==2.1.11'],
       classifiers=["Development Status :: 4 - Beta",
                    "Intended Audience :: Developers",
-                   "License :: OSI Approved :: BSD 2-Clause License",
+                   "License :: OSI Approved :: BSD License",
                    "Programming Language :: Python"
                    ],
       zip_safe=False,
