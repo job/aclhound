@@ -1,10 +1,17 @@
-.. ACLHound documentation master file, created by
-   sphinx-quickstart on Fri Jun  6 11:42:10 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+========
+ACLHound
+========
 
-ACLHound - the firewall policy compiler
-***************************************
+--------------------------------------------------------
+Generates firewall configuration from an aclhound policy
+--------------------------------------------------------
+
+:Author: job@instituut.net
+:Date:   2014-07-8
+:Copyright: Job Snijders, 2014. Licenced under the BSD 2-Clause License.
+:Version: 0.1
+:Manual section: 7
+:Manual group: firewall
 
 Introduction
 ============
