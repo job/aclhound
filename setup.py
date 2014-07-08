@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 import sys
 
-version = "0.5"
+version = "0.6"
 
 if sys.argv[-1] == 'publish':
     os.system('python2.7 setup.py sdist upload')
