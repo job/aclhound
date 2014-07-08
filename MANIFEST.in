@@ -1,4 +1,4 @@
 include AUTHORS
 include LICENSE
-include doc/aclhound.7
-include doc/grammar.ebnf
+include aclhound/doc/aclhound.7
+include aclhound/doc/grammar.ebnf

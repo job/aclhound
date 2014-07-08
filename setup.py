@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 import sys
 
-version = "0.6"
+version = "0.7"
 
 if sys.argv[-1] == 'publish':
     os.system('python2.7 setup.py sdist upload')
@@ -34,7 +34,7 @@ if 'install' in sys.argv:
     man_path = '/usr/share/man/man7/'
     if os.path.exists(man_path):
         print "Installing man pages"
-        path = "%s/doc/aclhound.7" % pwd
+        path = "%s/aclhound/doc/aclhound.7" % pwd
         input_file = file(path).read()
         ouput_file = file(man_path + 'aclhound.7', 'wa')
         ouput_file.write(input_file)
