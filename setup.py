@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 import sys
 
-version = "0.1"
+version = "0.5"
 
 if sys.argv[-1] == 'publish':
     os.system('python2.7 setup.py sdist upload')
@@ -12,13 +12,14 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 setup(name="aclhound",
-      version='0.1',
+      version=version,
       description='ACL compiler',
       url='https://github.com/job/aclhound',
       author='Job Snijders',
       author_email='job@instituut.net',
       license='BSD 2-Clause',
       packages=find_packages(),
+      include_package_data=True,
       install_requires=['grako==2.4.1', 'ipaddr==2.1.11'],
       classifiers=["Development Status :: 4 - Beta",
                    "Intended Audience :: Developers",
