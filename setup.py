@@ -1,4 +1,6 @@
 from setuptools import setup, find_packages
+import os
+import sys
 
 setup(name="aclhound",
       version='0.1',
@@ -22,8 +24,7 @@ if 'install' in sys.argv:
     man_path = '/usr/share/man/man7/'
     if os.path.exists(man_path):
         print "Installing man pages"
-        path = "%s/doc/aclhound.7.gz" % pwd
+        path = "%s/doc/aclhound.7" % pwd
         input_file = file(path).read()
-        ouput_file = file(man_path + 'aclhound.7.gz', 'wa')
-        ouput_file.write(input_f
-
+        ouput_file = file(man_path + 'aclhound.7', 'wa')
+        ouput_file.write(input_file)
