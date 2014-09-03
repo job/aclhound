@@ -38,7 +38,7 @@ here = abspath(dirname(__file__))
 # determine the python version
 IS_PYPY = hasattr(sys, 'pypy_version_info')
 
-with codecs.open(join(here, 'README.rst'), encoding='utf-8') as f:
+with codecs.open(join(here, 'README.md'), encoding='utf-8') as f:
     README = f.read()
 
 if sys.argv[-1] == 'publish':
@@ -50,7 +50,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='aclhound',
-    version=version
+    version=version,
     maintainer="Job Snijders",
     maintainer_email='job@instituut.net',
     url='https://github.com/job/aclhound',
@@ -69,8 +69,7 @@ setup(
     setup_requires=['nose', 'coverage'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     test_suite='nose.collector',
-    entry_points={'console_scripts': ['aclhound = aclhound.cli:main']},
-    **extra_kwargs
+    entry_points={'console_scripts': ['aclhound = aclhound.cli:main']}
 )
 
 if 'install' in sys.argv:
