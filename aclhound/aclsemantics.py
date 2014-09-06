@@ -68,7 +68,7 @@ class grammarSemantics(object):
         if u'include' in ast:
             icmp_p = []
             includes = []
-            object_name = 'etc/objects/%s.icmp' % ast['include']
+            object_name = 'objects/%s.icmp' % ast['include']
             includes.append(object_name)
             for include in includes:
                 try:
@@ -78,7 +78,7 @@ class grammarSemantics(object):
                     sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
-                        include_name = 'etc/objects/%s.icmp' \
+                        include_name = 'objects/%s.icmp' \
                             % line.split('#')[0].strip()[1:]
                         if include_name not in includes:
                             includes.append(include_name)
@@ -132,7 +132,7 @@ class grammarSemantics(object):
         if u'include' in ast:
             hosts = []
             includes = []
-            object_name = 'etc/objects/%s.hosts' % ast['include']
+            object_name = 'objects/%s.hosts' % ast['include']
             includes.append(object_name)
             for include in includes:
                 try:
@@ -142,7 +142,7 @@ class grammarSemantics(object):
                     sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
-                        include_name = 'etc/objects/%s.hosts' \
+                        include_name = 'objects/%s.hosts' \
                             % line.split('#')[0].strip()[1:]
                         if include_name not in includes:
                             includes.append(include_name)
@@ -163,7 +163,7 @@ class grammarSemantics(object):
         if u'include' in ast:
             ports = []
             includes = []
-            object_name = 'etc/objects/%s.ports' % ast['include']
+            object_name = 'objects/%s.ports' % ast['include']
             includes.append(object_name)
             for include in includes:
                 try:
@@ -173,7 +173,7 @@ class grammarSemantics(object):
                     sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
-                        include_name = 'etc/objects/%s.ports' \
+                        include_name = 'objects/%s.ports' \
                             % line.split('#')[0].strip()[1:]
                         if include_name not in includes:
                             includes.append(include_name)
