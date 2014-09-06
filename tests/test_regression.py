@@ -24,11 +24,12 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF TH
 
+from __future__ import print_function, division, absolute_import, unicode_literals
+
 import sys
 import aclhound
 import unittest
 
-from __future__ import print_function, division, absolute_import, unicode_literals
 from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
