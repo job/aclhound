@@ -56,7 +56,7 @@ def parse_examples(filename, start='start', trace=False, whitespace=None):
             sys.exit()
         for line in f:
             if line.startswith('@'):
-                filename = "data/policy/%s" \
+                filename = "policy/%s" \
                     % line.split('#')[0][1:]
                 if filename not in seen:
                     seen.append(filename)
