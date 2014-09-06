@@ -30,6 +30,8 @@ import sys
 import aclhound
 import unittest
 
+from os.path import dirname, realpath, join
+
 from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
