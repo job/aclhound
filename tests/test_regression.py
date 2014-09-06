@@ -75,7 +75,7 @@ def parse_examples(filename, startrule='start', trace=False, whitespace=None):
 
 class TestAclhound(unittest.TestCase):
     def test_00__create_policies(self):
-        self.assertTrue(parse_examples('policy/edge_inbound.acl'))
+        self.assertTrue(parse_examples('policy/1.acl'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()
 #        self.assertTrue('radix.Radix' in str(type(tree)))
