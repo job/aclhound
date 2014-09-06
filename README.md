@@ -44,6 +44,7 @@ virtualenv .
 source ./bin/activate
 pip install -r requirements.txt
 make test
+python setup.py install
 ```
 
 Copyright and license
