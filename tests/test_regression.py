@@ -71,7 +71,7 @@ def parse_examples(filename, start='start', trace=False, whitespace=None):
 
 class TestAclhound(unittest.TestCase):
     def test_00__create_destroy(self):
-        self.assertTrue(parse_examples('data/policy/edge_inbound.acl')
+        self.assertTrue(parse_examples('data/policy/edge_inbound.acl'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()
 #        self.assertTrue('radix.Radix' in str(type(tree)))
@@ -82,3 +82,6 @@ class TestAclhound(unittest.TestCase):
 
 def main():
     unittest.main()
+
+if __name__ == '__main__':
+    main()
