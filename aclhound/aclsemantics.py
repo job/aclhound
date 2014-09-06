@@ -212,7 +212,6 @@ class grammarSemantics(object):
             if 'range' in atom:
                 low, high = map(int, atom['range'])
                 ports = ports + range(low, high + 1)
-        print ast
         return list(set(ports))
 
     def port_expr(self, ast):

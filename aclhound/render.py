@@ -57,7 +57,7 @@ class Render():
                 return
         # compress port ranges
         #
-        print ast
+        #print ast
         # FIXME normalise src & dst port
 
         self.data.append(ast)

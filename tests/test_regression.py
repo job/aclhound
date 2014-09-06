@@ -27,15 +27,13 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 import sys
-import aclhound
 import unittest
 
+import os
 from os.path import dirname, realpath, join
 
 from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
-
-from pprint import pprint
 
 from aclhound.parser import grammarParser
 from aclhound.aclsemantics import grammarSemantics
@@ -44,7 +42,8 @@ from aclhound.render import Render
 
 def parse_examples(filename, startrule='start', trace=False, whitespace=None):
     data_dir = join(dirname(realpath(__file__)), 'data')
-    policy = []
+    os.chdir(data_dir)
+
     seen = [filename]
 
     def walk_file(filename, seen=[], policy=[]):
@@ -70,7 +69,9 @@ def parse_examples(filename, startrule='start', trace=False, whitespace=None):
     for line in walk_file(filename, seen):
         ast = parser.parse(line, startrule)
         acl.add(ast)
-    print("\n".join(acl.output(vendor="ciscoasa")))
+    output = "\n".join(acl.output(vendor="ciscoasa"))
+    print(output)
+    return True
 
 
 class TestAclhound(unittest.TestCase):
