@@ -43,7 +43,7 @@ cd aclhound
 virtualenv .
 source ./bin/activate
 pip install -r requirements.txt
-./bin/test.py
+make test
 ```
 
 Copyright and license

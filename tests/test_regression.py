@@ -75,7 +75,15 @@ def parse_examples(filename, startrule='start', trace=False, whitespace=None):
 
 
 class TestAclhound(unittest.TestCase):
-    def test_00__create_policies(self):
+    def test_00__parse_ebnf_grammar(self):
+        grammar_file = 'aclhound/doc/grammar.ebnf'
+        grammar = open(grammar_file).read()
+        from grako.bootstrap import GrakoGrammarGenerator
+        parser = GrakoGrammarGenerator('aclhound', trace=True)
+        state = parser.parse(grammar, filename=None)
+        self.assertTrue(state)
+
+    def test_01__create_policies(self):
         self.assertTrue(parse_examples('policy/1.acl'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()
