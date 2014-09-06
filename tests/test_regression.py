@@ -28,10 +28,51 @@ import sys
 import aclhound
 import unittest
 
+from __future__ import print_function, division, absolute_import, unicode_literals
+from grako.parsing import * # noqa
+from grako.exceptions import * # noqa
+
+from pprint import pprint
+
+from aclhound.parser import grammarParser
+from aclhound.aclsemantics import grammarSemantics
+from aclhound.render import Render
+
+
+def parse_examples(filename, start='start', trace=False, whitespace=None):
+    policy = []
+    seen = [filename]
+
+    def walk_file(filename, seen=[], policy=[]):
+        try:
+            f = open(filename).read().splitlines()
+        except IOError:
+            print("filename %s referenced in %s does not exist"
+                  % (filename, seen[-2]))
+            sys.exit()
+        for line in f:
+            if line.startswith('@'):
+                filename = "data/policy/%s" \
+                    % line.split('#')[0][1:]
+                if filename not in seen:
+                    seen.append(filename)
+                    policy = policy + walk_file(filename, seen, policy)
+            elif line.startswith(('allow', 'deny')) and line not in policy:
+                policy.append(line)
+        return policy
+
+    parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
+    acl = Render(name="test")
+    for line in walk_file(filename, seen):
+        ast = parser.parse(line, startrule)
+        acl.add(ast)
+    print("\n".join(acl.output(vendor="ciscoasa")))
+
 
 class TestAclhound(unittest.TestCase):
     def test_00__create_destroy(self):
-        self.assertTrue(True)
+        self.assertTrue(parse_examples('data/policy/edge_inbound.acl')
+#        self.assertTrue(True)
 #        tree = radix.Radix()
 #        self.assertTrue('radix.Radix' in str(type(tree)))
 #        del tree
@@ -41,6 +82,3 @@ class TestAclhound(unittest.TestCase):
 
 def main():
     unittest.main()
-
-if __name__ == '__main__':
-    main()
