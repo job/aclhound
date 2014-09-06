@@ -30,6 +30,7 @@ import codecs
 import os
 import sys
 
+from pip.req import parse_requirements
 from setuptools import setup, find_packages, Extension
 from os.path import abspath, dirname, join
 
@@ -47,6 +48,9 @@ if sys.argv[-1] == 'publish':
     print("  git tag -a %s -m 'version %s'" % (version, version))
     print("  git push --tags")
     sys.exit()
+
+install_reqs = parse_requirements('requirements.txt')
+reqs = [str(ir.req) for ir in install_reqs]
 
 setup(
     name='aclhound',
@@ -66,7 +70,7 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
     ],
-    setup_requires=['nose', 'coverage'],
+    setup_requires=['nose', 'coverage'] + reqs,
     packages=find_packages(exclude=['tests', 'tests.*']),
     test_suite='nose.collector',
     entry_points={'console_scripts': ['aclhound = aclhound.cli:main']}
