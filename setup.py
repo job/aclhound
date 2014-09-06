@@ -75,7 +75,9 @@ setup(
 if 'install' in sys.argv:
     pwd = os.path.dirname(os.path.abspath(__file__))
     man_path = '/usr/share/man/man7/'
-    if os.path.exists(man_path):
+    if os.getenv('TRAVIS_BUILD_ID'):
+        print "not installing manpage in travis environment"
+    elif os.path.exists(man_path):
         print "Installing man pages"
         path = "%s/aclhound/doc/aclhound.7" % pwd
         input_file = file(path).read()
