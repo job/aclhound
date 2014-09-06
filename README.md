@@ -1,6 +1,8 @@
 ACLHOUND
 ========
 
+[![Build Status](https://travis-ci.org/job/aclhound.svg?branch=master)](https://travis-ci.org/job/aclhound)
+
 Summary
 -------
 
