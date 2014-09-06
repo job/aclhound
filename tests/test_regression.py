@@ -41,15 +41,16 @@ from aclhound.render import Render
 
 
 def parse_examples(filename, start='start', trace=False, whitespace=None):
+    data_dir = join(dirname(realpath(__file__)), 'data')
     policy = []
     seen = [filename]
 
     def walk_file(filename, seen=[], policy=[]):
         try:
-            f = open(filename).read().splitlines()
+            f = open(join(data_dir, filename)).read().splitlines()
         except IOError:
             print("filename %s referenced in %s does not exist"
-                  % (filename, seen[-2]))
+                  % (filename, seen[-1]))
             sys.exit()
         for line in f:
             if line.startswith('@'):
@@ -71,8 +72,8 @@ def parse_examples(filename, start='start', trace=False, whitespace=None):
 
 
 class TestAclhound(unittest.TestCase):
-    def test_00__create_destroy(self):
-        self.assertTrue(parse_examples('data/policy/edge_inbound.acl'))
+    def test_00__create_policies(self):
+        self.assertTrue(parse_examples('policy/edge_inbound.acl'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()
 #        self.assertTrue('radix.Radix' in str(type(tree)))
