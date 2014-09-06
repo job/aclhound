@@ -42,7 +42,7 @@ from aclhound.aclsemantics import grammarSemantics
 from aclhound.render import Render
 
 
-def parse_examples(filename, start='start', trace=False, whitespace=None):
+def parse_examples(filename, startrule='start', trace=False, whitespace=None):
     data_dir = join(dirname(realpath(__file__)), 'data')
     policy = []
     seen = [filename]
