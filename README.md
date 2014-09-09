@@ -37,6 +37,8 @@ Supported devices
 Installation notes
 ------------------
 
+Step 1: get the code
+
 ```
 git clone https://github.com/job/aclhound.git
 cd aclhound
@@ -46,6 +48,10 @@ pip install -r requirements.txt
 make test
 ```
 
+Step 2: intergrate with Gerrit
+
+Install [Jenkins] [2] with the [Gerrit Trigger] [3] plugin.
+
 Copyright and license
 ---------------------
 
@@ -54,3 +60,5 @@ Copyright 2014 Job Snijders. Code and documentation released under the BSD
 
 
 [1]: http://www.lsi.us.es/~quivir/sergio/DEPEND09.pdf "AFPL2"
+[2]: http://jenkins-ci.org/ "Jenkins"
+[3]: https://wiki.jenkins-ci.org/display/JENKINS/Gerrit+Trigger "Gerrit Trigger"
