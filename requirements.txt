@@ -1,4 +1,4 @@
-grako==2.4.1
+grako==2.4.3
 ipaddr==2.1.11
 jenkins==1.0.2
 pip>=1.2.1
