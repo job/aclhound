@@ -1,4 +1,6 @@
 include AUTHORS
 include LICENSE
+include README.md
 include aclhound/doc/aclhound.7
 include aclhound/doc/grammar.ebnf
+include requirements.txt
