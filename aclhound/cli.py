@@ -36,7 +36,7 @@ from grako.exceptions import * # noqa
 
 from aclhound.parser import grammarParser
 from aclhound.aclsemantics import grammarSemantics
-from aclhound.render import Render
+from aclhound.render import Render, Vendors
 
 
 def parse_policy(filename, startrule='start', trace=False, whitespace=None):
@@ -71,6 +71,78 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 
 
 def main():
+
+    supported_vendors = ['ios', 'asa', 'juniper']
+    args = sys.argv
+
+    if args[0] == "init":
+        if not len(args) == 1:
+            print('ERROR: init subcommand does not take any arguments')
+            sys.exit(2)
+        print('init')
+
+    elif args[0] == "build-all":
+        print('build-all')
+
+    elif args[0] == "build":
+        supported_vendors = ['ios', 'asa', 'juniper']
+        if not len(args) == 3:
+            print('ERROR: please specify a vendor when building a single config')
+            print('valid options are: %s' % ' '.join(supported_vendors))
+            sys.exit(2)
+        if args[2] not in supported_vendors:
+            print('ERROR: invalid vendor specified, use one of: %s'
+                  % ' '.join(supported_vendors))
+            sys.exit(2)
+        if not os.path.exists(args[1]):
+            print('ERROR: file %s does not exist' % args[1])
+            sys.exit(2)
+
+        print('build')
+
+    elif args[0] == "diff-all":
+        if not len(args) == 1:
+            print('ERROR: diff-all subcommand does not take additionalarguments')
+            sys.exit(2)
+        print('diff-all')
+
+    elif args[0] == "diff":
+        if not len(args) == 3:
+            print('ERROR: please specify a vendor when building a single config')
+            print('valid options are: %s' % ' '.join(supported_vendors))
+            sys.exit(2)
+        if args[2] not in supported_vendors:
+            print('ERROR: invalid vendor specified, use one of: %s'
+                  % ' '.join(supported_vendors))
+            sys.exit(2)
+        if not os.path.exists(args[1]):
+            print('ERROR: file %s does not exist' % args[1])
+            sys.exit(2)
+        print('diff')
+
+    elif args[0] == "fetch":
+        if not len(args) == 1:
+            print('ERROR: fetch subcommand does not take additional arguments')
+            sys.exit(2)
+        print('fetch')
+
+    elif args[0] == "submit":
+        if not len(args) == 1:
+            print('ERROR: submit subcommand does not take additional arguments')
+            sys.exit(2)
+        print('submit')
+
+    elif args[0] == "force-deploy":
+        help += """ docstring """
+        if not len(args) == 1:
+            print('ERROR: force-deploy subcommand does not take additional arguments')
+            sys.exit(2)
+        print('force-deploy')
+
+    def usage():
+
+
+
     print('assessing changes ... ')
     if sys.argv[-1] == 'init':
         print("""

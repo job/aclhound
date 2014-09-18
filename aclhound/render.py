@@ -79,4 +79,3 @@ class Render():
 
     def __str__(self):
         return '\n'.join(self.output(vendor=self.vendor, family=self.family))
-
