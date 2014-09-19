@@ -31,12 +31,14 @@ import os
 
 from os.path import dirname, realpath, join
 
+import ConfigParser
+
 from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
 from aclhound.parser import grammarParser
 from aclhound.aclsemantics import grammarSemantics
-from aclhound.render import Render, Vendors
+from aclhound.render import Render
 
 
 def parse_policy(filename, startrule='start', trace=False, whitespace=None):
@@ -75,10 +77,13 @@ def main():
     supported_vendors = ['ios', 'asa', 'juniper']
     args = sys.argv
 
-    if args[0] == "init":
-        if not len(args) == 1:
+    if args[1] == "init":
+        if not len(args) == 2:
             print('ERROR: init subcommand does not take any arguments')
             sys.exit(2)
+        config = ConfigParser.ConfigParser()
+        config.read("/etc/aclhound.conf")
+
         print('init')
 
     elif args[0] == "build-all":
@@ -139,8 +144,8 @@ def main():
             sys.exit(2)
         print('force-deploy')
 
-    def usage():
-
+#    def usage():
+#
 
 
     print('assessing changes ... ')
