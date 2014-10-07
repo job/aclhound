@@ -29,7 +29,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 import os
 
-from os.path import dirname, realpath, join
+from os.path import join
 
 import ConfigParser
 
@@ -72,6 +72,11 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
     return output
 
 
+def setup_config():
+    config = ConfigParser.ConfigParser()
+    config.read(['/etc/aclhound.conf', os.path.expanduser('~/.aclhoundrc')])
+    return config
+
 def main():
 
     supported_vendors = ['ios', 'asa', 'juniper']
@@ -81,9 +86,7 @@ def main():
         if not len(args) == 2:
             print('ERROR: init subcommand does not take any arguments')
             sys.exit(2)
-        config = ConfigParser.ConfigParser()
-        config.read("/etc/aclhound.conf")
-
+        config = setup_config()
         print('init')
 
     elif args[0] == "build-all":
