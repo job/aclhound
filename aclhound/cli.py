@@ -26,18 +26,16 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.exceptions import * # noqa
+from grako.parsing import * # noqa
+
 import sys
 import os
 
-import ConfigParser
-
-from grako.parsing import * # noqa
-from grako.exceptions import * # noqa
-
-from aclhound.parser import grammarParser
-from aclhound.aclsemantics import grammarSemantics
-from aclhound.render import Render
 from aclhound.aclhoundconfig import AclhoundConfig, AclhoundConfigError
+from aclhound.aclsemantics import grammarSemantics
+from aclhound.parser import grammarParser
+from aclhound.render import Render
 
 def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 
@@ -73,16 +71,20 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 def main():
 
     config_file = '/etc/aclhound/aclhound.conf'
+    supported_vendors = ['ios', 'asa', 'juniper']
+    args = sys.argv
+
+    if len(args) == 0:
+        usage()
+        sys.exit()
+
     try:
         cfg = AclhoundConfig(config_file, None)
     except AclhoundConfigError:
-        if options.config_file:
-            print >> sys.stderr, "The specified configuration file ('" \
-                + config_file + "') does not exist"
+        print("ERROR: The system configuration file "
+              + config_file + " does not exist")
+        print("HINT: finish installing aclhound on this system")
         sys.exit(1)
-
-    supported_vendors = ['ios', 'asa', 'juniper']
-    args = sys.argv
 
     if args[1] == "init":
         if not len(args) == 2:

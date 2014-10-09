@@ -31,7 +31,7 @@ import os
 import sys
 
 from pip.req import parse_requirements
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 from os.path import abspath, dirname, join
 
 here = abspath(dirname(__file__))
@@ -54,7 +54,10 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 
 def get_data_files():
-    files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist'])]
+    import shutil
+    shutil.copyfile('aclhound/doc/aclhoundrc', 'aclhound/doc/.aclhoundrc')
+    files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist']),
+             ('/etc/skel', ['aclhound/doc/.aclhoundrc'])]
     #pwd = os.path.dirname(os.path.abspath(__file__))
     man_path = '/usr/share/man/man7'
     if os.getenv('TRAVIS_BUILD_ID'):
@@ -86,3 +89,7 @@ setup(
     entry_points={'console_scripts': ['aclhound = aclhound.cli:main']},
     data_files=get_data_files()
 )
+
+import os
+os.remove('aclhound/doc/.aclhoundrc')
+os.chmod('/etc/skel/.aclhoundrc', 0600)
