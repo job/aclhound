@@ -29,8 +29,6 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import sys
 import os
 
-from os.path import join
-
 import ConfigParser
 
 from grako.parsing import * # noqa
@@ -39,7 +37,7 @@ from grako.exceptions import * # noqa
 from aclhound.parser import grammarParser
 from aclhound.aclsemantics import grammarSemantics
 from aclhound.render import Render
-
+from aclhound.aclhoundconfig import AclhoundConfig, AclhoundConfigError
 
 def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 
@@ -47,7 +45,7 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 
     def walk_file(filename, seen=[], policy=[]):
         try:
-            f = open(join(filename)).read().splitlines()
+            f = open(os.path.join(filename)).read().splitlines()
         except IOError:
             print("filename %s referenced in %s does not exist"
                   % (filename, seen[-1]))
@@ -72,12 +70,16 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
     return output
 
 
-def setup_config():
-    config = ConfigParser.ConfigParser()
-    config.read(['/etc/aclhound.conf', os.path.expanduser('~/.aclhoundrc')])
-    return config
-
 def main():
+
+    config_file = '/etc/aclhound/aclhound.conf'
+    try:
+        cfg = AclhoundConfig(config_file, None)
+    except AclhoundConfigError:
+        if options.config_file:
+            print >> sys.stderr, "The specified configuration file ('" \
+                + config_file + "') does not exist"
+        sys.exit(1)
 
     supported_vendors = ['ios', 'asa', 'juniper']
     args = sys.argv
@@ -86,7 +88,7 @@ def main():
         if not len(args) == 2:
             print('ERROR: init subcommand does not take any arguments')
             sys.exit(2)
-        config = setup_config()
+        create_aclhoundrc_file()
         print('init')
 
     elif args[0] == "build-all":

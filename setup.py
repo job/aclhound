@@ -52,6 +52,17 @@ if sys.argv[-1] == 'publish':
 install_reqs = parse_requirements('requirements.txt')
 reqs = [str(ir.req) for ir in install_reqs]
 
+
+def get_data_files():
+    files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist'])]
+    #pwd = os.path.dirname(os.path.abspath(__file__))
+    man_path = '/usr/share/man/man7'
+    if os.getenv('TRAVIS_BUILD_ID'):
+        print "not installing manpage in travis environment"
+    elif os.path.exists(man_path):
+        files += [(man_path, ['aclhound/doc/aclhound.7'])]
+    return files
+
 setup(
     name='aclhound',
     version=version,
@@ -67,23 +78,11 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Networking',
         'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
     ],
     setup_requires=['nose', 'coverage'] + reqs,
     packages=find_packages(exclude=['tests', 'tests.*']),
     test_suite='nose.collector',
-    entry_points={'console_scripts': ['aclhound = aclhound.cli:main']}
+    entry_points={'console_scripts': ['aclhound = aclhound.cli:main']},
+    data_files=get_data_files()
 )
-
-if 'install' in sys.argv:
-    pwd = os.path.dirname(os.path.abspath(__file__))
-    man_path = '/usr/share/man/man7/'
-    if os.getenv('TRAVIS_BUILD_ID'):
-        print "not installing manpage in travis environment"
-    elif os.path.exists(man_path):
-        print "Installing man pages"
-        path = "%s/aclhound/doc/aclhound.7" % pwd
-        input_file = file(path).read()
-        ouput_file = file(man_path + 'aclhound.7', 'wa')
-        ouput_file.write(input_file)
