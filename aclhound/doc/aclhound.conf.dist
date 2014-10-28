@@ -16,3 +16,7 @@ hostname = gerrit.prod.internal
 port = 29418
 repository = firewall-policies
 protocol = ssh
+
+[user]
+username =
+location =

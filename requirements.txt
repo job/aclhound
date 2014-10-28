@@ -3,4 +3,4 @@ ipaddr==2.1.11
 jenkins==1.0.2
 pip>=1.2.1
 docopt==0.6.2
-schema==0.3.1
+git-review==1.24

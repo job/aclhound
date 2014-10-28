@@ -34,7 +34,7 @@ Options:
     -d --debug      Enable debugging output
     --version       Show version information
 
-Subcommands, use ``aclhould help <subcommand>`` to learn more:
+Subcommands, use 'aclhould help <subcommand>' to learn more:
 
     init        Initialise aclhound end-user configuration
     build-all   Compile all ACLHound policy into network configurations
@@ -58,6 +58,7 @@ import ConfigParser
 import os
 import sys
 
+import aclhound
 from aclhound.aclsemantics import grammarSemantics
 from aclhound.parser import grammarParser
 from aclhound.render import Render
@@ -94,32 +95,121 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
     return output
 
 
-class Settings(dict):
+class Settings(ConfigParser.ConfigParser):
     """
     Settings are a combination of system-wide settings and
     user specific settings.
 
-    Configuration is derived by taking ``/etc/aclhound/aclhound.conf``
-    and overlaying that with ``~/.aclhound/client.yaml``
+    Configuration is derived by taking 'etc/aclhound/aclhound.conf'
+    and overlaying that with '~/.aclhound/client.conf'
     """
     def __init__(self):
-
+        """
+        Test whether appropiate files exist, return config object
+        """
         user_path = os.path.expanduser('~/.aclhound')
-        config = ConfigParser.SafeConfigParser()
-        config.readfp(open('/etc/aclhound/aclhound.conf'))
+        if not os.path.exists('/etc/aclhound/aclhound.conf'):
+            print("ERROR: Could not open /etc/aclhound/aclhound.conf")
+            print("Has ACLHound been properly installed? Contact your admin")
+            sys.exit(2)
 
         if not os.path.isdir(user_path):
-            raise Exception("~/.aclhound/ does not exist yet")
+            err = "~/.aclhound/ does not exist yet"
+            raise Exception(err)
         elif not os.path.exists('%s/client.conf' % user_path):
-            raise Exception("~/.aclhound/client.conf does not exist yet")
-        # Load settings
-        self.load()
+            err = "~/.aclhound/client.conf does not exist yet"
+            raise Exception(err)
 
-    def load(self):
-        """
-        Load system-wide config, overlay with user-specific config
-        """
-        pass
+        ConfigParser.ConfigParser.__init__(self)
+        self.readfp(open('/etc/aclhound/aclhound.conf'))
+        self.read([os.path.expanduser("~/.aclhound/client.conf")])
+
+
+def do_init():
+    """
+    Initialise user-specific settings, ask the user for username on
+    repository server, location to store aclhound policy, ask to make
+    initial clone.
+
+    Usage: aclhound init
+    """
+
+    print("""Welcome to ACLHound!
+
+A few user-specific settings are required to set up the proper environment.
+The settings can always be changed by editting the 'aclhound/client.conf'
+file with a text editor.
+""")
+
+    import getpass
+    suggested_username = getpass.getuser()
+    username = raw_input("Username on Gerrit server [%s]: "
+                         % suggested_username)
+    if not username:
+        username = suggested_username
+
+    suggested_location = "~/aclhound"
+    location = raw_input("Location for ACLHound datafiles [%s]: "
+                         % suggested_location)
+    if not location:
+        location = suggested_location
+    if not os.path.exists(os.path.expanduser("~/.aclhound")):
+        os.mkdir(os.path.expanduser("~/.aclhound"), 0700)
+    if not os.path.exists(os.path.expanduser(location)):
+        os.mkdir(os.path.expanduser(location), 0700)
+
+    # write
+    cfgfile = open("%s/client.conf" % os.path.expanduser("~/.aclhound"), 'w')
+    config = ConfigParser.ConfigParser()
+    config.add_section('user')
+    config.set('user', 'username', username)
+    config.set('user', 'location', location)
+    config.write(cfgfile)
+
+    clone = raw_input("Make initial clone of repository data [y]: ")
+    if not clone or clone == 'y':
+        cfg = Settings()
+        os.chdir(os.path.expanduser(location))
+        run(['git', 'clone', 'ssh://%s@%s:%s/%s' %
+             (username,
+              cfg.get('gerrit', 'hostname'),
+              cfg.get('gerrit', 'port'),
+              cfg.get('gerrit', 'repository')), '.'])
+
+        if not os.path.exists('.gitreview'):
+            # create .gitreview file if it does not exist
+            gerritcfg = ConfigParser.ConfigParser()
+            gerritcfg.add_section('gerrit')
+            gerritcfg.set('gerrit', 'host', cfg.get('gerrit', 'hostname'))
+            gerritcfg.set('gerrit', 'project', cfg.get('gerrit', 'repository'))
+            gerritcfg.write(open('.gitreview', 'w'))
+            run(['git', 'add', '.gitreview'])
+            run(['git', 'commit', '-am', 'add gitreview'])
+            run(['git', 'push'])
+
+        if not os.path.exists('.gitignore'):
+            gitignore = open('.gitignore', 'w')
+            gitignore.write('networkconfigs/**\n')
+            gitignore.close()
+            run(['git', 'add', '.gitignore'])
+            run(['git', 'commit', '-am', 'add gitreview'])
+            run(['git', 'push'])
+
+        # create directories
+        for directory in ['objects', 'devices', 'policy', 'networkconfig']:
+            if not os.path.exists(directory):
+                os.mkdir(directory)
+        # setup reviewing
+        run(['git', 'review', '--setup'])
+
+
+def run(cmd):
+    print('INFO: executing: %s' % ' '.join(cmd))
+    ret = call(cmd)
+    if not ret == 0:
+        print("ERROR: executing '%s' failed." % ' '.join(cmd))
+        print('HINT: investigate manually')
+        sys.exit(2)
 
 
 class ACLHoundClient(object):
@@ -131,51 +221,50 @@ class ACLHoundClient(object):
     def __init__(self):
         try:
             self._settings = Settings()
-        except:
-            self.init()
+        except Exception as err:
+            print("ERROR: Whoops!")
+            print("ERROR: %s" % " ".join(err.args))
+            print("""HINT: possible config corruption, delete it and run 'aclhound init'""")
+            sys.exit(2)
+        os.chdir(os.path.expanduser(self._settings.get('user', 'location')))
 
-    def init(self):
+    def submit(self, args):
         """
-        Initialise user-specific settings, ask the user for username on
-        repository server, location to store aclhound policy, ask to make
-        initial clone.
+        Submits changes for review.
+
+        Usage: aclhound submit
+
+        The 'submit' command will perform the following steps:
+            * aclhound diff-all
+            * git add -A *
+            * git commit -a
+            * git review -v
         """
+        diff_all(args)
+        run(['git', 'add', '-A', '*'])
+        run(['git', 'commit', '-a'])
+        run(['git', 'review', '-v'])
+        pass
 
-        print("""Welcome to ACLHound!
+    def diff_all(self, args):
+        """
+        Show differences between last commit and current files.
 
-A few user-specific settings are required to set up the proper environment.
-The settings can always be changed by editting the ``~/.aclhound/client.yaml``
-file with a text editor.
-""")
+        Usage: aclhound diff-all
+        """
+        pass
 
-        import getpass
-        suggested_username = getpass.getuser()
-        username = raw_input("Username on Gerrit server [%s]: "
-                             % suggested_username)
-        if not username:
-            username = suggested_username
+    def diff(self, args):
+        """
+        Show difference for single device or policy between last commit and current state
 
-        suggested_location = "~/aclhound"
-        location = raw_input("Location for ACLHound datafiles [%s]: "
-                             % suggested_location)
-        if not location:
-            location = suggested_location
-        os.mkdir(os.path.expanduser("~/.aclhound"), 0700)
-        os.mkdir(os.path.expanduser(location), 0700)
+        Usage: aclhound diff <filename> [(ios | asa | junos)]
 
-        # write
-        cfgfile = open("%s/client.conf" % os.path.expanduser("~/.aclhound"), 'w')
-        config = ConfigParser.ConfigParser()
-        config.add_section('user')
-        config.set('user', 'username', username)
-        config.set('user', 'location', location)
-        config.write(cfgfile)
-
-        clone = raw_input("Make initial clone of repository data [y]: ")
-        if clone in ['y', None]:
-            pass
-
-
+        Arguments:
+            <filename>
+                The policy or device file for which a unified diff must be generated.
+                When referring to a policy file, a vendor must be specified as well.
+        """
 #    print('assessing changes ... ')
 #    if sys.argv[-1] == 'init':
 #        print("""
@@ -205,6 +294,8 @@ file with a text editor.
 #        f.write('\n')
 #        f.close()
 #        sys.exit(0)
+
+
 
 def trim(docstring):
     """
@@ -255,17 +346,28 @@ def parse_args(cmd):
 
 
 def main():
-    """ Create an ACLHound client, parse the arguments received on the command
+    """
+    Create an ACLHound client, parse the arguments received on the command
     line, and call the appropiate method.
     """
+
+    try:
+        if sys.argv[1] == "init":
+            do_init()
+            sys.exit(0)
+    except IndexError:
+        pass
     cli = ACLHoundClient()
-    args = docopt(__doc__, version=__version__, options_first=True)
+    args = docopt(__doc__, version=aclhound.__version__, options_first=True)
     cmd = args['<command>']
     cmd, help_flag = parse_args(cmd)
     # print help when asked
     if help_flag:
         if cmd != 'help' and cmd in dir(cli):
             print(trim(getattr(cli, cmd).__doc__))
+            return
+        if cmd == "init":
+            print(trim(do_init.__doc__))
             return
         docopt(__doc__, argv=['--help'])
     if hasattr(cli, cmd):
