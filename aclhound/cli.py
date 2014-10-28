@@ -36,14 +36,15 @@ Options:
 
 Subcommands, use 'aclhould help <subcommand>' to learn more:
 
-    init        Initialise aclhound end-user configuration
-    build-all   Compile all ACLHound policy into network configurations
-    build       Compile a specific policy file into a network configuration
-    diff-all    Compare all network configurations with the previous version
-    diff        Compare a single file with the previous version
-    fetch       Retrieve latest ACLHound policy from repository server
-    submit      Push policy for review to repository server
-
+    init        Initialise aclhound end-user configuration.
+    fetch       Retrieve latest ACLHound policy from repository server.
+    start       Start working on a new proposed change.
+    diff-all    Compare all network configurations with the previous version.
+    diff        Compare a single file with the previous version.
+    submit      Push policy for review to repository server.
+    build-all   Compile all ACLHound policy into network configurations.
+    build       Compile a specific policy file into a network configuration.
+    status      Show in which task you are currently working
 """
 
 from __future__ import print_function, division, absolute_import, \
@@ -199,11 +200,16 @@ file with a text editor.
         for directory in ['objects', 'devices', 'policy', 'networkconfig']:
             if not os.path.exists(directory):
                 os.mkdir(directory)
-        # setup reviewing
+
+        # setup the review hooks
         run(['git', 'review', '--setup'])
 
+        # Rebase is better to work with in Gerrit, see
+        # http://stevenharman.net/git-pull-with-automatic-rebase
+        run(['git', 'config', '--local', 'branch.autosetuprebase', 'always'])
 
-def run(cmd):
+
+def run(cmd, return_channel=0):
     print('INFO: executing: %s' % ' '.join(cmd))
     ret = call(cmd)
     if not ret == 0:
@@ -228,6 +234,14 @@ class ACLHoundClient(object):
             sys.exit(2)
         os.chdir(os.path.expanduser(self._settings.get('user', 'location')))
 
+    def status(self, args):
+        """
+        Show status of current working directory.
+
+        Usage: aclhound status
+        """
+        run(['git', 'status', '--porcelain', '-b'], 1)
+
     def submit(self, args):
         """
         Submits changes for review.
@@ -240,11 +254,12 @@ class ACLHoundClient(object):
             * git commit -a
             * git review -v
         """
-        diff_all(args)
+        self.diff_all(args)
         run(['git', 'add', '-A', '*'])
         run(['git', 'commit', '-a'])
-        run(['git', 'review', '-v'])
-        pass
+        run(['git', 'review'])
+        print("INFO: submitted changes, returning to master branch")
+        run(['git', 'checkout', 'master'])
 
     def diff_all(self, args):
         """
@@ -265,6 +280,34 @@ class ACLHoundClient(object):
                 The policy or device file for which a unified diff must be generated.
                 When referring to a policy file, a vendor must be specified as well.
         """
+
+    def start(self, args):
+        """
+        Start change process.
+
+        Usage: aclhound start <taskname>
+
+        Arguments:
+            <taskname>
+                Taskname refers to a JIRA ticket, or other reference by which the change
+                will be known in the review system.
+        """
+        taskname = args['<taskname>']
+        run(['git', 'checkout', '-b', taskname])
+        print("INFO: You can now work on change %s" % taskname)
+        print("INFO: When you are finished type 'aclhound submit'")
+
+    def fetch(self, args):
+        """
+        Retrieve latest changes from the repository server.
+
+        Usage: aclhound fetch
+        """
+        run(['git', 'checkout', 'master'])
+        run(['git', 'remote', 'update'])
+        run(['git', 'pull', '--rebase'])
+
+
 #    print('assessing changes ... ')
 #    if sys.argv[-1] == 'init':
 #        print("""
