@@ -24,18 +24,44 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF TH
 
-from __future__ import print_function, division, absolute_import, unicode_literals
+"""
+The ACLHound command-line client assists in ACL management.
 
+Usage: aclhound [-d] [--version] [--help] <command> [<args>...]
+
+Options:
+    -h --help       Show this screen
+    -d --debug      Enable debugging output
+    --version       Show version information
+
+Subcommands, use ``aclhould help <subcommand>`` to learn more:
+
+    init        Initialise aclhound end-user configuration
+    build-all   Compile all ACLHound policy into network configurations
+    build       Compile a specific policy file into a network configuration
+    diff-all    Compare all network configurations with the previous version
+    diff        Compare a single file with the previous version
+    fetch       Retrieve latest ACLHound policy from repository server
+    submit      Push policy for review to repository server
+
+"""
+
+from __future__ import print_function, division, absolute_import, \
+    unicode_literals
+
+from docopt import docopt
 from grako.exceptions import * # noqa
 from grako.parsing import * # noqa
+from subprocess import call
 
-import sys
+import ConfigParser
 import os
+import sys
 
-from aclhound.aclhoundconfig import AclhoundConfig, AclhoundConfigError
 from aclhound.aclsemantics import grammarSemantics
 from aclhound.parser import grammarParser
 from aclhound.render import Render
+
 
 def parse_policy(filename, startrule='start', trace=False, whitespace=None):
 
@@ -68,119 +94,189 @@ def parse_policy(filename, startrule='start', trace=False, whitespace=None):
     return output
 
 
-def main():
+class Settings(dict):
+    """
+    Settings are a combination of system-wide settings and
+    user specific settings.
 
-    config_file = '/etc/aclhound/aclhound.conf'
-    supported_vendors = ['ios', 'asa', 'juniper']
-    args = sys.argv
+    Configuration is derived by taking ``/etc/aclhound/aclhound.conf``
+    and overlaying that with ``~/.aclhound/client.yaml``
+    """
+    def __init__(self):
 
-    if len(args) == 0:
-        usage()
-        sys.exit()
+        user_path = os.path.expanduser('~/.aclhound')
+        config = ConfigParser.SafeConfigParser()
+        config.readfp(open('/etc/aclhound/aclhound.conf'))
 
-    try:
-        cfg = AclhoundConfig(config_file, None)
-    except AclhoundConfigError:
-        print("ERROR: The system configuration file "
-              + config_file + " does not exist")
-        print("HINT: finish installing aclhound on this system")
-        sys.exit(1)
+        if not os.path.isdir(user_path):
+            raise Exception("~/.aclhound/ does not exist yet")
+        elif not os.path.exists('%s/client.conf' % user_path):
+            raise Exception("~/.aclhound/client.conf does not exist yet")
+        # Load settings
+        self.load()
 
-    if args[1] == "init":
-        if not len(args) == 2:
-            print('ERROR: init subcommand does not take any arguments')
-            sys.exit(2)
-        create_aclhoundrc_file()
-        print('init')
-
-    elif args[0] == "build-all":
-        print('build-all')
-
-    elif args[0] == "build":
-        supported_vendors = ['ios', 'asa', 'juniper']
-        if not len(args) == 3:
-            print('ERROR: please specify a vendor when building a single config')
-            print('valid options are: %s' % ' '.join(supported_vendors))
-            sys.exit(2)
-        if args[2] not in supported_vendors:
-            print('ERROR: invalid vendor specified, use one of: %s'
-                  % ' '.join(supported_vendors))
-            sys.exit(2)
-        if not os.path.exists(args[1]):
-            print('ERROR: file %s does not exist' % args[1])
-            sys.exit(2)
-
-        print('build')
-
-    elif args[0] == "diff-all":
-        if not len(args) == 1:
-            print('ERROR: diff-all subcommand does not take additionalarguments')
-            sys.exit(2)
-        print('diff-all')
-
-    elif args[0] == "diff":
-        if not len(args) == 3:
-            print('ERROR: please specify a vendor when building a single config')
-            print('valid options are: %s' % ' '.join(supported_vendors))
-            sys.exit(2)
-        if args[2] not in supported_vendors:
-            print('ERROR: invalid vendor specified, use one of: %s'
-                  % ' '.join(supported_vendors))
-            sys.exit(2)
-        if not os.path.exists(args[1]):
-            print('ERROR: file %s does not exist' % args[1])
-            sys.exit(2)
-        print('diff')
-
-    elif args[0] == "fetch":
-        if not len(args) == 1:
-            print('ERROR: fetch subcommand does not take additional arguments')
-            sys.exit(2)
-        print('fetch')
-
-    elif args[0] == "submit":
-        if not len(args) == 1:
-            print('ERROR: submit subcommand does not take additional arguments')
-            sys.exit(2)
-        print('submit')
-
-    elif args[0] == "force-deploy":
-        help += """ docstring """
-        if not len(args) == 1:
-            print('ERROR: force-deploy subcommand does not take additional arguments')
-            sys.exit(2)
-        print('force-deploy')
-
-#    def usage():
-#
+    def load(self):
+        """
+        Load system-wide config, overlay with user-specific config
+        """
+        pass
 
 
-    print('assessing changes ... ')
-    if sys.argv[-1] == 'init':
-        print("""
-git clone ssh://gerrit.ecg.so:29418/ecg-networking
-cd ecg-networking
-git review --setup -v
-git checkout -B $project_name
-git add files
-git commit""")
-        sys.exit()
+class ACLHoundClient(object):
+    """
+    An client which compiles abstract ACL policy into vendor-specific network
+    configurations.
+    """
 
-    if sys.argv[-1] == 'help':
-        print("""
-To submit a patchset for review do the following steps
-* change files
-* git add *
-* git commit -a
-* git-review -v
+    def __init__(self):
+        try:
+            self._settings = Settings()
+        except:
+            self.init()
+
+    def init(self):
+        """
+        Initialise user-specific settings, ask the user for username on
+        repository server, location to store aclhound policy, ask to make
+        initial clone.
+        """
+
+        print("""Welcome to ACLHound!
+
+A few user-specific settings are required to set up the proper environment.
+The settings can always be changed by editting the ``~/.aclhound/client.yaml``
+file with a text editor.
 """)
-        sys.exit()
 
-    if sys.argv[-1] == 'build':
-        output = parse_policy('policy/management.acl')
-        print(output)
-        f = open('/opt/firewall-configs/testasa.asa', 'w')
-        f.write(output)
-        f.write('\n')
-        f.close()
-        sys.exit(0)
+        import getpass
+        suggested_username = getpass.getuser()
+        username = raw_input("Username on Gerrit server [%s]: "
+                             % suggested_username)
+        if not username:
+            username = suggested_username
+
+        suggested_location = "~/aclhound"
+        location = raw_input("Location for ACLHound datafiles [%s]: "
+                             % suggested_location)
+        if not location:
+            location = suggested_location
+        os.mkdir(os.path.expanduser("~/.aclhound"), 0700)
+        os.mkdir(os.path.expanduser(location), 0700)
+
+        # write
+        cfgfile = open("%s/client.conf" % os.path.expanduser("~/.aclhound"), 'w')
+        config = ConfigParser.ConfigParser()
+        config.add_section('user')
+        config.set('user', 'username', username)
+        config.set('user', 'location', location)
+        config.write(cfgfile)
+
+        clone = raw_input("Make initial clone of repository data [y]: ")
+        if clone in ['y', None]:
+            pass
+
+
+#    print('assessing changes ... ')
+#    if sys.argv[-1] == 'init':
+#        print("""
+#git clone ssh://gerrit.ecg.so:29418/ecg-networking
+#cd ecg-networking
+#git review --setup -v
+#git checkout -B $project_name
+#git add files
+#git commit""")
+#        sys.exit()
+#
+#    if sys.argv[-1] == 'help':
+#        print("""
+#To submit a patchset for review do the following steps
+#* change files
+#* git add *
+#* git commit -a
+#* git-review -v
+#""")
+#        sys.exit()
+#
+#    if sys.argv[-1] == 'build':
+#        output = parse_policy('policy/management.acl')
+#        print(output)
+#        f = open('/opt/firewall-configs/testasa.asa', 'w')
+#        f.write(output)
+#        f.write('\n')
+#        f.close()
+#        sys.exit(0)
+
+def trim(docstring):
+    """
+    Function to trim whitespace from docstring
+
+    c/o PEP 257 Docstring Conventions
+    <http://www.python.org/dev/peps/pep-0257/>
+    """
+    if not docstring:
+        return ''
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxint
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxint:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+    # Return a single string:
+    return '\n'.join(trimmed)
+
+
+def parse_args(cmd):
+    """
+    Parses command-line args applying shortcuts and looking for help flags.
+    """
+    if cmd == 'help':
+        cmd = sys.argv[-1]
+        help_flag = True
+    else:
+        cmd = sys.argv[1]
+        help_flag = False
+    # convert - to _
+    if '-' in cmd:
+        cmd = '_'.join(cmd.split(':'))
+    return cmd, help_flag
+
+
+def main():
+    """ Create an ACLHound client, parse the arguments received on the command
+    line, and call the appropiate method.
+    """
+    cli = ACLHoundClient()
+    args = docopt(__doc__, version=__version__, options_first=True)
+    cmd = args['<command>']
+    cmd, help_flag = parse_args(cmd)
+    # print help when asked
+    if help_flag:
+        if cmd != 'help' and cmd in dir(cli):
+            print(trim(getattr(cli, cmd).__doc__))
+            return
+        docopt(__doc__, argv=['--help'])
+    if hasattr(cli, cmd):
+        method = getattr(cli, cmd)
+    else:
+        raise DocoptExit('Found no matching command, try `aclhound help`')
+    docstring = trim(getattr(cli, cmd).__doc__)
+    if 'Usage: ' in docstring:
+        args.update(docopt(docstring))
+    method(args)
+
+if __name__ == '__main__':
+    main()
+    sys.exit(0)

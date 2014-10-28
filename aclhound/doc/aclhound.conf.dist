@@ -1,8 +1,9 @@
 ; ACLHound system-wide configuration
 
 [general]
-local_only = false
-policy_output_directory = /home/job/aclhound-build
+local_only = true
+policy_output_directory = /opt/aclhound/networkconfigs
+project_name = networkconfigs
 
 [jenkins]
 hostname = jenkinks.prod.internal
