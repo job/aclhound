@@ -41,6 +41,7 @@ Subcommands, use 'aclhould help <subcommand>' to learn more:
     task        Manage change proposals (creation, submission, etc)
     diff        Compare current working directory with the previous version.
     build       Compile policy into network configuration.
+    reset       Delete aclhound directory and fetch copy from repository.
 """
 
 from __future__ import print_function, division, absolute_import, \
@@ -124,7 +125,7 @@ class Settings(ConfigParser.ConfigParser):
         self.read([os.path.expanduser("~/.aclhound/client.conf")])
 
 
-def do_init(args):
+def do_init(args, write_config=True):
     """
     Initialise user-specific settings, ask the user for username on
     repository server, location to store aclhound policy, ask to make
@@ -135,51 +136,51 @@ def do_init(args):
     Options:
         --batch     Automatically guess all settings (non-interactive mode).
     """
-    if len(args) == 3:
-        batch = True if args[2] == "--batch" else False
+    if len(args) == 2:
+        batch = True if args[1] == "--batch" else False
 
-    print("""Welcome to ACLHound!
+    if not batch:
+        print("""Welcome to ACLHound!
 
-A few user-specific settings are required to set up the proper environment.
-The settings can always be changed by editting the 'aclhound/client.conf'
-file with a text editor.
-""")
+A few user-specific settings are required to set up the proper
+environment. The settings can always be changed by editting the
+'aclhound/client.conf' file with a text editor.""")
 
     import getpass
     username = getpass.getuser()
     if not batch:
         username = raw_input("Username on Gerrit server [%s]: "
-                             % username)
+                             % username) or username
 
     location = "~/aclhound"
     if not batch:
         location = raw_input("Location for ACLHound datafiles [%s]: "
-                             % location)
+                             % location) or location
     if not os.path.exists(os.path.expanduser("~/.aclhound")):
         os.mkdir(os.path.expanduser("~/.aclhound"), 0700)
     if not os.path.exists(os.path.expanduser(location)):
         os.mkdir(os.path.expanduser(location), 0700)
 
-    # write
-    cfgfile = open("%s/client.conf" % os.path.expanduser("~/.aclhound"), 'w')
-    config = ConfigParser.ConfigParser()
-    config.add_section('user')
-    config.set('user', 'username', username)
-    config.set('user', 'location', location)
-    config.write(cfgfile)
+    if write_config:
+        cfgfile = open("%s/client.conf" % os.path.expanduser("~/.aclhound"), 'w')
+        config = ConfigParser.ConfigParser()
+        config.add_section('user')
+        config.set('user', 'username', username)
+        config.set('user', 'location', location)
+        config.write(cfgfile)
 
     if not batch:
-        clone = raw_input("Make initial clone of repository data [y]: ")
+        clone = raw_input("Make initial clone of repository data [y]: ") or "y"
     elif batch:
         clone = 'y'
-    if not clone or clone == 'y':
+    if clone == 'y':
         cfg = Settings()
         os.chdir(os.path.expanduser(location))
         run(['git', 'clone', 'ssh://%s@%s:%s/%s' %
              (username,
               cfg.get('gerrit', 'hostname'),
               cfg.get('gerrit', 'port'),
-              cfg.get('gerrit', 'repository')), '.'])
+              cfg.get('gerrit', 'repository')), '.'], 0)
 
         if not os.path.exists('.gitreview'):
             # create .gitreview file if it does not exist
@@ -188,17 +189,17 @@ file with a text editor.
             gerritcfg.set('gerrit', 'host', cfg.get('gerrit', 'hostname'))
             gerritcfg.set('gerrit', 'project', cfg.get('gerrit', 'repository'))
             gerritcfg.write(open('.gitreview', 'w'))
-            run(['git', 'add', '.gitreview'])
-            run(['git', 'commit', '-am', 'add gitreview'])
-            run(['git', 'push'])
+            run(['git', 'add', '.gitreview'], 0)
+            run(['git', 'commit', '-am', 'add gitreview'], 0)
+            run(['git', 'push'], 0)
 
         if not os.path.exists('.gitignore'):
             gitignore = open('.gitignore', 'w')
             gitignore.write('networkconfigs/**\n')
             gitignore.close()
-            run(['git', 'add', '.gitignore'])
-            run(['git', 'commit', '-am', 'add gitreview'])
-            run(['git', 'push'])
+            run(['git', 'add', '.gitignore'], 0)
+            run(['git', 'commit', '-am', 'add gitreview'], 0)
+            run(['git', 'push'], 0)
 
         # create directories
         for directory in ['objects', 'devices', 'policy', 'networkconfig']:
@@ -206,14 +207,14 @@ file with a text editor.
                 os.mkdir(directory)
 
         # setup the review hooks
-        run(['git', 'review', '--setup'])
+        run(['git', 'review', '--setup'], 0)
 
         # Rebase is better to work with in Gerrit, see
         # http://stevenharman.net/git-pull-with-automatic-rebase
-        run(['git', 'config', '--local', 'branch.autosetuprebase', 'always'])
+        run(['git', 'config', '--local', 'branch.autosetuprebase', 'always'], 0)
 
 
-def run(cmd, return_channel=0):
+def run(cmd, return_channel=0, debug=None):
     if return_channel == 0:
         print('INFO: executing: %s' % ' '.join(cmd))
         ret = call(cmd)
@@ -223,6 +224,9 @@ def run(cmd, return_channel=0):
             sys.exit(2)
     elif return_channel == 1:
         ret = check_output(cmd)
+        if debug:
+            print('INFO: executing: %s' % ' '.join(cmd))
+            print(ret)
         return ret
 
 
@@ -248,7 +252,17 @@ class ACLHoundClient(object):
 
         Usage: aclhound [-d] task status
         """
-        run(['git', 'status', '--porcelain', '-b'], 1)
+        repo = Repo(os.getcwd())
+        branch = repo.active_branch
+        if branch == "master":
+            print("INFO: you are currently in the master copy of the policy repository")
+            print("HINT: use 'aclhound task (start | edit) <taskname> for changes")
+        else:
+            print("INFO: you are currently working on task: %s" % branch)
+            print
+            ret = run(['git', 'branch', '--merged'])
+            for line in ret.split('\n'):
+                pass
 
     def task_list(self, args):
         """
@@ -323,7 +337,6 @@ overview of previous work")
                 Taskname refers to a JIRA ticket, or other reference by which
                 the change will be known in the review system.
         """
-        print(args)
         taskname = args['<taskname>']
         run(['git', 'checkout', '-b', taskname])
         print("INFO: You can now work on change %s" % taskname)
@@ -373,6 +386,28 @@ overview of previous work")
             generated.  When referring to a policy file, a vendor must be
             specified as well.
         """
+
+    def reset(self, args):
+        """
+        Reset ACLHound data directory by deleting the directory, followed
+        by a fresh clone based on ~/.aclhound/client.conf settings
+
+        Usage: aclhound reset
+
+        If you are terribly lost in branches and git voodoo, this is an
+        easy way out.
+        """
+
+        location = os.path.expanduser(self._settings.get('user', 'location'))
+        confirm = raw_input("Do you want to destroy all local work (%s) and start over? [y]" \
+                            % location) or "y"
+        if confirm == "y":
+            import shutil
+            os.chdir(os.path.expanduser('~'))
+            shutil.rmtree(location)
+            do_init((None, "--batch"), write_config=False)
+        else:
+            print("INFO: Did not touch anything...")
 
 #    if sys.argv[-1] == 'build':
 #        output = parse_policy('policy/management.acl')
@@ -453,7 +488,6 @@ def main():
     args['debug'] = args.pop('--debug')
     cmd = args['<command>']
     cmd, help_flag = parse_args(cmd)
-    print_debug('main', args)
     if cmd == "task" and len(args['<args>']) > 0:
         cmd = "task_%s" % args['<args>'][0]
     # first parse commands in help context
