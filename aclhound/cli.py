@@ -377,7 +377,7 @@ overview of previous work")
         """
         Show unified diff between last commit and current state.
 
-        Usage: aclhound diff <filename> [(ios | asa | junos)]
+        Usage: aclhound diff <filename>
                aclhound diff all
 
         Arguments:
@@ -386,6 +386,23 @@ overview of previous work")
             generated.  When referring to a policy file, a vendor must be
             specified as well.
         """
+        print(args)
+
+    def build(self, args):
+        """
+        Show unified build between last commit and current state.
+
+        Usage: aclhound build <filename>
+               aclhound build all
+
+        Arguments:
+          <filename>
+            The policy or device file for which a unified build must be
+            generated.  When referring to a policy file, a vendor must be
+            specified as well.
+        """
+        if args['<filename>'] == "all":
+            print("building all networkconfigurations...")
 
     def reset(self, args):
         """
@@ -468,10 +485,12 @@ def main():
     cmd = args['<command>']
 
     help_flag = True if cmd == "help" else False
+
     # concat together words after the task subcommand, so the docopt
     # methodology can deal with it.
     if cmd == "task" and len(args['<args>']) > 0 and not help_flag:
         cmd = "task_%s" % args['<args>'][0]
+
     # first parse commands in help context
     if help_flag:
         # concat first and second argument to get real function name
@@ -485,12 +504,14 @@ def main():
             print(trim(do_init.__doc__))
             return
         docopt(__doc__, argv=['--help'])
-    # lookup function method for a given subcommand
+
     if hasattr(cli, cmd):
+        # lookup function method for a given subcommand
         method = getattr(cli, cmd)
-    # display help message if command not found in cli object
     else:
+        # display help message if command not found in cli object
         raise DocoptExit("Found no matching command, try 'aclhound help'")
+
     docstring = trim(getattr(cli, cmd).__doc__)
     if 'Usage: ' in docstring:
         args.update(docopt(docstring))
