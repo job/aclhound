@@ -61,9 +61,9 @@ def render(self, **kwargs):
                         if entry == u'any':
                             continue
                         else:
-                            line += "%s" % entry['icmp_type']
+                            line += str(entry['icmp_type'])
                             if entry['icmp_code']:
-                                line += entry['icmp_code']
+                                line += " " + str(entry['icmp_code'])
                     if line not in config_blob:
                         config_blob.append(line)
             # jump out of the loop because we have nothing to do with

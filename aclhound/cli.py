@@ -402,7 +402,8 @@ overview of previous work")
         if args['<filename>'] == "all":
             print("building all networkconfigurations...")
         else:
-            print(parse_policy(args['<filename>'], self._settings))
+            filename = args['<filename>'].encode('ascii', 'ignore')
+            print(parse_policy(filename, settings=self._settings))
 
     def reset(self, args):
         """

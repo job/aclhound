@@ -55,17 +55,20 @@ class grammarSemantics(object):
     def icmp_expr(self, ast):
         return ast
 
-    def icmp_parameter(self, ast):
+    def icmp_code(self, ast):
+        return ast
+
+    def icmp_number(self, ast):
         if 0 <= int(ast) < 255:
             return int(ast)
         else:
             raise FailedSemantics('ICMP code/type must be between 0 and 255')
 
-    def icmp_terms(self, ast):
-        return ast
-
     def icmp_term(self, ast):
-        if u'include' in ast:
+        if ast == u'any':
+            return {u'icmp_code': u'any', u'include': None,
+                    u'icmp_type': u'any'}
+        if ast[u'include']:
             icmp_p = []
             includes = []
             object_name = 'objects/%s.icmp' % ast['include']
@@ -84,10 +87,9 @@ class grammarSemantics(object):
                             includes.append(include_name)
                     else:
                         icmp_p.append(line.split('#')[0].strip())
-            icmp = "\n".join(set(icmp_p))
-            p = grammarParser(parseinfo=False, trace=True,
-                              semantics=grammarSemantics())
-            ast = p.parse(icmp, 'icmp_terms')
+            icmp_types = "\n".join(set(icmp_p))
+            p = grammarParser(parseinfo=False, semantics=grammarSemantics())
+            ast = p.parse(icmp_types, 'icmp_term')
         return ast
 
     def action_expr(self, ast):
@@ -129,7 +131,7 @@ class grammarSemantics(object):
 
     def endpoint_expr(self, ast):
         # allow recursion in host expressions
-        if u'include' in ast:
+        if ast[u'include']:
             hosts = []
             includes = []
             object_name = 'objects/%s.hosts' % ast['include']
@@ -162,7 +164,7 @@ class grammarSemantics(object):
         return ast
 
     def port_term(self, ast):
-        if u'include' in ast:
+        if ast[u'include']:
             ports = []
             includes = []
             object_name = 'objects/%s.ports' % ast['include']
@@ -207,9 +209,9 @@ class grammarSemantics(object):
         [u'1']
         [u'2', u'2', u'3', u'4']"""
         for atom in ast:
-            if 'single' in atom:
+            if atom['single']:
                 ports.append(int(atom['single']))
-            if 'range' in atom:
+            if atom['range']:
                 low, high = map(int, atom['range'])
                 ports = ports + range(low, high + 1)
         return list(set(ports))
