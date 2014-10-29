@@ -6,7 +6,7 @@ python:
 install:
   - pip install coveralls
   - sudo apt-get install jenkins
-  - python setup.py install
+  - sudo python setup.py install
   - sudo mv /etc/aclhound/aclhound.conf.dist /etc/aclhound/aclhound.conf
 
 script:
