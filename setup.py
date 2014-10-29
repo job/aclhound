@@ -54,12 +54,12 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 
 def get_data_files():
-    import shutil
     files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist'])]
-    #pwd = os.path.dirname(os.path.abspath(__file__))
     man_path = '/usr/share/man/man7'
     if os.getenv('TRAVIS_BUILD_ID'):
         print "not installing manpage in travis environment"
+        os.rename('/etc/aclhound/aclhound.conf.dist',
+                  '/etc/aclhound/aclhound.conf')
     elif os.path.exists(man_path):
         files += [(man_path, ['aclhound/doc/aclhound.7'])]
     return files

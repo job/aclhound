@@ -38,22 +38,20 @@ Subcommands, use 'aclhould help <subcommand>' to learn more:
 
     init        Initialise aclhound end-user configuration.
     fetch       Retrieve latest ACLHound policy from repository server.
-    start       Start working on a new proposed change.
-    diff-all    Compare all network configurations with the previous version.
-    diff        Compare a single file with the previous version.
-    submit      Push policy for review to repository server.
-    build-all   Compile all ACLHound policy into network configurations.
-    build       Compile a specific policy file into a network configuration.
-    status      Show in which task you are currently working
+    task        Manage change proposals (creation, submission, etc)
+    diff        Compare current working directory with the previous version.
+    build       Compile policy into network configuration.
 """
 
 from __future__ import print_function, division, absolute_import, \
     unicode_literals
 
 from docopt import docopt
+from docopt import DocoptExit
+from git import Repo
 from grako.exceptions import * # noqa
 from grako.parsing import * # noqa
-from subprocess import call
+from subprocess import call, Popen, PIPE, check_output
 
 import ConfigParser
 import os
@@ -126,14 +124,19 @@ class Settings(ConfigParser.ConfigParser):
         self.read([os.path.expanduser("~/.aclhound/client.conf")])
 
 
-def do_init():
+def do_init(args):
     """
     Initialise user-specific settings, ask the user for username on
     repository server, location to store aclhound policy, ask to make
     initial clone.
 
-    Usage: aclhound init
+    Usage: aclhound [-d] init [--batch]
+
+    Options:
+        --batch     Automatically guess all settings (non-interactive mode).
     """
+    if len(args) == 3:
+        batch = True if args[2] == "--batch" else False
 
     print("""Welcome to ACLHound!
 
@@ -143,17 +146,15 @@ file with a text editor.
 """)
 
     import getpass
-    suggested_username = getpass.getuser()
-    username = raw_input("Username on Gerrit server [%s]: "
-                         % suggested_username)
-    if not username:
-        username = suggested_username
+    username = getpass.getuser()
+    if not batch:
+        username = raw_input("Username on Gerrit server [%s]: "
+                             % username)
 
-    suggested_location = "~/aclhound"
-    location = raw_input("Location for ACLHound datafiles [%s]: "
-                         % suggested_location)
-    if not location:
-        location = suggested_location
+    location = "~/aclhound"
+    if not batch:
+        location = raw_input("Location for ACLHound datafiles [%s]: "
+                             % location)
     if not os.path.exists(os.path.expanduser("~/.aclhound")):
         os.mkdir(os.path.expanduser("~/.aclhound"), 0700)
     if not os.path.exists(os.path.expanduser(location)):
@@ -167,7 +168,10 @@ file with a text editor.
     config.set('user', 'location', location)
     config.write(cfgfile)
 
-    clone = raw_input("Make initial clone of repository data [y]: ")
+    if not batch:
+        clone = raw_input("Make initial clone of repository data [y]: ")
+    elif batch:
+        clone = 'y'
     if not clone or clone == 'y':
         cfg = Settings()
         os.chdir(os.path.expanduser(location))
@@ -210,12 +214,16 @@ file with a text editor.
 
 
 def run(cmd, return_channel=0):
-    print('INFO: executing: %s' % ' '.join(cmd))
-    ret = call(cmd)
-    if not ret == 0:
-        print("ERROR: executing '%s' failed." % ' '.join(cmd))
-        print('HINT: investigate manually')
-        sys.exit(2)
+    if return_channel == 0:
+        print('INFO: executing: %s' % ' '.join(cmd))
+        ret = call(cmd)
+        if not ret == 0:
+            print("ERROR: executing '%s' failed." % ' '.join(cmd))
+            print('HINT: investigate manually')
+            sys.exit(2)
+    elif return_channel == 1:
+        ret = check_output(cmd)
+        return ret
 
 
 class ACLHoundClient(object):
@@ -234,68 +242,112 @@ class ACLHoundClient(object):
             sys.exit(2)
         os.chdir(os.path.expanduser(self._settings.get('user', 'location')))
 
-    def status(self, args):
+    def task_status(self, args):
         """
-        Show status of current working directory.
+        Show status of current working directory and branch.
 
-        Usage: aclhound status
+        Usage: aclhound [-d] task status
         """
         run(['git', 'status', '--porcelain', '-b'], 1)
 
-    def submit(self, args):
+    def task_list(self, args):
         """
-        Submits changes for review.
+        Show list of all local branches
 
-        Usage: aclhound submit
-
-        The 'submit' command will perform the following steps:
-            * aclhound diff-all
-            * git add -A *
-            * git commit -a
-            * git review -v
+        Usage: aclhound [-d] task list
         """
-        self.diff_all(args)
+        run(['git', 'branch'])
+
+    def task(self, args):
+        """
+        Start, continue or submit a piece of work for review.
+
+        Usage: aclhound [-d] task list
+               aclhound [-d] task submit
+               aclhound [-d] task start <taskname>
+               aclhound [-d] task edit <taskname>
+               aclhound [-d] task status
+               aclhound [-d] task clean
+
+        Arguments:
+            list        List locally stored branches
+            submit      Submit current task for review
+            start       Create a new branch to work on a task
+            edit        Continue working on a task/branch
+            status      Show current task information
+            clean       Clean up old tasks (which have been merged)
+
+          <taskname>
+            Taskname refers to for example a JIRA ticket, or other reference by
+            which the change will be known in the review system.
+
+        See 'aclhound help task <action>' for more information.
+        """
+        pass
+
+    def task_submit(self, args=None):
+        """
+        Submit current piece of work (a task) for review to Gerrit.
+
+        Usage: aclhound task submit
+
+        Note:
+            This command will not work on the master branch.
+            Use 'aclhound task edit <taskname>' to switch to the work
+            you would like to submit.
+        """
+
+        repo = Repo(os.getcwd())
+        branch = repo.active_branch
+        if branch == "master":
+            print("ERROR: working on master branch, use \
+'aclhound task edit <taskname>' before submitting")
+            print("HINT: use 'aclhound task list' for an \
+overview of previous work")
+            sys.exit(2)
+#        self.diff_all(args)
         run(['git', 'add', '-A', '*'])
         run(['git', 'commit', '-a'])
         run(['git', 'review'])
         print("INFO: submitted changes, returning to master branch")
         run(['git', 'checkout', 'master'])
 
-    def diff_all(self, args):
-        """
-        Show differences between last commit and current files.
-
-        Usage: aclhound diff-all
-        """
-        pass
-
-    def diff(self, args):
-        """
-        Show difference for single device or policy between last commit and current state
-
-        Usage: aclhound diff <filename> [(ios | asa | junos)]
-
-        Arguments:
-            <filename>
-                The policy or device file for which a unified diff must be generated.
-                When referring to a policy file, a vendor must be specified as well.
-        """
-
-    def start(self, args):
+    def task_start(self, args):
         """
         Start change process.
 
-        Usage: aclhound start <taskname>
+        Usage: aclhound [-d] task start <taskname>
 
         Arguments:
             <taskname>
-                Taskname refers to a JIRA ticket, or other reference by which the change
-                will be known in the review system.
+                Taskname refers to a JIRA ticket, or other reference by which
+                the change will be known in the review system.
         """
+        print(args)
         taskname = args['<taskname>']
         run(['git', 'checkout', '-b', taskname])
         print("INFO: You can now work on change %s" % taskname)
         print("INFO: When you are finished type 'aclhound submit'")
+
+    def task_clean(self, args):
+        """
+        Cleanup old tasks which have been accepted into the main repository.
+
+        Usage: aclhound [-d] task clean
+
+        Note:
+            'task clean' will only remove fully merged tasks.
+        """
+        p = run(['git', 'branch', '--color=never', '--merged'], 1)
+        counter = 0
+        for line in p.split('\n')[:-1]:
+            branch_name = line.replace('* ', '')
+            if branch_name == "master" or not branch_name:
+                continue
+            counter += 1
+            run(['git', 'branch', '-d', line.replace('* ', '')])
+        if not counter:
+            print("INFO: nothing to clean")
 
     def fetch(self, args):
         """
@@ -306,29 +358,22 @@ class ACLHoundClient(object):
         run(['git', 'checkout', 'master'])
         run(['git', 'remote', 'update'])
         run(['git', 'pull', '--rebase'])
+        run(['git', 'pull', '--all', '--prune'])
 
+    def diff(self, args):
+        """
+        Show unified diff between last commit and current state.
 
-#    print('assessing changes ... ')
-#    if sys.argv[-1] == 'init':
-#        print("""
-#git clone ssh://gerrit.ecg.so:29418/ecg-networking
-#cd ecg-networking
-#git review --setup -v
-#git checkout -B $project_name
-#git add files
-#git commit""")
-#        sys.exit()
-#
-#    if sys.argv[-1] == 'help':
-#        print("""
-#To submit a patchset for review do the following steps
-#* change files
-#* git add *
-#* git commit -a
-#* git-review -v
-#""")
-#        sys.exit()
-#
+        Usage: aclhound diff <filename> [(ios | asa | junos)]
+               aclhound diff all
+
+        Arguments:
+          <filename>
+            The policy or device file for which a unified diff must be
+            generated.  When referring to a policy file, a vendor must be
+            specified as well.
+        """
+
 #    if sys.argv[-1] == 'build':
 #        output = parse_policy('policy/management.acl')
 #        print(output)
@@ -337,7 +382,6 @@ class ACLHoundClient(object):
 #        f.write('\n')
 #        f.close()
 #        sys.exit(0)
-
 
 
 def trim(docstring):
@@ -373,19 +417,23 @@ def trim(docstring):
 
 
 def parse_args(cmd):
-    """
-    Parses command-line args applying shortcuts and looking for help flags.
-    """
     if cmd == 'help':
-        cmd = sys.argv[-1]
+        try:
+            cmd = sys.argv[sys.argv.index(cmd) + 1]
+        except IndexError:
+            cmd = sys.argv[-1]
         help_flag = True
     else:
-        cmd = sys.argv[1]
         help_flag = False
-    # convert - to _
-    if '-' in cmd:
-        cmd = '_'.join(cmd.split(':'))
     return cmd, help_flag
+
+
+def print_debug(func, *args):
+    print('in function %s():' % func)
+    from pprint import pprint
+    for arg in args:
+        pprint(arg)
+    print('-----')
 
 
 def main():
@@ -396,27 +444,33 @@ def main():
 
     try:
         if sys.argv[1] == "init":
-            do_init()
+            do_init(sys.argv)
             sys.exit(0)
     except IndexError:
         pass
     cli = ACLHoundClient()
     args = docopt(__doc__, version=aclhound.__version__, options_first=True)
+    args['debug'] = args.pop('--debug')
     cmd = args['<command>']
     cmd, help_flag = parse_args(cmd)
-    # print help when asked
+    print_debug('main', args)
+    if cmd == "task" and len(args['<args>']) > 0:
+        cmd = "task_%s" % args['<args>'][0]
+    # first parse commands in help context
     if help_flag:
         if cmd != 'help' and cmd in dir(cli):
             print(trim(getattr(cli, cmd).__doc__))
             return
-        if cmd == "init":
+        elif cmd == "init":
             print(trim(do_init.__doc__))
             return
         docopt(__doc__, argv=['--help'])
+    # try parse global commands
     if hasattr(cli, cmd):
         method = getattr(cli, cmd)
+    # else give up
     else:
-        raise DocoptExit('Found no matching command, try `aclhound help`')
+        raise DocoptExit("Found no matching command, try 'aclhound help'")
     docstring = trim(getattr(cli, cmd).__doc__)
     if 'Usage: ' in docstring:
         args.update(docopt(docstring))
