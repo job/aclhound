@@ -58,8 +58,6 @@ def get_data_files():
     man_path = '/usr/share/man/man7'
     if os.getenv('TRAVIS_BUILD_ID'):
         print "not installing manpage in travis environment"
-        os.rename('/etc/aclhound/aclhound.conf.dist',
-                  '/etc/aclhound/aclhound.conf')
     elif os.path.exists(man_path):
         files += [(man_path, ['aclhound/doc/aclhound.7'])]
     return files
