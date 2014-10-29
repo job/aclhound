@@ -9,33 +9,17 @@
 
 - add the concept of a 'hack' (manual non-compiled ACL, useful for migrations)
 
-- add /etc/aclhound.conf and ~/.aclhound.conf files parsing
 
 - add IOS support (should be almost same as ASA)
 
 - add Juniper support (comes after all other features are done)
 
-aclhound init
-    - check if /etc/aclhound.conf exists, take defaults from there
-    - ask where to store aclhound files, suggest ~/aclhound
-
-aclhound build-all [ directory ]
-    - if no dir specified:
-        - create temp dir, compile all configs, store them there
-    - compile all configs, store them in directory
 
 aclhound build <file> [ vendor ]
     - file can be either a device file or a policy file
     - if policy file:
         - require vendor 
     - print to stdout
-
-aclhould diff-all
-    - branch to previous commit
-    - compile all, dump in tmpdir/b
-    - checkout head again
-    - compile all, dump in tmpdir/b
-    - produce unified diff and run through ${PAGER}
 
 aclhound diff <file> [ vendor ]
     - branch to previous commit
@@ -44,13 +28,19 @@ aclhound diff <file> [ vendor ]
     - compile file
     - produce unified diff
 
-aclhound fetch
-    - git pull & rebase
-
 aclhound submit
     - do diff-all
-    - git-review
+    - [x] git-review
 
 aclhound force-deploy
     - warn that the reviewed version will be pushed, not the local version
     - trigger jenkins job
+
+[x] add /etc/aclhound.conf and ~/.aclhound.conf files parsing
+
+[x] aclhound init
+    - check if /etc/aclhound.conf exists, take defaults from there
+    - ask where to store aclhound files, suggest ~/aclhound
+    
+[x] aclhound fetch
+    - git pull & rebase

@@ -256,7 +256,7 @@ class ACLHoundClient(object):
         branch = repo.active_branch
         if branch == "master":
             print("INFO: you are currently in the master copy of the policy repository")
-            print("HINT: use 'aclhound task (start | edit) <taskname> for changes")
+            print("HINT: use 'aclhound task (start | edit) <taskname>' for changes")
         else:
             print("INFO: you are currently working on task: %s" % branch)
             print
@@ -399,8 +399,8 @@ overview of previous work")
         """
 
         location = os.path.expanduser(self._settings.get('user', 'location'))
-        confirm = raw_input("Do you want to destroy all local work (%s) and start over? [y]" \
-                            % location) or "y"
+        confirm = raw_input("Do you want to destroy all local work (%s) and start over? [yn] " \
+                            % location)
         if confirm == "y":
             import shutil
             os.chdir(os.path.expanduser('~'))
@@ -408,15 +408,6 @@ overview of previous work")
             do_init((None, "--batch"), write_config=False)
         else:
             print("INFO: Did not touch anything...")
-
-#    if sys.argv[-1] == 'build':
-#        output = parse_policy('policy/management.acl')
-#        print(output)
-#        f = open('/opt/firewall-configs/testasa.asa', 'w')
-#        f.write(output)
-#        f.write('\n')
-#        f.close()
-#        sys.exit(0)
 
 
 def trim(docstring):
@@ -451,18 +442,6 @@ def trim(docstring):
     return '\n'.join(trimmed)
 
 
-def parse_args(cmd):
-    if cmd == 'help':
-        try:
-            cmd = sys.argv[sys.argv.index(cmd) + 1]
-        except IndexError:
-            cmd = sys.argv[-1]
-        help_flag = True
-    else:
-        help_flag = False
-    return cmd, help_flag
-
-
 def print_debug(func, *args):
     print('in function %s():' % func)
     from pprint import pprint
@@ -487,22 +466,29 @@ def main():
     args = docopt(__doc__, version=aclhound.__version__, options_first=True)
     args['debug'] = args.pop('--debug')
     cmd = args['<command>']
-    cmd, help_flag = parse_args(cmd)
-    if cmd == "task" and len(args['<args>']) > 0:
+
+    help_flag = True if cmd == "help" else False
+    # concat together words after the task subcommand, so the docopt
+    # methodology can deal with it.
+    if cmd == "task" and len(args['<args>']) > 0 and not help_flag:
         cmd = "task_%s" % args['<args>'][0]
     # first parse commands in help context
     if help_flag:
-        if cmd != 'help' and cmd in dir(cli):
+        # concat first and second argument to get real function name
+        cmd = "_".join(args['<args>'][0:2])
+        # see if command is a function in the cli object
+        if cmd in dir(cli):
             print(trim(getattr(cli, cmd).__doc__))
             return
+        # init is special because we don't want to depend on _settings
         elif cmd == "init":
             print(trim(do_init.__doc__))
             return
         docopt(__doc__, argv=['--help'])
-    # try parse global commands
+    # lookup function method for a given subcommand
     if hasattr(cli, cmd):
         method = getattr(cli, cmd)
-    # else give up
+    # display help message if command not found in cli object
     else:
         raise DocoptExit("Found no matching command, try 'aclhound help'")
     docstring = trim(getattr(cli, cmd).__doc__)
