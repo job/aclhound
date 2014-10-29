@@ -24,7 +24,8 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF TH
 
-version = "1.1"
+import aclhound
+version = aclhound.__version__
 
 import codecs
 import os
@@ -35,9 +36,6 @@ from setuptools import setup, find_packages
 from os.path import abspath, dirname, join
 
 here = abspath(dirname(__file__))
-
-# determine the python version
-IS_PYPY = hasattr(sys, 'pypy_version_info')
 
 with codecs.open(join(here, 'README.md'), encoding='utf-8') as f:
     README = f.read()

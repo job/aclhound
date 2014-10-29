@@ -66,7 +66,23 @@ from aclhound.render import Render
 
 def parse_policy(filename, startrule='start', trace=True, whitespace=None,
                  settings=None):
+    """
+    Open a file, run it through the parser, recurse if needed
+    """
+    safe_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                    'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+                    'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                    '-', '_']
 
+    def check_name(filename):
+        name = os.path.basename(filename)
+        for letter in name:
+            if not letter in safe_letters:
+                print("ERROR: invalid policy filename: %s" % name)
+                sys.exit(2)
+        return name
+
+    policy_name = check_name(filename)
     seen = [filename]
 
     def walk_file(filename, seen=[], policy=[]):
@@ -75,6 +91,7 @@ def parse_policy(filename, startrule='start', trace=True, whitespace=None,
         except IOError:
             print("filename %s referenced in %s does not exist"
                   % (filename, seen[-1]))
+            print("HINT: ensure you are in your ACLHound data directory")
             sys.exit()
         for line in f:
             if line.startswith('@'):
@@ -88,7 +105,7 @@ def parse_policy(filename, startrule='start', trace=True, whitespace=None,
         return policy
 
     parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
-    acl = Render(name="test")
+    acl = Render(name=policy_name)
     for line in walk_file(filename, seen):
         ast = parser.parse(line, startrule)
         acl.add(ast)
@@ -385,6 +402,8 @@ overview of previous work")
           <filename>
             The policy or device file for which a unified diff must be
             generated.
+
+        Note: please ensure you run 'diff' inside your ACLHound data directory
         """
         print(args)
 
@@ -398,7 +417,10 @@ overview of previous work")
         Arguments:
           <filename>
             The device file for which a network config must be generated.
+
+        Note: please ensure you run 'build' inside your ACLHound data directory
         """
+
         if args['<filename>'] == "all":
             print("building all networkconfigurations...")
         else:

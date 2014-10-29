@@ -30,7 +30,9 @@ import json
 import ipaddr
 import itertools
 
-from targets import ciscoasa
+from targets import asa
+from targets import ios
+from targets import junos
 
 now = datetime.date.today()
 now_stamp = int(now.strftime('%Y%M%d'))
@@ -41,15 +43,13 @@ def compress_ports_to_range(ports):
         b = list(b)
         yield b[0][1], b[-1][1]
 
+
 class Render():
 
     def __init__(self, name=None, **kwargs):
         self.data = []
         self.name = name
-#[AST({u'comment': u' magic server', u'protocol': u'tcp', u'destination':
-#      AST({u'l4': AST({u'ports': [45]}), u'l3': AST({u'ip': [u'1.2.3.4']})}),
-#      u'source': AST({u'l4': {'ports': ['any']}, u'l3': AST({u'ip':
-#    [u'any']})}), u'state': None, u'expire': None, u'action': u'deny'})]
+
     def add(self, ast):
         # only add policy to object if it is not expired
         expire = ast[0]['expire']
@@ -70,13 +70,13 @@ class Render():
         return getattr(self, 'output_' + vendor)(*largs, **kwargs)
 
     def output_ciscoios(self, **kwargs):
-        return ciscoios.render(self, **kwargs)
+        return ios.render(self, **kwargs)
 
     def output_ciscoasa(self, **kwargs):
-        return ciscoasa.render(self, **kwargs)
+        return asa.render(self, **kwargs)
 
     def output_juniper(self, **kwargs):
-        return juniper.render(self, **kwargs)
+        return junos.render(self, **kwargs)
 
     def __str__(self):
         return '\n'.join(self.output(vendor=self.vendor, family=self.family))
