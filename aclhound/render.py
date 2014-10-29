@@ -42,6 +42,7 @@ def compress_ports_to_range(ports):
         yield b[0][1], b[-1][1]
 
 class Render():
+
     def __init__(self, name=None, **kwargs):
         self.data = []
         self.name = name

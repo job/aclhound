@@ -64,13 +64,14 @@ from aclhound.parser import grammarParser
 from aclhound.render import Render
 
 
-def parse_policy(filename, startrule='start', trace=False, whitespace=None):
+def parse_policy(filename, startrule='start', trace=True, whitespace=None,
+                 settings=None):
 
     seen = [filename]
 
     def walk_file(filename, seen=[], policy=[]):
         try:
-            f = open(os.path.join(filename)).read().splitlines()
+            f = open(filename).read().splitlines()
         except IOError:
             print("filename %s referenced in %s does not exist"
                   % (filename, seen[-1]))
@@ -364,7 +365,7 @@ overview of previous work")
 
     def fetch(self, args):
         """
-        Retrieve latest changes from the repository server.
+        Retrieve latest changes in 'master' from the repository server.
 
         Usage: aclhound fetch
         """
@@ -383,8 +384,7 @@ overview of previous work")
         Arguments:
           <filename>
             The policy or device file for which a unified diff must be
-            generated.  When referring to a policy file, a vendor must be
-            specified as well.
+            generated.
         """
         print(args)
 
@@ -397,12 +397,12 @@ overview of previous work")
 
         Arguments:
           <filename>
-            The policy or device file for which a unified build must be
-            generated.  When referring to a policy file, a vendor must be
-            specified as well.
+            The device file for which a network config must be generated.
         """
         if args['<filename>'] == "all":
             print("building all networkconfigurations...")
+        else:
+            print(parse_policy(args['<filename>'], self._settings))
 
     def reset(self, args):
         """
