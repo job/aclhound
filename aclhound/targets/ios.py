@@ -37,9 +37,17 @@ def render(self, **kwargs):
     config_blob = []
 
     if afi == 4:
-        config_blob.append("ip access-list extended %s" % self.name)
+        config_blob.append("ip access-list extended %s-v4" % self.name)
     if afi == 6:
-        config_blob.append("ipv6 access-list extended %s" % self.name)
+        config_blob.append("ipv6 access-list %s-v6" % self.name)
+
+    def afi_match(host):
+        if host == "any":
+            return True
+        elif IPNetwork(host).version == afi:
+            return True
+        else:
+            return False
 
     for rule in policy:
         rule = rule[0]
@@ -55,14 +63,10 @@ def render(self, **kwargs):
             # cycle through all ICMP related elements in the AST
             for entry in policy:
                 for s_host in s_hosts:
-                    if s_host == "any":
-                        pass
-                    elif not IPNetwork(s_host).version == afi:
+                    if not afi_match(s_host):
                         continue
                     for d_host in d_hosts:
-                        if s_host == "any":
-                            pass
-                        elif not IPNetwork(s_host).version == afi:
+                        if not afi_match(d_host):
                             continue
                         if rule['action'] == "allow":
                             action = "permit"
@@ -70,12 +74,12 @@ def render(self, **kwargs):
                             action = "deny"
                         line = "%s icmp " % action
                         line += "%s %s " % (s_host, d_host)
-                        if entry == u'any':
+                        if entry == "any":
                             continue
                         else:
-                            line += str(entry['icmp_type'])
-                            if entry['icmp_code']:
-                                line += " " + str(entry['icmp_code'])
+                            for el in ['icmp_type', 'icmp_code']:
+                                if not str(entry[el]) == "any":
+                                    line += str(entry[el])
                     if line not in config_blob:
                         config_blob.append(line)
             # jump out of the loop because we have nothing to do with
@@ -89,14 +93,10 @@ def render(self, **kwargs):
         for s_port in s_ports:
             for d_port in d_ports:
                 for s_host in s_hosts:
-                    if s_host == "any":
-                        pass
-                    elif not IPNetwork(s_host) == afi:
+                    if not afi_match(s_host):
                         continue
                     for d_host in d_hosts:
-                        if s_host == "any":
-                            pass
-                        elif not IPNetwork(s_host) == afi:
+                        if not afi_match(d_host):
                             continue
                         if rule['action'] == "allow":
                             action = "permit "
@@ -105,24 +105,24 @@ def render(self, **kwargs):
                         line = action
                         line += rule['protocol'] + " "
 
-                        if s_host == u'any':
+                        if s_host == "any":
                             line += "any "
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
-                            line += "host %s " % s_host
+                            line += "host %s " % s_host.split('/')[0]
                         else:
                             line += s_host + " "
 
-                        if s_port != u"any":
+                        if not s_port == "any":
                             line += str(s_port) + " "
 
-                        if d_host == u'any':
+                        if d_host == "any":
                             line += "any "
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
-                            line += "host %s " % d_host
+                            line += "host %s " % d_host.split('/')[0]
                         else:
                             line += d_host + " "
 
-                        if d_port != u"any":
+                        if not d_port == "any":
                             line += "eq %s" % str(d_port)
 
                         if line not in config_blob:
