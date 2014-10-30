@@ -69,8 +69,10 @@ def render(self, **kwargs):
                         else:
                             action = "deny"
                         extended = "extended " if afi == 4 else ""
-                        line = "access-list %s %s%s icmp " \
-                            % (self.name + "-v%s" % afi, extended, action)
+                        yes_v6 = "ipv6 " if afi == 6 else ""
+                        line = "%saccess-list %s %s%s icmp " \
+                            % (yes_v6, self.name + "-v%s" % afi,
+                               extended, action)
                         line += "%s %s " % (s_host, d_host)
                         if entry == "any":
                             continue
@@ -97,8 +99,9 @@ def render(self, **kwargs):
                         if not afi_match(d_host):
                             continue
                         extended = "extended " if afi == 4 else ""
-                        line = "access-list %s %s" \
-                            % (self.name + "-v%s" % afi, extended)
+                        yes_v6 = "ipv6 " if afi == 6 else ""
+                        line = "%saccess-list %s %s" \
+                            % (yes_v6, self.name + "-v%s" % afi, extended)
                         if rule['action'] == "allow":
                             action = "permit "
                         else:
