@@ -397,33 +397,51 @@ overview of previous work")
         Deploy a compiled version of the ACLs on a network device
 
         Usage: aclhound deploy <devicename>
+               aclhound deploy all
 
         Arguments:
           <devicename>
             Hostname of the device on which the generated ACLs must be
             deployed.
 
+         all
+            ACLHound will take all device files from devices/ (except
+            filenames with a '.ignore' suffix), compile the policy and
+            upload the policies to the device. "all" is suitable for cron or
+            jenkins.
+
         Note: please ensure you run 'deploy' inside your ACLHound data directory
         """
-        filename = args['<devicename>'].encode('ascii', 'ignore')
-        acls = {}
-        hostname = os.path.basename(filename)
-        with open(filename, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line.split(' ')[0] == "vendor":
-                    vendor = line.split(' ')[1]
-                elif line.split(' ')[0] == "include":
-                    polname = line.split(' ')[1]
-                    for afi in [4, 6]:
-                        name = "%s-v%s" % (polname, afi)
-                        policy = generate_policy(vendor=vendor,
-                                                 filename=polname, afi=afi)
-                        acls[name] = {"afi": afi,
-                                      "name": name,
-                                      "policy": policy}
-        a = Deploy(hostname=hostname, vendor=vendor, acls=acls)
-        print(a.deploy())
+        if args['all'] == true:
+            import glob
+            device_list = glob.glob('devices/*') - glob.glob('devices/*.ignore')
+        else:
+            devices_list = [args['<devicename>'].encode('ascii', 'ignore')]
+
+        def do_deploy(filename):
+            print("INFO: deploying %s" % filename)
+            acls = {}
+            hostname = os.path.basename(filename)
+            with open(filename, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.split(' ')[0] == "vendor":
+                        vendor = line.split(' ')[1]
+                    elif line.split(' ')[0] == "include":
+                        polname = line.split(' ')[1]
+                        for afi in [4, 6]:
+                            name = "%s-v%s" % (polname, afi)
+                            policy = generate_policy(vendor=vendor,
+                                                     filename=polname,
+                                                     afi=afi)
+                            acls[name] = {"afi": afi,
+                                          "name": name,
+                                          "policy": policy}
+            a = Deploy(hostname=hostname, vendor=vendor, acls=acls)
+            print(a.deploy())
+
+        for dev in devices_list:
+            do_deploy(dev)
 
     def reset(self, args):
         """
