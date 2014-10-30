@@ -1,49 +1,28 @@
-- add grouping of port ranges in efficient way
+Features to be delivered:
 
-- add greater/then lesser/then to the language
+    (language / parser / render)
+    - add grouping of port ranges in efficient way
+    - add greater/then lesser/then to the language
+    - add 'log' (disable not needed, just comment out the policy line)
 
-- add 'log' (disable not needed, just comment out the policy line)
+    (general)
+    - add the concept of a 'hack' (manual non-compiled ACL, useful for migrations)
 
-- 1 input policy will generate two ACLs, one for IPv4 and one for IPv6
-    * in config decide what the v4 or v6 suffix/prefix is
+    (devices)
+    - add Juniper support (comes after all other features are done)
 
-- add the concept of a 'hack' (manual non-compiled ACL, useful for migrations)
+Subcommands to be created:
 
+    aclhound diff <file> [ vendor ]
+        - branch to previous commit
+        - compile for file (if device just proceed, if policy require vendor)
+        - checkout head again
+        - compile file
+        - produce unified diff
 
-- add IOS support (should be almost same as ASA)
-
-- add Juniper support (comes after all other features are done)
-
-
-aclhound build <file> [ vendor ]
-    - file can be either a device file or a policy file
-    - if policy file:
-        - require vendor 
-    - print to stdout
-
-aclhound diff <file> [ vendor ]
-    - branch to previous commit
-    - compile for file (if device just proceed, if policy require vendor)
-    - checkout head again
-    - compile file
-    - produce unified diff
-
-aclhound submit
-    - do diff-all
-    - [x] git-review
-
-aclhound force-deploy
-    - warn that the reviewed version will be pushed, not the local version
-    - trigger jenkins job
-
-[x] add /etc/aclhound.conf and ~/.aclhound.conf files parsing
-
-[x] aclhound init
-    - check if /etc/aclhound.conf exists, take defaults from there
-    - ask where to store aclhound files, suggest ~/aclhound
-    
-[x] aclhound fetch
-    - git pull & rebase
+    'aclhound submit' extension
+        - [ ] do diff-all
+        - [x] git-review
 
 NOTES:
 

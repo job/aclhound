@@ -28,7 +28,7 @@
 import sys
 
 from targets import deploy_ios
-#from targets import deploy_asa
+from targets import deploy_asa
 #from targets import deploy_junos
 
 
@@ -48,8 +48,9 @@ class Deploy():
         return deploy_ios.deploy(hostname=self.hostname,
                                  acls=self.acls)
 
-#    def deploy_asa(self, **kwargs):
-#        return asa.deploy(self)
-#
+    def deploy_asa(self):
+        return deploy_asa.deploy(hostname=self.hostname,
+                                 acls=self.acls)
+# TODO add juniper support
 #    def deploy_junos(self, **kwargs):
 #        return junos.deploy(self, **kwargs)

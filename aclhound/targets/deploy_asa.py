@@ -26,7 +26,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 """
-Upload ACLs to Cisco IOS devices
+Upload ACLs to Cisco ASA devices
+
+WARNING: this does not work on ASA 9.1.2 or higher
 
 The following process is followed to ensure zero impact
 

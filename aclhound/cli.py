@@ -381,13 +381,13 @@ overview of previous work")
                     polname = line.split(' ')[1]
                     print(polname)
                     print("IPv4:")
-                    for line in generate_policy(polname, afi=4, vendor=vendor,
-                                                settings=self._settings).split('\n'):
+                    for line in generate_policy(polname, afi=4,
+                                                vendor=vendor).split('\n'):
                         print("   %s" % line)
                     print("---------")
                     print("IPv6:")
-                    for line in generate_policy(polname, afi=6, vendor=vendor,
-                                                settings=self._settings).split('\n'):
+                    for line in generate_policy(polname, afi=6,
+                                                vendor=vendor).split('\n'):
                         print("   %s" % line)
 
     def deploy(self, args):
