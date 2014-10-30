@@ -104,8 +104,10 @@ def render(self, **kwargs):
                         else:
                             action = "deny "
                         line = action
-                        line += rule['protocol'] + " "
-
+                        if rule['protocol'] == "any":
+                            line += "ip " if afi == 4 else "ipv6 "
+                        else:
+                            line += rule['protocol'] + " "
                         if s_host == "any":
                             line += "any "
                         elif IPNetwork(s_host).prefixlen in [32, 128]:

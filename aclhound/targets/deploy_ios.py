@@ -161,7 +161,8 @@ Start
                                              "dir": "out"})
     print("INFO: interface / policy mapping:")
     pprint(map_pol_int)
-    for pol in acls:
+
+    def lock_step(lock, pol):
         name = acls[pol]['name']
         afi = acls[pol]['afi']
         policy = acls[pol]['policy']
@@ -169,31 +170,50 @@ Start
         s(conn, 'configure terminal')
         if afi == 4:
             try:
-                s(conn, "no ip access-list extended LOCKSTEP-%s" % name)
+                s(conn, "no ip access-list extended %s%s" % (lock, name))
             except:
                 pass
-            s(conn, "ip access-list extended LOCKSTEP-%s" % name)
+            s(conn, "ip access-list extended %s%s" % (lock, name))
             for line in policy.split('\n'):
                 s(conn, line)
         if afi == 6:
             try:
-                s(conn, "no ipv6 access-list LOCKSTEP-%s" % name)
+                s(conn, "no ipv6 access-list %s%s" % (lock, name))
             except:
                 pass
-            s(conn, "ipv6 access-list LOCKSTEP-%s" % name)
+            s(conn, "ipv6 access-list %s%s" % (lock, name))
             for line in policy.split('\n'):
                 s(conn, line)
         s(conn, "end")
 
-        # replace ACL on all interfaces / VTYs
+        # then replace ACL on all interfaces / VTYs
         if name in map_pol_int:
             for entry in map_pol_int[name]:
+                if not entry['afi'] == afi:
+                    continue
                 print("INFO: lockstepping policy %s afi %s" % (name, afi))
                 s(conn, "configure terminal")
                 if entry['int'].startswith('vty '):
                     s(conn, "line %s" % entry['int'])
                     if afi == 4:
-                        s(conn, "access-class LOCKSTEP-%s %s" % (name, entry['dir']))
+                        s(conn, "access-class %s%s %s" % (lock, name, entry['dir']))
                     if afi == 6:
-                        s(conn, "ipv6 access-class LOCKSTEP-%s %s" % (name, entry['dir']))
-                    s(conn, "end")
+                        s(conn, "ipv6 access-class %s%s %s" % (lock, name, entry['dir']))
+                else:
+                    s(conn, "interface %s" % entry['int'])
+                    if afi == 4:
+                        s(conn, "ip access-group %s%s %s" % (lock, name, entry['dir']))
+                    if afi == 6:
+                        s(conn, "ipv6 traffic-filter %s%s %s" % (lock, name, entry['dir']))
+                s(conn, "end")
+
+    for pol in acls:
+        for lock in ["LOCKSTEP-", ""]:
+            lock_step(lock, pol)
+        # cleanup
+        s(conn, "configure terminal")
+        if acls[pol]['afi'] == 4:
+            s(conn, "no ip access-list extended LOCKSTEP-%s" % acls[pol]['name'])
+        if acls[pol]['afi'] == 6:
+            s(conn, "no ipv6 access-list LOCKSTEP-%s" % acls[pol]['name'])
+        s(conn, "end")
