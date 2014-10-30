@@ -65,14 +65,11 @@ from aclhound.render import Render
 
 
 def parse_policy(filename, startrule='start', trace=True, whitespace=None,
-                 settings=None):
+                 settings=None, afi=4):
     """
     Open a file, run it through the parser, recurse if needed
     """
-    safe_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-                    'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-                    'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                    '-', '_']
+    safe_letters = "abcdefghijklmnopqrstuvwxyz0123456789-_"
 
     def check_name(filename):
         name = os.path.basename(filename)
@@ -109,7 +106,7 @@ def parse_policy(filename, startrule='start', trace=True, whitespace=None,
     for line in walk_file(filename, seen):
         ast = parser.parse(line, startrule)
         acl.add(ast)
-    output = "\n".join(acl.output(vendor="ciscoasa"))
+    output = "\n".join(acl.output(vendor="ios", afi=afi))
     return output
 
 
@@ -425,7 +422,11 @@ overview of previous work")
             print("building all networkconfigurations...")
         else:
             filename = args['<filename>'].encode('ascii', 'ignore')
-            print(parse_policy(filename, settings=self._settings))
+            print("IPv4:")
+            print(parse_policy(filename, afi=4, settings=self._settings))
+            print("---")
+            print("IPv6:")
+            print(parse_policy(filename, afi=6, settings=self._settings))
 
     def reset(self, args):
         """

@@ -25,7 +25,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import ipaddr
+from ipaddr import IPNetwork
 from grako.contexts import Closure
 
 #FIXME figure out extended versus standard access-lists
@@ -33,13 +33,18 @@ from grako.contexts import Closure
 
 def render(self, **kwargs):
     policy = self.data
+    afi = kwargs['afi']
     config_blob = []
+
+    if afi == 4:
+        config_blob.append("ip access-list extended %s" % self.name)
+    if afi == 6:
+        config_blob.append("ipv6 access-list extended %s" % self.name)
 
     for rule in policy:
         rule = rule[0]
         s_hosts = rule['source']['l3']['ip']
         d_hosts = rule['destination']['l3']['ip']
-
         # deal with ICMP
         if "icmp" in rule['protocol']:
             policy = rule['protocol']['icmp']
@@ -50,13 +55,20 @@ def render(self, **kwargs):
             # cycle through all ICMP related elements in the AST
             for entry in policy:
                 for s_host in s_hosts:
+                    if s_host == "any":
+                        pass
+                    elif not IPNetwork(s_host).version == afi:
+                        continue
                     for d_host in d_hosts:
+                        if s_host == "any":
+                            pass
+                        elif not IPNetwork(s_host).version == afi:
+                            continue
                         if rule['action'] == "allow":
                             action = "permit"
                         else:
                             action = "deny"
-                        line = "access-list %s extended %s icmp " \
-                            % (self.name, action)
+                        line = "%s icmp " % action
                         line += "%s %s " % (s_host, d_host)
                         if entry == u'any':
                             continue
@@ -77,18 +89,25 @@ def render(self, **kwargs):
         for s_port in s_ports:
             for d_port in d_ports:
                 for s_host in s_hosts:
+                    if s_host == "any":
+                        pass
+                    elif not IPNetwork(s_host) == afi:
+                        continue
                     for d_host in d_hosts:
-                        line = "access-list %s extended " % self.name
+                        if s_host == "any":
+                            pass
+                        elif not IPNetwork(s_host) == afi:
+                            continue
                         if rule['action'] == "allow":
                             action = "permit "
                         else:
                             action = "deny "
-                        line += action
+                        line = action
                         line += rule['protocol'] + " "
 
                         if s_host == u'any':
                             line += "any "
-                        elif ipaddr.IPNetwork(s_host).prefixlen in [32, 128]:
+                        elif IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host
                         else:
                             line += s_host + " "
@@ -98,7 +117,7 @@ def render(self, **kwargs):
 
                         if d_host == u'any':
                             line += "any "
-                        elif ipaddr.IPNetwork(d_host).prefixlen in [32, 128]:
+                        elif IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host
                         else:
                             line += d_host + " "

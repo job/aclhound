@@ -44,3 +44,16 @@ aclhound force-deploy
     
 [x] aclhound fetch
     - git pull & rebase
+
+NOTES:
+
+    use http://packetpushers.net/cisco-configuration-archive-rollback-using-revert-instead-of-reload/ on IOS for confirm/rollback
+
+    ASA: 
+        - remove ACL from interfaces first
+        - Upload ACL
+            ( clear access-list ...
+              access-list derp derp )
+        - add ACL back to interfaces
+
+    http://www.gossamer-threads.com/lists/cisco/nsp/96410

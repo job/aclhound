@@ -63,20 +63,20 @@ class Render():
 
         self.data.append(ast)
 
-    def output(self, vendor=None, *largs, **kwargs):
+    def output(self, vendor=None, afi=None):
         if not vendor:
             print('This class needs a vendor to output data correctly')
             return False
-        return getattr(self, 'output_' + vendor)(*largs, **kwargs)
+        return getattr(self, 'output_' + vendor)(afi=afi)
 
-    def output_ciscoios(self, **kwargs):
+    def output_ios(self, **kwargs):
         return ios.render(self, **kwargs)
 
-    def output_ciscoasa(self, **kwargs):
+    def output_asa(self, **kwargs):
         return asa.render(self, **kwargs)
 
-    def output_juniper(self, **kwargs):
+    def output_junos(self, **kwargs):
         return junos.render(self, **kwargs)
 
-    def __str__(self):
-        return '\n'.join(self.output(vendor=self.vendor, family=self.family))
+#    def __str__(self):
+#        return '\n'.join(self.output(vendor=self.vendor, afi=self.afi))
