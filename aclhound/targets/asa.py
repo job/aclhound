@@ -33,6 +33,7 @@ from grako.contexts import Closure
 
 def render(self, **kwargs):
     policy = self.data
+    afi = kwargs['afi']
     config_blob = []
 
     for rule in policy:

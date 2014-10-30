@@ -31,15 +31,16 @@ from grako.contexts import Closure
 #FIXME figure out extended versus standard access-lists
 #FIXME deal with deny any any any which ASA compresses
 
+
 def render(self, **kwargs):
     policy = self.data
     afi = kwargs['afi']
     config_blob = []
 
-    if afi == 4:
-        config_blob.append("ip access-list extended %s-v4" % self.name)
-    if afi == 6:
-        config_blob.append("ipv6 access-list %s-v6" % self.name)
+#    if afi == 4:
+#        config_blob.append("ip access-list extended %s-v4" % self.name)
+#    if afi == 6:
+#        config_blob.append("ipv6 access-list %s-v6" % self.name)
 
     def afi_match(host):
         if host == "any":
@@ -127,4 +128,8 @@ def render(self, **kwargs):
 
                         if line not in config_blob:
                             config_blob.append(line)
+    if afi == 4:
+        config_blob.append('deny ip any any')
+    if afi == 6:
+        config_blob.append('deny any any')
     return config_blob

@@ -22,7 +22,8 @@
 # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF TH
+# ARISING IN ANY WAY OUT OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 """
 The ACLHound command-line client assists in ACL management.
@@ -40,7 +41,8 @@ Subcommands, use 'aclhould help <subcommand>' to learn more:
     fetch       Retrieve latest ACLHound policy from repository server.
     task        Manage change proposals (creation, submission, etc)
     diff        Compare current working directory with the previous version.
-    build       Compile policy into network configuration.
+    build       Compile policy into network configuration, output on STDOUT
+    deploy      Deploy compiled configuration to a network device
     reset       Delete aclhound directory and fetch copy from repository.
 """
 
@@ -59,55 +61,8 @@ import os
 import sys
 
 import aclhound
-from aclhound.aclsemantics import grammarSemantics
-from aclhound.parser import grammarParser
-from aclhound.render import Render
-
-
-def parse_policy(filename, startrule='start', trace=True, whitespace=None,
-                 settings=None, afi=4):
-    """
-    Open a file, run it through the parser, recurse if needed
-    """
-    safe_letters = "abcdefghijklmnopqrstuvwxyz0123456789-_"
-
-    def check_name(filename):
-        name = os.path.basename(filename)
-        for letter in name:
-            if not letter in safe_letters:
-                print("ERROR: invalid policy filename: %s" % name)
-                sys.exit(2)
-        return name
-
-    policy_name = check_name(filename)
-    seen = [filename]
-
-    def walk_file(filename, seen=[], policy=[]):
-        try:
-            f = open(filename).read().splitlines()
-        except IOError:
-            print("filename %s referenced in %s does not exist"
-                  % (filename, seen[-1]))
-            print("HINT: ensure you are in your ACLHound data directory")
-            sys.exit()
-        for line in f:
-            if line.startswith('@'):
-                filename = "policy/%s" \
-                    % line.split('#')[0][1:]
-                if filename not in seen:
-                    seen.append(filename)
-                    policy = policy + walk_file(filename, seen, policy)
-            elif line.startswith(('allow', 'deny')) and line not in policy:
-                policy.append(line)
-        return policy
-
-    parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
-    acl = Render(name=policy_name)
-    for line in walk_file(filename, seen):
-        ast = parser.parse(line, startrule)
-        acl.add(ast)
-    output = "\n".join(acl.output(vendor="ios", afi=afi))
-    return output
+from aclhound.deploy import Deploy
+from aclhound.generate import generate_policy
 
 
 class Settings(ConfigParser.ConfigParser):
@@ -408,25 +363,65 @@ overview of previous work")
         """
         Show unified build between last commit and current state.
 
-        Usage: aclhound build <filename>
-               aclhound build all
+        Usage: aclhound build <devicename>
 
         Arguments:
-          <filename>
+          <devicename>
             The device file for which a network config must be generated.
 
         Note: please ensure you run 'build' inside your ACLHound data directory
         """
+        filename = args['<devicename>'].encode('ascii', 'ignore')
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.split(' ')[0] == "vendor":
+                    vendor = line.split(' ')[1]
+                elif line.split(' ')[0] == "include":
+                    polname = line.split(' ')[1]
+                    print(polname)
+                    print("IPv4:")
+                    for line in generate_policy(polname, afi=4, vendor=vendor,
+                                                settings=self._settings).split('\n'):
+                        print("   %s" % line)
+                    print("---------")
+                    print("IPv6:")
+                    for line in generate_policy(polname, afi=6, vendor=vendor,
+                                                settings=self._settings).split('\n'):
+                        print("   %s" % line)
 
-        if args['<filename>'] == "all":
-            print("building all networkconfigurations...")
-        else:
-            filename = args['<filename>'].encode('ascii', 'ignore')
-            print("IPv4:")
-            print(parse_policy(filename, afi=4, settings=self._settings))
-            print("---")
-            print("IPv6:")
-            print(parse_policy(filename, afi=6, settings=self._settings))
+    def deploy(self, args):
+        """
+        Deploy a compiled version of the ACLs on a network device
+
+        Usage: aclhound deploy <devicename>
+
+        Arguments:
+          <devicename>
+            Hostname of the device on which the generated ACLs must be
+            deployed.
+
+        Note: please ensure you run 'deploy' inside your ACLHound data directory
+        """
+        filename = args['<devicename>'].encode('ascii', 'ignore')
+        acls = {}
+        hostname = os.path.basename(filename)
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.split(' ')[0] == "vendor":
+                    vendor = line.split(' ')[1]
+                elif line.split(' ')[0] == "include":
+                    polname = line.split(' ')[1]
+                    for afi in [4, 6]:
+                        name = "%s-v%s" % (polname, afi)
+                        policy = generate_policy(vendor=vendor,
+                                                 filename=polname, afi=afi)
+                        acls[name] = {"afi": afi,
+                                      "name": name,
+                                      "policy": policy}
+        a = Deploy(hostname=hostname, vendor=vendor, acls=acls)
+        print(a.deploy())
 
     def reset(self, args):
         """
