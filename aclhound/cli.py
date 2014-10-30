@@ -404,7 +404,7 @@ overview of previous work")
             Hostname of the device on which the generated ACLs must be
             deployed.
 
-         all
+         <all>
             ACLHound will take all device files from devices/ (except
             filenames with a '.ignore' suffix), compile the policy and
             upload the policies to the device. "all" is suitable for cron or
@@ -412,9 +412,11 @@ overview of previous work")
 
         Note: please ensure you run 'deploy' inside your ACLHound data directory
         """
-        if args['all'] == true:
+
+        if args['<devicename>'] == "all":
             import glob
-            device_list = glob.glob('devices/*') - glob.glob('devices/*.ignore')
+            devices_list = set(glob.glob('devices/*')) - \
+                set(glob.glob('devices/*.ignore'))
         else:
             devices_list = [args['<devicename>'].encode('ascii', 'ignore')]
 
