@@ -5,11 +5,10 @@ python:
 
 install:
   - sudo pip install -U pip setuptools virtualenv
-  - sudo pip install coveralls
-  - sudo apt-get install jenkins
-  - sudo pip install -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript
-  - sudo pip install https://pypi.python.org/packages/source/g/git-review/git-review-1.24.tar.gz
-  - sudo python setup.py install
+  - pip install coveralls
+  - pip install -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript
+  - pip install https://pypi.python.org/packages/source/g/git-review/git-review-1.24.tar.gz
+  - python setup.py install
   - sudo mv /etc/aclhound/aclhound.conf.dist /etc/aclhound/aclhound.conf
 
 script:

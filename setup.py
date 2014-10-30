@@ -52,13 +52,13 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 
 def get_data_files():
-    files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist'])]
     man_path = '/usr/share/man/man7'
     if os.getenv('TRAVIS_BUILD_ID'):
-        print "not installing manpage in travis environment"
+        print "not installing manpage and conffile in travis environment"
     elif os.path.exists(man_path):
+        files = [('/etc/aclhound', ['aclhound/doc/aclhound.conf.dist'])]
         files += [(man_path, ['aclhound/doc/aclhound.7'])]
-    return files
+        return files
 
 setup(
     name='aclhound',
