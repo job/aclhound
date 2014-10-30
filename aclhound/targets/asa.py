@@ -25,7 +25,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import ipaddr
+from ipaddr import IPNetwork
 from grako.contexts import Closure
 
 #FIXME figure out extended versus standard access-lists
@@ -35,6 +35,14 @@ def render(self, **kwargs):
     policy = self.data
     afi = kwargs['afi']
     config_blob = []
+
+    def afi_match(host):
+        if host == "any":
+            return True
+        elif IPNetwork(host).version == afi:
+            return True
+        else:
+            return False
 
     for rule in policy:
         rule = rule[0]
@@ -51,20 +59,25 @@ def render(self, **kwargs):
             # cycle through all ICMP related elements in the AST
             for entry in policy:
                 for s_host in s_hosts:
+                    if not afi_match(s_host):
+                        continue
                     for d_host in d_hosts:
+                        if not afi_match(d_host):
+                            continue
                         if rule['action'] == "allow":
                             action = "permit"
                         else:
                             action = "deny"
-                        line = "access-list %s extended %s icmp " \
-                            % (self.name, action)
+                        extended = "extended " if afi == 4 else ""
+                        line = "access-list %s %s%s icmp " \
+                            % (self.name + "-v%s" % afi, extended, action)
                         line += "%s %s " % (s_host, d_host)
-                        if entry == u'any':
+                        if entry == "any":
                             continue
                         else:
-                            line += str(entry['icmp_type'])
-                            if entry['icmp_code']:
-                                line += " " + str(entry['icmp_code'])
+                            for el in ['icmp_type', 'icmp_code']:
+                                if not str(entry[el]) == "any":
+                                    line += str(entry[el])
                     if line not in config_blob:
                         config_blob.append(line)
             # jump out of the loop because we have nothing to do with
@@ -78,19 +91,28 @@ def render(self, **kwargs):
         for s_port in s_ports:
             for d_port in d_ports:
                 for s_host in s_hosts:
+                    if not afi_match(s_host):
+                        continue
                     for d_host in d_hosts:
-                        line = "access-list %s extended " % self.name
+                        if not afi_match(d_host):
+                            continue
+                        extended = "extended " if afi == 4 else ""
+                        line = "access-list %s %s" \
+                            % (self.name + "-v%s" % afi, extended)
                         if rule['action'] == "allow":
                             action = "permit "
                         else:
                             action = "deny "
                         line += action
-                        line += rule['protocol'] + " "
+                        if rule['protocol'] == "any":
+                            line += "ip "
+                        else:
+                            line += rule['protocol'] + " "
 
                         if s_host == u'any':
                             line += "any "
-                        elif ipaddr.IPNetwork(s_host).prefixlen in [32, 128]:
-                            line += "host %s " % s_host
+                        elif IPNetwork(s_host).prefixlen in [32, 128]:
+                            line += "host %s " % s_host.split('/')[0]
                         else:
                             line += s_host + " "
 
@@ -99,8 +121,8 @@ def render(self, **kwargs):
 
                         if d_host == u'any':
                             line += "any "
-                        elif ipaddr.IPNetwork(d_host).prefixlen in [32, 128]:
-                            line += "host %s " % d_host
+                        elif IPNetwork(d_host).prefixlen in [32, 128]:
+                            line += "host %s " % d_host.split('/')[0]
                         else:
                             line += d_host + " "
 
