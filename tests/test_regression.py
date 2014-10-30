@@ -82,7 +82,7 @@ class TestAclhound(unittest.TestCase):
         grammar_file = 'aclhound/doc/grammar.ebnf'
         grammar = open(grammar_file).read()
         from grako.parser import GrakoGrammarGenerator
-        parser = GrakoGrammarGenerator('aclhound', trace=True)
+        parser = GrakoGrammarGenerator('aclhound', trace=False)
         state = parser.parse(grammar, filename=None)
         self.assertTrue(state)
 
