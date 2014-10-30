@@ -4,8 +4,9 @@ python:
   - "2.7"
 
 install:
-  - pip install coveralls
+  - sudo pip install coveralls
   - sudo apt-get install jenkins
+  - sudo pip install -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript
   - sudo python setup.py install
   - sudo mv /etc/aclhound/aclhound.conf.dist /etc/aclhound/aclhound.conf
 
