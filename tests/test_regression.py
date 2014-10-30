@@ -38,43 +38,7 @@ from grako.exceptions import * # noqa
 from aclhound.parser import grammarParser
 from aclhound.aclsemantics import grammarSemantics
 from aclhound.render import Render
-
-
-def parse_examples(filename, startrule='start', trace=False, whitespace=None):
-    data_dir = join(dirname(realpath(__file__)), 'data')
-    os.chdir(data_dir)
-
-    seen = [filename]
-
-    def walk_file(filename, seen=[], policy=[]):
-        try:
-            f = open(join(data_dir, filename)).read().splitlines()
-        except IOError:
-            print("filename %s referenced in %s does not exist"
-                  % (filename, seen[-1]))
-            sys.exit()
-        for line in f:
-            if line.startswith('@'):
-                filename = "policy/%s" \
-                    % line.split('#')[0][1:]
-                if filename not in seen:
-                    seen.append(filename)
-                    policy = policy + walk_file(filename, seen, policy)
-            elif line.startswith(('allow', 'deny')) and line not in policy:
-                policy.append(line)
-        return policy
-
-    parser = grammarParser(parseinfo=False, semantics=grammarSemantics())
-    acl = Render(name="test")
-    for line in walk_file(filename, seen):
-        ast = parser.parse(line, startrule)
-        acl.add(ast)
-    output = "ASA:"
-    output += "\n".join(acl.output(vendor="asa"))
-    output += "IOS:"
-    output += "\n".join(acl.output(vendor="ios"))
-    print(output)
-    return True
+from aclhound.generate import generate_policy
 
 
 class TestAclhound(unittest.TestCase):
@@ -86,8 +50,9 @@ class TestAclhound(unittest.TestCase):
         state = parser.parse(grammar, filename=None)
         self.assertTrue(state)
 
-    def test_01__create_policies(self):
-        self.assertTrue(parse_examples('policy/generic_policy'))
+#    def test_01__asa_create_policies(self):
+#
+#        self.assertTrue(parse_examples('policy/generic_policy'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()
 #        self.assertTrue('radix.Radix' in str(type(tree)))
