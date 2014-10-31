@@ -135,7 +135,7 @@ Start
         # cleanup
         s(conn, "configure terminal")
         if acls[policy]['afi'] == 4:
-            s(conn, "clear configure access-list extended LOCKSTEP-%s"
+            s(conn, "clear configure access-list LOCKSTEP-%s"
               % acls[policy]['name'])
         if acls[policy]['afi'] == 6:
             s(conn, "clear configure ipv6 access-list LOCKSTEP-%s"
