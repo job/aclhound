@@ -391,6 +391,7 @@ overview of previous work")
             devices_list = [args['<devicename>'].encode('ascii', 'ignore')]
 
         def go_build(filename):
+            print("INFO: building configuration for %s" % filename)
             with open(filename, 'r') as f:
                 for line in f:
                     line = line.strip()
@@ -410,6 +411,8 @@ overview of previous work")
                         for line in generate_policy(polname, afi=6,
                                                     vendor=vendor).split('\n'):
                             print("   %s" % line)
+            print("")
+
         for device in devices_list:
             go_build(device)
 
