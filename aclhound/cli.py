@@ -145,7 +145,7 @@ environment. The settings can always be changed by editting the
         clone = 'y'
     if clone == 'y':
         cfg = Settings()
-        if cfg.get('general', 'local_only'):
+        if cfg.getboolean('general', 'local_only'):
             print("INFO: 'local_only' enabled in /etc/aclhound/aclhound.conf.")
             print("HINT: manually copy your data to %s"
                   % os.path.expanduser(location))
