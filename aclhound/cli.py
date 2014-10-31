@@ -390,7 +390,7 @@ overview of previous work")
         else:
             devices_list = [args['<devicename>'].encode('ascii', 'ignore')]
 
-        def go_build(devices_list):
+        def go_build(filename):
             with open(filename, 'r') as f:
                 for line in f:
                     line = line.strip()
@@ -410,7 +410,8 @@ overview of previous work")
                         for line in generate_policy(polname, afi=6,
                                                     vendor=vendor).split('\n'):
                             print("   %s" % line)
-        go_build(devices_list)
+        for device in devices_list:
+            go_build(device)
 
     def deploy(self, args):
         """
