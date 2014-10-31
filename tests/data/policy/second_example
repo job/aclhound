@@ -1,0 +1,1 @@
+deny any src 2000::/3 port any dst 3ffe::/16 port any # block to bogon space
