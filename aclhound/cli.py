@@ -331,7 +331,7 @@ overview of previous work")
         taskname = args['<taskname>']
         run(['git', 'checkout', '-b', taskname])
         print("INFO: You can now work on change %s" % taskname)
-        print("INFO: When you are finished type 'aclhound submit'")
+        print("INFO: When you are finished, type 'aclhound task submit'")
 
     def task_clean(self, args):
         """
