@@ -248,6 +248,21 @@ class ACLHoundClient(object):
         """
         run(['git', 'branch'])
 
+    def task_edit(self, args):
+        """
+        Switch to git branch to continue work
+
+        Usage: aclhound [-d] task list <taskname>
+
+        Arguments:
+          <taskname>
+            Name of the task you are working on.
+            Use 'aclhound task list' to see local tasks.
+
+        """
+        run(['git', 'checkout', args['<taskname>']])
+
+
     def task(self, args):
         """
         Start, continue or submit a piece of work for review.
