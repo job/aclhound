@@ -364,39 +364,53 @@ overview of previous work")
         Note: please ensure you run 'diff' inside your ACLHound data directory
         """
         print(args)
+        print("ERROR: 'diff' not implemented yet")
 
     def build(self, args):
         """
         Show unified build between last commit and current state.
 
         Usage: aclhound build <devicename>
+               aclhound build all
 
         Arguments:
           <devicename>
             The device file for which a network config must be generated.
 
+          <all>
+            Build all network policies into their respective vendor specific
+            representation. Useful as 'review' test in Jenkins.
+
         Note: please ensure you run 'build' inside your ACLHound data directory
         """
-        filename = args['<devicename>'].encode('ascii', 'ignore')
-        with open(filename, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line.split(' ')[0] == "vendor":
-                    vendor = line.split(' ')[1]
-                elif line.split(' ')[0] == "include":
-                    polname = line.split(' ')[1]
-                    print("")
-                    print("")
-                    print("Seed policy name: %s" % polname)
-                    print("   IPv4:")
-                    for line in generate_policy(polname, afi=4,
-                                                vendor=vendor).split('\n'):
-                        print("   %s" % line)
-                    print("     ---------")
-                    print("   IPv6:")
-                    for line in generate_policy(polname, afi=6,
-                                                vendor=vendor).split('\n'):
-                        print("   %s" % line)
+        if args['<devicename>'] == "all":
+            import glob
+            devices_list = set(glob.glob('devices/*')) - \
+                set(glob.glob('devices/*.ignore'))
+        else:
+            devices_list = [args['<devicename>'].encode('ascii', 'ignore')]
+
+        def go_build(devices_list):
+            with open(filename, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.split(' ')[0] == "vendor":
+                        vendor = line.split(' ')[1]
+                    elif line.split(' ')[0] == "include":
+                        polname = line.split(' ')[1]
+                        print("")
+                        print("")
+                        print("Seed policy name: %s" % polname)
+                        print("   IPv4:")
+                        for line in generate_policy(polname, afi=4,
+                                                    vendor=vendor).split('\n'):
+                            print("   %s" % line)
+                        print("     ---------")
+                        print("   IPv6:")
+                        for line in generate_policy(polname, afi=6,
+                                                    vendor=vendor).split('\n'):
+                            print("   %s" % line)
+        go_build(devices_list)
 
     def deploy(self, args):
         """
