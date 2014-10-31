@@ -110,6 +110,9 @@ Start
             except:
                 pass
             for line in policy.split('\n'):
+                if lock:
+                    line.replace("access-list %s " % name,
+                                 "access-list %s%s " % (lock, name))
                 s(conn, line)
         if afi == 6:
             try:
@@ -117,6 +120,9 @@ Start
             except:
                 pass
             for line in policy.split('\n'):
+                if lock:
+                    line.replace("access-list %s " % name,
+                                 "access-list %s%s " % (lock, name))
                 s(conn, line)
         s(conn, "end")
 
