@@ -252,7 +252,7 @@ class ACLHoundClient(object):
         """
         Switch to git branch to continue work
 
-        Usage: aclhound [-d] task list <taskname>
+        Usage: aclhound [-d] task edit <taskname>
 
         Arguments:
           <taskname>
