@@ -54,6 +54,8 @@ def render(self, **kwargs):
         rule = rule[0]
         s_hosts = rule['source']['l3']['ip']
         d_hosts = rule['destination']['l3']['ip']
+        logging = rule['keywords']['log']
+
         # deal with ICMP
         if "icmp" in rule['protocol']:
             policy = rule['protocol']['icmp']
@@ -75,14 +77,16 @@ def render(self, **kwargs):
                             action = "deny"
                         line = "%s icmp " % action
                         line += "%s %s " % (s_host, d_host)
-                        if entry == "any":
-                            continue
-                        else:
+
+                        if not entry == "any":
                             for el in ['icmp_type', 'icmp_code']:
                                 if not str(entry[el]) == "any":
                                     line += str(entry[el])
-                    if line not in config_blob:
-                        config_blob.append(line)
+                        if logging:
+                            line += " log"
+
+                        if line not in config_blob:
+                            config_blob.append(line)
             # jump out of the loop because we have nothing to do with
             # L4 when doing ICMP
             continue
