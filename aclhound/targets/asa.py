@@ -73,15 +73,35 @@ def render(self, **kwargs):
                         line = "%saccess-list %s %s%s icmp " \
                             % (yes_v6, self.name + "-v%s" % afi,
                                extended, action)
-                        line += "%s %s " % (s_host, d_host)
+
+                        if s_host == u'any':
+                            line += "any "
+                        elif IPNetwork(s_host).prefixlen in [32, 128]:
+                            line += "host %s " % s_host.split('/')[0]
+                        # IPv4 must be with netmask, IPv6 in CIDR notation
+                        elif afi == 4:
+                            line += "%s " % IPNetwork(s_host).with_netmask.replace('/', ' ')
+                        else:
+                            line += s_host + " "
+
+                        if d_host == u'any':
+                            line += "any "
+                        elif IPNetwork(d_host).prefixlen in [32, 128]:
+                            line += "host %s " % d_host.split('/')[0]
+                        # IPv4 must be with netmask, IPv6 in CIDR notation
+                        elif afi == 4:
+                            line += "%s " % IPNetwork(d_host).with_netmask.replace('/', ' ')
+                        else:
+                            line += d_host + " "
+
                         if entry == "any":
                             continue
                         else:
                             for el in ['icmp_type', 'icmp_code']:
                                 if not str(entry[el]) == "any":
                                     line += str(entry[el])
-                    if line not in config_blob:
-                        config_blob.append(line)
+                        if line not in config_blob:
+                            config_blob.append(line)
             # jump out of the loop because we have nothing to do with
             # L4 when doing ICMP
             continue
@@ -116,6 +136,9 @@ def render(self, **kwargs):
                             line += "any "
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host.split('/')[0]
+                        # IPv4 must be with netmask, IPv6 in CIDR notation
+                        elif afi == 4:
+                            line += "%s " % IPNetwork(s_host).with_netmask.replace('/', ' ')
                         else:
                             line += s_host + " "
 
@@ -126,6 +149,9 @@ def render(self, **kwargs):
                             line += "any "
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host.split('/')[0]
+                        # IPv4 must be with netmask, IPv6 in CIDR notation
+                        elif afi == 4:
+                            line += "%s " % IPNetwork(d_host).with_netmask.replace('/', ' ')
                         else:
                             line += d_host + " "
 
