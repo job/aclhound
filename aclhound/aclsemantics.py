@@ -53,7 +53,10 @@ class grammarSemantics(object):
         return ast
 
     def log_expr(self, ast):
-        return ast
+        if ast == "log":
+            return True
+        else:
+            return False
 
     def expire_expr(self, ast):
         return ast
