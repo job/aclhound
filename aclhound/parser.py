@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 10, 29, 20, 57, 19, 2)
+__version__ = (2014, 11, 10, 16, 51, 18, 0)
 
 __all__ = [
     'grammarParser',
@@ -43,6 +43,53 @@ class grammarParser(Parser):
         self._check_eof()
 
     @graken()
+    def _options_(self):
+        with self._choice():
+            with self._option():
+                self._state_expr_()
+                self.ast['state'] = self.last_node
+            with self._option():
+                self._log_expr_()
+                self.ast['log'] = self.last_node
+            with self._option():
+                self._expire_expr_()
+                self.ast['expire'] = self.last_node
+            with self._option():
+                self._comment_expr_()
+                self.ast['comment'] = self.last_node
+            self._error('no available options')
+
+        self.ast._define(
+            ['state', 'log', 'expire', 'comment'],
+            []
+        )
+
+    @graken()
+    def _optional_keywords_(self):
+
+        def block0():
+            with self._choice():
+                with self._option():
+                    self._state_expr_()
+                    self.ast['state'] = self.last_node
+                with self._option():
+                    self._log_expr_()
+                    self.ast['log'] = self.last_node
+                with self._option():
+                    self._expire_expr_()
+                    self.ast['expire'] = self.last_node
+                with self._option():
+                    self._comment_expr_()
+                    self.ast['comment'] = self.last_node
+                self._error('no available options')
+        self._closure(block0)
+
+        self.ast._define(
+            ['state', 'log', 'expire', 'comment'],
+            []
+        )
+
+    @graken()
     def _rule_(self):
         self._action_expr_()
         self.ast['action'] = self.last_node
@@ -56,37 +103,30 @@ class grammarParser(Parser):
         self._dst_expr_()
         self.ast['destination'] = self.last_node
         self._cut()
-        self._state_expr_()
-        self.ast['state'] = self.last_node
-        self._expire_expr_()
-        self.ast['expire'] = self.last_node
-        self._cut()
-        self._log_expr_()
-        self._cut()
-        self._comment_expr_()
-        self.ast['comment'] = self.last_node
+        self._optional_keywords_()
+        self.ast['keywords'] = self.last_node
 
         self.ast._define(
-            ['action', 'protocol', 'source', 'destination', 'state', 'expire', 'comment'],
+            ['action', 'protocol', 'source', 'destination', 'keywords'],
             []
         )
 
     @graken()
     def _state_expr_(self):
-        with self._optional():
-            self._token('stateful')
+        self._token('stateful')
+        self._cut()
 
     @graken()
     def _log_expr_(self):
-        with self._optional():
-            self._token('log')
+        self._token('log')
+        self._cut()
 
     @graken()
     def _expire_expr_(self):
-        with self._optional():
-            self._token('expire')
-            self._date_()
-            self.ast['@'] = self.last_node
+        self._token('expire')
+        self._date_()
+        self.ast['@'] = self.last_node
+        self._cut()
 
     @graken()
     def _date_(self):
@@ -171,10 +211,9 @@ class grammarParser(Parser):
 
     @graken()
     def _comment_expr_(self):
-        with self._optional():
-            self._token('#')
-            self._pattern(r'.*[\n]?')
-            self.ast['@'] = self.last_node
+        self._token('#')
+        self._pattern(r'.*$')
+        self.ast['@'] = self.last_node
 
     @graken()
     def _string_(self):
@@ -208,6 +247,7 @@ class grammarParser(Parser):
         self.ast['l3'] = self.last_node
         self._portgroup_expr_()
         self.ast['l4'] = self.last_node
+        self._cut()
 
         self.ast._define(
             ['l3', 'l4'],
@@ -263,16 +303,19 @@ class grammarParser(Parser):
             with self._option():
                 self._token('any')
                 self.ast.setlist('ports', self.last_node)
+                self._cut()
             with self._option():
                 self._group_expr_()
                 self.ast['include'] = self.last_node
+                self._cut()
             with self._option():
 
                 def block3():
                     self._port_atoms_()
                 self._closure(block3)
                 self.ast['ports'] = self.last_node
-            self._error('expecting one of: any')
+                self._cut()
+            self._error('expecting one of: any ~')
 
         self.ast._define(
             ['include', 'ports'],
@@ -289,6 +332,7 @@ class grammarParser(Parser):
             self._port_expr_()
             self.ast.setlist('@', self.last_node)
         self._closure(block1)
+        self._cut()
 
     @graken()
     def _port_expr_(self):
@@ -296,9 +340,11 @@ class grammarParser(Parser):
             with self._option():
                 self._port_range_()
                 self.ast['range'] = self.last_node
+                self._cut()
             with self._option():
                 self._port_number_()
                 self.ast['single'] = self.last_node
+                self._cut()
             self._error('no available options')
 
         self.ast._define(
@@ -337,6 +383,12 @@ class grammarParser(Parser):
 
 class grammarSemantics(object):
     def start(self, ast):
+        return ast
+
+    def options(self, ast):
+        return ast
+
+    def optional_keywords(self, ast):
         return ast
 
     def rule(self, ast):

@@ -52,7 +52,7 @@ class Render():
 
     def add(self, ast):
         # only add policy to object if it is not expired
-        expire = ast[0]['expire']
+        expire = ast[0]['keywords']['expire']
         if expire:
             if int(expire) <= now_stamp:
                 return

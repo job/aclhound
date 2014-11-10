@@ -34,8 +34,8 @@ import sys
 
 
 class grammarSemantics(object):
-    def __init__(self):
-        self._protocol = None
+#    def __init__(self):
+#        self._protocol = None
 
     def start(self, ast):
         return ast
@@ -43,7 +43,16 @@ class grammarSemantics(object):
     def rule(self, ast):
         return ast
 
+    def optional_keywords(self, ast):
+        return ast
+
+    def options(self, ast):
+        return ast
+
     def state_expr(self, ast):
+        return ast
+
+    def log_expr(self, ast):
         return ast
 
     def expire_expr(self, ast):

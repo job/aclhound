@@ -39,26 +39,37 @@ start
     $
     ;
 
+options
+    =
+    state:state_expr
+    | log:log_expr
+    | expire:expire_expr
+    | comment:comment_expr
+    ;
+
+optional_keywords =
+    {>options}*
+    ;
+
 rule
     =
     action:action_expr ~ protocol:protocol_expr ~
-    source:source_expr ~ destination:dst_expr ~ state:state_expr
-    expire:expire_expr ~ log_expr ~ comment:comment_expr
+    source:source_expr ~ destination:dst_expr ~ keywords:optional_keywords
     ;
 
 state_expr
     =
-    [ "stateful" ]
+    "stateful" ~
     ;
 
 log_expr
     =
-    [ "log" ]
+    "log" ~
     ;
 
 expire_expr
     =
-    [ "expire" @:date ]
+    "expire" @:date ~
     ;
 
 date
@@ -104,7 +115,7 @@ icmp_code
 
 comment_expr
     =
-    [ "#" @:?/.*[\n]?/? ]
+    "#" @:?/.*$/?
     ;
 
 string
@@ -134,7 +145,7 @@ dst_expr
 
 endpoint_tuple
     =
-    l3:endpoint_expr l4:portgroup_expr
+    l3:endpoint_expr l4:portgroup_expr ~
     ;
 
 endpoint_list
@@ -162,20 +173,20 @@ portgroup_expr
 
 port_term
     =
-    ports+:"any"
-    | include:group_expr
-    | ports:{port_atoms}
+    ports+:"any" ~
+    | include:group_expr ~
+    | ports:{port_atoms} ~
     ;
 
 port_atoms
     =
-    @+:port_expr { "," @+:port_expr}*
+    @+:port_expr { "," @+:port_expr}* ~
     ;
 
 port_expr
     =
-    range:port_range
-    | single:port_number
+    range:port_range ~
+    | single:port_number ~
     ;
 
 port_range
