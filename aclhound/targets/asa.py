@@ -160,4 +160,11 @@ def render(self, **kwargs):
 
                         if line not in config_blob:
                             config_blob.append(line)
+
+    # add final deny any any at the end of each policy
+    extended = "extended " if afi == 4 else ""
+    yes_v6 = "ipv6 " if afi == 6 else ""
+    line = "%saccess-list %s %sdeny ip any any" \
+        % (yes_v6, self.name + "-v%s" % afi, extended)
+    config_blob.append(line)
     return config_blob
