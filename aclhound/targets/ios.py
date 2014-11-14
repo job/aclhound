@@ -142,7 +142,7 @@ def render(self, **kwargs):
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host.split('/')[0]
                         elif afi == 4:
-                            line += "%s %s" % (IPNetwork(d_host).network,
+                            line += "%s %s " % (IPNetwork(d_host).network,
                                                IPNetwork(d_host).hostmask)
                         else:
                             line += d_host + " "
