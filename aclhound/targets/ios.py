@@ -76,7 +76,17 @@ def render(self, **kwargs):
                         else:
                             action = "deny"
                         line = "%s icmp " % action
-                        line += "%s %s " % (s_host, d_host)
+
+                        for host in [s_host, d_host]:
+                            if host == "any":
+                                line += "any "
+                            elif IPNetwork(host).prefixlen in [32, 128]:
+                                line += "host %s " % host.split('/')[0]
+                            elif afi == 4:
+                                line += "%s %s " % (IPNetwork(host).network,
+                                                IPNetwork(host).hostmask)
+                            else:
+                                line += host + " "
 
                         if not entry == "any":
                             for el in ['icmp_type', 'icmp_code']:
@@ -119,7 +129,7 @@ def render(self, **kwargs):
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host.split('/')[0]
                         elif afi == 4:
-                            line += "%s %s" % (IPNetwork(s_host).network,
+                            line += "%s %s " % (IPNetwork(s_host).network,
                                                IPNetwork(s_host).hostmask)
                         else:
                             line += s_host + " "
