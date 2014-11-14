@@ -108,14 +108,19 @@ def render(self, **kwargs):
                         else:
                             action = "deny "
                         line = action
+
                         if rule['protocol'] == "any":
                             line += "ip " if afi == 4 else "ipv6 "
                         else:
                             line += rule['protocol'] + " "
+
                         if s_host == "any":
                             line += "any "
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
                             line += "host %s " % s_host.split('/')[0]
+                        elif afi == 4:
+                            line += "%s %s" % (IPNetwork(s_host).network,
+                                               IPNetwork(s_host).hostmask)
                         else:
                             line += s_host + " "
 
@@ -126,6 +131,9 @@ def render(self, **kwargs):
                             line += "any "
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
                             line += "host %s " % d_host.split('/')[0]
+                        elif afi == 4:
+                            line += "%s %s" % (IPNetwork(d_host).network,
+                                               IPNetwork(d_host).hostmask)
                         else:
                             line += d_host + " "
 
