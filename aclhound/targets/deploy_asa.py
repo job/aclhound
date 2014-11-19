@@ -41,6 +41,7 @@ The following process is followed to ensure zero impact
 
 from Exscript.util.interact import read_login
 from Exscript.protocols import SSH2, Telnet, Account
+from Exscript.protocols.Exception import LoginFailure
 
 import netrc
 
@@ -93,7 +94,12 @@ Start
     conn = SSH2(verify_fingerprint=False, debug=0)
     conn.set_driver('ios')
     conn.connect(hostname)
-    conn.login(account)
+    try:
+        conn.login(account)
+    except LoginFailure:
+        print("ERROR: Username or Password incorrect for %s" % hostname)
+        print("HINT: verify authentication details in your .netrc file")
+        sys.exit(2)
 
     map_pol_int = collect_interfaces(conn)
     pprint(map_pol_int)
