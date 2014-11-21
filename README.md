@@ -31,8 +31,10 @@ Supported devices
 -----------------
 
 * Cisco ASA
-* Cisco VSS (IOS)
-* Juniper
+    * No support for ASA 9.1.2 or higher (yet)
+* Cisco IOS
+    * Will autodetect IPv6 support through ```show ipv6 cef```
+* Juniper (planned)
 
 Installation notes
 ------------------
