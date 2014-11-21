@@ -135,7 +135,7 @@ def render(self, **kwargs):
                             line += s_host + " "
 
                         if not s_port == "any":
-                            line += "eq %s" % str(s_port)
+                            line += "eq %s " % str(s_port)
 
                         if d_host == "any":
                             line += "any "
@@ -148,10 +148,10 @@ def render(self, **kwargs):
                             line += d_host + " "
 
                         if not d_port == "any":
-                            line += "eq %s" % str(d_port)
+                            line += "eq %s " % str(d_port)
 
                         if logging:
-                            line += " log"
+                            line += "log"
 
                         if line not in config_blob:
                             config_blob.append(line)
