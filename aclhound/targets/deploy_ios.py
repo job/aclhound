@@ -114,7 +114,7 @@ Start
 """
         template_file = StringIO(template)
         table = textfsm.TextFSM(template_file)
-        s(conn, 'show run | section line vty')
+        s(conn, 'show run | begin ^line vty')
         interface_acl_vty = table.ParseText(conn.response)
 
         results = {4: interface_acl_v4, 6: interface_acl_v6}
@@ -143,7 +143,9 @@ Start
     conn.login(account)
     conn.execute('terminal length 0')
     conn.auto_app_authorize(account)
-
+    capabilities = {}
+    s(conn, "show ipv6 cef")
+    capabilities['ipv6'] = True if conn.response == "%IPv6 CEF not running" else False
     # map into structure:
     # policyname { (int, afi, direction) }
     map_pol_int = {}
@@ -174,6 +176,8 @@ Start
     def lock_step(lock, pol):
         name = acls[pol]['name']
         afi = acls[pol]['afi']
+        if afi == 6 and not capabilities['ipv6']:
+            return
         policy = acls[pol]['policy']
         print("INFO: uploading name: %s, afi: %s" % (name, afi))
         s(conn, 'configure terminal')
@@ -228,7 +232,7 @@ Start
         if acls[policy]['afi'] == 4:
             s(conn, "no ip access-list extended LOCKSTEP-%s"
               % acls[policy]['name'])
-        if acls[policy]['afi'] == 6:
+        if acls[policy]['afi'] == 6 and capabilities['ipv6']:
             s(conn, "no ipv6 access-list LOCKSTEP-%s"
               % acls[policy]['name'])
         s(conn, "end")
