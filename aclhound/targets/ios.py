@@ -150,6 +150,9 @@ def render(self, **kwargs):
                         if not d_port == "any":
                             line += "eq %s" % str(d_port)
 
+                        if logging:
+                            line += " log"
+
                         if line not in config_blob:
                             config_blob.append(line)
     if afi == 4:
