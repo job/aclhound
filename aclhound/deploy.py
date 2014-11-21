@@ -34,7 +34,7 @@ from targets import deploy_asa
 
 class Deploy():
 
-    def __init__(self, hostname=None, acls=[], vendor=None):
+    def __init__(self, hostname=None, acls=[], vendor=None, transport='ssh'):
         self.hostname = hostname
         self.acls = acls
         self.vendor = vendor
