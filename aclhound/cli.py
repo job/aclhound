@@ -412,6 +412,11 @@ overview of previous work")
                     line = line.strip()
                     if line.split(' ')[0] == "vendor":
                         vendor = line.split(' ')[1]
+                    elif line.split(' ')[0] == "transport":
+                        transport = line.split(' ')[1]
+                        if transport not in ['telnet', 'ssh']:
+                            print("ERROR: unknown transport mechanism: %s" % transport)
+                            sys.exit(2)
                     elif line.split(' ')[0] == "include":
                         polname = line.split(' ')[1]
                         print("")
@@ -468,6 +473,11 @@ overview of previous work")
                     line = line.strip()
                     if line.split(' ')[0] == "vendor":
                         vendor = line.split(' ')[1]
+                    elif line.split(' ')[0] == "transport":
+                        transport = line.split(' ')[1]
+                        if transport not in ['telnet', 'ssh']:
+                            print("ERROR: unknown transport mechanism: %s" % transport)
+                            sys.exit(2)
                     elif line.split(' ')[0] == "include":
                         polname = line.split(' ')[1]
                         for afi in [4, 6]:
@@ -478,7 +488,8 @@ overview of previous work")
                             acls[name] = {"afi": afi,
                                           "name": name,
                                           "policy": policy}
-            a = Deploy(hostname=hostname, vendor=vendor, acls=acls)
+            a = Deploy(hostname=hostname, vendor=vendor, acls=acls,
+                       transport=transport)
             print(a.deploy())
 
         for dev in devices_list:

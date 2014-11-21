@@ -50,7 +50,7 @@ from aclhound import textfsm
 from StringIO import StringIO
 
 
-def deploy(hostname=None, acls=None):
+def deploy(hostname=None, acls=None, transport='ssh'):
     """
     Deploy code in a safe way o a Cisco IOS device.
     """
@@ -91,7 +91,14 @@ Start
         return map_acl_int
 
     # main flow of the program starts here
-    conn = SSH2(verify_fingerprint=False, debug=0)
+    if transport == 'ssh':
+        conn = SSH2(verify_fingerprint=False, debug=0)
+    elif transport == 'telnet':
+        conn = Telnet(debug=0)
+    else:
+        print("ERROR: Unknown transport mechanism: %s" %
+              transport)
+        sys.exit(2)
     conn.set_driver('ios')
     conn.connect(hostname)
     try:
