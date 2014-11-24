@@ -1,6 +1,6 @@
 ### How to install the package
 
-Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation:
+Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation.
 
 To install the package, execute the following lines on the commandline:
 <table><tr><td><pre>git clone https://github.com/job/aclhound.git
