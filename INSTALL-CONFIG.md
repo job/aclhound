@@ -1,6 +1,6 @@
 ### How to install the package
 
-Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation:
+Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation.
 
 To install the package, execute the following lines on the commandline:
 <table><tr><td><pre>git clone https://github.com/job/aclhound.git
@@ -34,7 +34,7 @@ password =
 [gerrit]
 hostname = gerrit001
 port = 29418
-repository = aclhound-repos
+repository = networking
 protocol = ssh
 [user]
 username =
@@ -49,7 +49,7 @@ location =</pre></td></tr></table>
 
  Example config:
 <table><tr><td ><pre> [gerrit]
- host=gerrit.ecg.so
+ host=gerrit.remotehost
  port=29418
  project=aclhound-repos.git</pre></td></tr></table>
 
@@ -73,7 +73,7 @@ This little setup part of ACLHound asks you 3 questions: username, location and 
 not you'd like to clone the repository data (configured in the aclhound.conf)
 
 ## **Jenkins integration**
-<table><tbody><tr><th><h2>Syntax Validation</h2></th><th><h2>Configuration deployment</h2></th></tr><tr><td valign='top'><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: validate_aclhound_patchset)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.ecg.so:29418/ecg-networking" >ssh://gerrit@gerrit.ecg.so:29418/ecg-networking</a></li><li><span>Pick offcourse the proper credentials </span></li><li><span>At &quot;Additional Behaviours&quot;, choose &quot;Gerrit Trigger&quot; as a Strategy (drop down)</span><span><br /></span></li></ul></li><li><span>Move on to build triggers, and click &quot;Gerrit event&quot;</span><br /><ul><li><span >configure the proper server</span></li><li><span>Create 2 triggers: &quot;patchset created&quot; and &quot;draft published&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span >Insert this:</span><br /><ul><li>pwd</li><li><span>ls</span></li><li><span>echo &quot;a test build is now performed for all ACLs....&quot;</span></li><li><span>sleep 2</span></li><li><span >aclhound build all </span></li></ul></li></ul></li><li><span>Move on to &quot;Post-build actions&quot;, and configure it to send an email with the results</span></li></ul></li></ul></td><td valign='top' ><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: push_configs_to_network)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.ecg.so:29418/ecg-networking">ssh://gerrit@gerrit.ecg.so:29418/ecg-networking</a></li><li><span>Pick offcourse the proper credentials</span></li></ul></li><li><span>Move on to build triggers, and click &quot;Poll SCM&quot;</span><ul><li><span>insert the following schedule to have it run every morning at 10:10 on workdays: &quot;10 10 * * 1-5&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span>Insert this:</span><br /><ul><li><span>echo &quot;push config to network&quot;</span></li><li><span>sleep 2</span></li><li><span>aclhound deploy all</span></li></ul></li></ul></li><li><span>Move on to &quot;post build&quot;, and configure it to send an email with the results</span></li></ul></li></ul><p> </p></td></tr></tbody></table>
+<table><tbody><tr><th><h2>Syntax Validation</h2></th><th><h2>Configuration deployment</h2></th></tr><tr><td valign='top'><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: validate_aclhound_patchset)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.remotehost:29418/networking" >ssh://gerrit@gerrit.remotehost:29418/networking</a></li><li><span>Pick offcourse the proper credentials </span></li><li><span>At &quot;Additional Behaviours&quot;, choose &quot;Gerrit Trigger&quot; as a Strategy (drop down)</span><span><br /></span></li></ul></li><li><span>Move on to build triggers, and click &quot;Gerrit event&quot;</span><br /><ul><li><span >configure the proper server</span></li><li><span>Create 2 triggers: &quot;patchset created&quot; and &quot;draft published&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span >Insert this:</span><br /><ul><li>pwd</li><li><span>ls</span></li><li><span>echo &quot;a test build is now performed for all ACLs....&quot;</span></li><li><span>sleep 2</span></li><li><span >aclhound build all </span></li></ul></li></ul></li><li><span>Move on to &quot;Post-build actions&quot;, and configure it to send an email with the results</span></li></ul></li></ul></td><td valign='top' ><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: push_configs_to_network)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.remotehost:29418/networking">ssh://gerrit@gerrit.remotehost:29418/networking</a></li><li><span>Pick offcourse the proper credentials</span></li></ul></li><li><span>Move on to build triggers, and click &quot;Poll SCM&quot;</span><ul><li><span>insert the following schedule to have it run every morning at 10:10 on workdays: &quot;10 10 * * 1-5&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span>Insert this:</span><br /><ul><li><span>echo &quot;push config to network&quot;</span></li><li><span>sleep 2</span></li><li><span>aclhound deploy all</span></li></ul></li></ul></li><li><span>Move on to &quot;post build&quot;, and configure it to send an email with the results</span></li></ul></li></ul><p> </p></td></tr></tbody></table>
 
 
 
