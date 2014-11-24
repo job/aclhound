@@ -1,12 +1,9 @@
-
-Please don't go beyond here for information how to use aclhound on a daily basis, this is just for configuration and installation:
-
-
-
 ### How to install the package
 
+Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation:
+
 To install the package, execute the following lines on the commandline:
-<table class="wysiwyg-macro" data-macro-name="code" style="background-image: url(/confluence/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGV9&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre>git clone https://github.com/job/aclhound.git
+<table><tr><td><pre>git clone https://github.com/job/aclhound.git
 cd aclhound
 virtualenv .
 source ./bin/activate
@@ -14,17 +11,17 @@ pip install -r requirements.txt
 make test
 python setup.py install</pre></td></tr></table>
 
-### <span style="color: rgb(0,0,0);font-size: 20.0px;line-height: 1.5;">Configuration files</span>
+### **Configuration files**
 
 **aclhound.conf**
 
  This can be found in the /etc/aclhound/ directory.
 
- This configuration file is used to configure some base settings for aclhound itself, and 
+ This configuration file is used to configure some base settings for aclhound itself, and
  it contains settings to talke with jenkins &amp; gerrit.
 
  The following is an example configuration file:
-<table class="wysiwyg-macro" data-macro-name="code" style="background-image: url(/confluence/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGV9&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre> ; ACLHound system-wide configuration
+<table><tr><td><pre> ; ACLHound system-wide configuration
 [general]
 local_only = false
 policy_output_directory = /opt/aclhound/networkconfigs
@@ -43,8 +40,7 @@ protocol = ssh
 username =
 location =</pre></td></tr></table>
 
-**
-**
+
 
 **~/aclhound/.gitreview**
 
@@ -52,131 +48,108 @@ location =</pre></td></tr></table>
  It contains the parameters to connect to gerrit
 
  Example config:
-<table class="wysiwyg-macro" data-macro-name="code" style="background-image: url(/confluence/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGV9&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre> [gerrit]
+<table><tr><td ><pre> [gerrit]
  host=gerrit.ecg.so
  port=29418
  project=aclhound-repos.git</pre></td></tr></table>
 
-**
-.netrc**
 
- This file needs to be manually edited. This contains login information to do deployments 
- from the commandline using the aclhound tool (automatic logins) 
- Documentation on .netrc can be found here: 
+**.netrc**
+
+ This file needs to be manually edited. This contains login information to do deployments
+ from the commandline using the aclhound tool (automatic logins)
+ Documentation on .netrc can be found here:
  [http://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-File.html](http://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-File.html)
 
-## <span style="line-height: 1.5;">B </span>
 
 ## **First run**
 
-## <span style="line-height: 1.5;">B </span>
-
-To deploy a clean working directory for ACLHound, login as a normal user on a system which 
+To deploy a clean working directory for ACLHound, login as a normal user on a system which
 has the ACLHound software installed, and type:
 
  &quot;aclhound init&quot;
 
-This little setup part of ACLHound asks you 3 questions: username, location and wether or 
+This little setup part of ACLHound asks you 3 questions: username, location and wether or
 not you'd like to clone the repository data (configured in the aclhound.conf)
 
-## <span style="line-height: 1.5;">Jenkins integration</span>
+## **Jenkins integration**
+<table><tbody><tr><th><h2>Syntax Validation</h2></th><th><h2>Configuration deployment</h2></th></tr><tr><td valign='top'><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: validate_aclhound_patchset)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.ecg.so:29418/ecg-networking" >ssh://gerrit@gerrit.ecg.so:29418/ecg-networking</a></li><li><span>Pick offcourse the proper credentials </span></li><li><span>At &quot;Additional Behaviours&quot;, choose &quot;Gerrit Trigger&quot; as a Strategy (drop down)</span><span><br /></span></li></ul></li><li><span>Move on to build triggers, and click &quot;Gerrit event&quot;</span><br /><ul><li><span >configure the proper server</span></li><li><span>Create 2 triggers: &quot;patchset created&quot; and &quot;draft published&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span >Insert this:</span><br /><ul><li>pwd</li><li><span>ls</span></li><li><span>echo &quot;a test build is now performed for all ACLs....&quot;</span></li><li><span>sleep 2</span></li><li><span >aclhound build all </span></li></ul></li></ul></li><li><span>Move on to &quot;Post-build actions&quot;, and configure it to send an email with the results</span></li></ul></li></ul></td><td valign='top' ><ul><li>Make a new &quot;freestyle project&quot;<ul><li><span>Give it a name (example: push_configs_to_network)</span></li><li><span>at &quot;Source Code Management&quot; click &quot;Git&quot;</span><br /><ul><li><span>Type in the URL: </span><a href="ssh://gerrit@gerrit.ecg.so:29418/ecg-networking">ssh://gerrit@gerrit.ecg.so:29418/ecg-networking</a></li><li><span>Pick offcourse the proper credentials</span></li></ul></li><li><span>Move on to build triggers, and click &quot;Poll SCM&quot;</span><ul><li><span>insert the following schedule to have it run every morning at 10:10 on workdays: &quot;10 10 * * 1-5&quot;</span></li></ul></li><li><span>Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span><br /><ul><li><span>Insert this:</span><br /><ul><li><span>echo &quot;push config to network&quot;</span></li><li><span>sleep 2</span></li><li><span>aclhound deploy all</span></li></ul></li></ul></li><li><span>Move on to &quot;post build&quot;, and configure it to send an email with the results</span></li></ul></li></ul><p> </p></td></tr></tbody></table>
 
-The two minimum used cases to implement in Jenkins are &quot;Syntax Validation&quot; &amp; &quot;Configuration deployment&quot;
-<table class="confluenceTable"><tbody><tr><th class="confluenceTh">Syntax Validation</th><th class="confluenceTh">Configuration deployment</th></tr><tr><td class="confluenceTd">
 
-*   Make a new &quot;freestyle project&quot;
 
-        *   <span style="line-height: 1.4285715;">Give it a name (example: validate_aclhound_patchset)</span>
-    *   <span style="line-height: 1.4285715;">at &quot;Source Code Management&quot; click &quot;Git&quot;</span>
-
-            *   <span style="line-height: 1.4285715;">Type in the URL: </span>[ssh://gerrit@gerrit.ecg.so:29418/ecg-networking](ssh://gerrit@gerrit.ecg.so:29418/ecg-networking)
-        *   <span style="line-height: 1.4285715;">Pick offcourse the proper credentials </span>
-        *   <span style="line-height: 1.4285715;">At &quot;Additional Behaviours&quot;, choose &quot;Gerrit Trigger&quot; as a Strategy (drop down)</span><span style="line-height: 1.4285715;">
-</span>
-    *   <span style="line-height: 1.4285715;">Move on to build triggers, and click &quot;Gerrit event&quot;</span>
-
-            *   <span style="line-height: 1.4285715;">configure the proper server</span>
-        *   <span style="line-height: 1.4285715;">Create 2 triggers: &quot;patchset created&quot; and &quot;draft published&quot;</span>
-    *   <span style="line-height: 1.4285715;">Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span>
-
-            *   <span style="line-height: 1.4285715;">Insert this:</span>
-
-                    *   pwd
-            *   <span style="line-height: 1.4285715;">ls</span>
-            *   <span style="line-height: 1.4285715;">echo &quot;a test build is now performed for all ACLs....&quot;</span>
-            *   <span style="line-height: 1.4285715;">sleep 2</span>
-            *   <span style="line-height: 1.4285715;">aclhound build all </span>
-    *   <span style="line-height: 1.4285715;">Move on to &quot;Post-build actions&quot;, and configure it to send an email with the results</span></td><td class="confluenceTd">
-
-*   Make a new &quot;freestyle project&quot;
-
-        *   <span style="line-height: 1.4285715;">Give it a name (example: push_configs_to_network)</span>
-    *   <span style="line-height: 1.4285715;">at &quot;Source Code Management&quot; click &quot;Git&quot;</span>
-
-            *   <span style="line-height: 1.4285715;">Type in the URL: </span>[ssh://gerrit@gerrit.ecg.so:29418/ecg-networking](ssh://gerrit@gerrit.ecg.so:29418/ecg-networking)
-        *   <span style="line-height: 1.4285715;">Pick offcourse the proper credentials</span>
-    *   <span style="line-height: 1.4285715;">Move on to build triggers, and click &quot;Poll SCM&quot;</span>
-
-                *   <span style="line-height: 1.4285715;">insert the following schedule to have it run every morning at 10:10 on workdays: &quot;10 10 * * 1-5&quot;</span>
-    *   <span style="line-height: 1.4285715;">Move on to &quot;Build&quot;, and click on &quot;execute shell&quot;</span>
-
-            *   <span style="line-height: 1.4285715;">Insert this:</span>
-
-                    *   <span style="line-height: 1.4285715;">echo &quot;push config to network&quot;</span>
-            *   <span style="line-height: 1.4285715;">sleep 2</span>
-            *   <span style="line-height: 1.4285715;">aclhound deploy all</span>
-    *   <span style="line-height: 1.4285715;">Move on to &quot;post build&quot;, and configure it to send an email with the results</span>
-
-</td></tr></tbody></table>
-
-<div>
-
-<span style="color: rgb(0,0,0);font-size: 20.0px;line-height: 1.5;">ACL hound commands</span>
-<pre>B </pre><pre>- init Initialise aclhound end-user configuration.
-
+#**ACL hound commands**
+<pre>
+- init Initialise aclhound end-user configuration.
+ 
  Initialise user-specific settings, ask the user for username on 
  repository server, location to store aclhound policy, ask to make
- initial clone.</pre><pre>Usage: aclhound [-d] init [--batch]</pre><pre>Options:
+ initial clone.
+Usage: aclhound [-d] init [--batch]
+Options:
  --batch Automatically guess all settings (non-interactive mode).
-
- - fetch Retrieve latest ACLHound policy from repository server.</pre><pre>- task Manage change proposals (creation, submission, etc)</pre><pre>Start, continue or submit a piece of work for review.</pre><pre>Usage: aclhound [-d] task list
+ 
+ 
+ - fetch Retrieve latest ACLHound policy from repository server.
+- task Manage change proposals (creation, submission, etc)
+Start, continue or submit a piece of work for review.
+Usage: aclhound [-d] task list
  aclhound [-d] task submit
- aclhound [-d] task start &lt;taskname&gt;
- aclhound [-d] task edit &lt;taskname&gt;
+ aclhound [-d] task start <taskname>
+ aclhound [-d] task edit <taskname>
  aclhound [-d] task status
- aclhound [-d] task clean</pre><pre>Arguments:
+ aclhound [-d] task clean
+Arguments:
  list List locally stored branches
  submit Submit current task for review
  start Create a new branch to work on a task
  edit Continue working on a task/branch
  status Show current task information
- clean Clean up old tasks (which have been merged)</pre><pre>&lt;taskname&gt;
+ clean Clean up old tasks (which have been merged)
+<taskname>
  Taskname refers to for example a JIRA ticket, or other reference by
- which the change will be known in the review system.</pre><pre>B </pre><pre>- diff Compare current working directory with the previous version.</pre><pre>Show unified diff between last commit and current state.</pre><pre>Usage: aclhound diff &lt;filename&gt;
- aclhound diff all</pre><pre>Arguments:
- &lt;filename&gt;
+ which the change will be known in the review system.
+ 
+- diff Compare current working directory with the previous version.
+Show unified diff between last commit and current state.
+Usage: aclhound diff <filename>
+ aclhound diff all
+Arguments:
+ <filename>
  The policy or device file for which a unified diff must be
- generated.</pre><pre>Note: please ensure you run 'diff' inside your ACLHound data directory</pre><pre>- build Compile policy into network configuration, output on STDOUT
-
-Show unified build between last commit and current state.</pre><pre>Usage: aclhound build &lt;devicename&gt;
- aclhound build all</pre><pre>Arguments:
- &lt;devicename&gt;
- The device file for which a network config must be generated.</pre><pre>&lt;all&gt;
+ generated.
+Note: please ensure you run 'diff' inside your ACLHound data directory
+- build Compile policy into network configuration, output on STDOUT
+ 
+Show unified build between last commit and current state.
+Usage: aclhound build <devicename>
+ aclhound build all
+Arguments:
+ <devicename>
+ The device file for which a network config must be generated.
+<all>
  Build all network policies into their respective vendor specific
- representation. Useful as 'review' test in Jenkins.</pre><pre>Note: please ensure you run 'build' inside your ACLHound data directory 
-
+ representation. Useful as 'review' test in Jenkins.
+Note: please ensure you run 'build' inside your ACLHound data directory 
+ 
+ 
  - deploy Deploy compiled configuration to a network device
-
- Deploy a compiled version of the ACLs on a network device</pre><pre>Usage: aclhound deploy &lt;devicename&gt;
- aclhound deploy all</pre><pre>Arguments:
- &lt;devicename&gt;
+ 
+ Deploy a compiled version of the ACLs on a network device
+Usage: aclhound deploy <devicename>
+ aclhound deploy all
+Arguments:
+ <devicename>
  Hostname of the device on which the generated ACLs must be
- deployed.</pre><pre>&lt;all&gt;
+ deployed.
+<all>
  ACLHound will take all device files from devices/ (except
  filenames with a '.ignore' suffix), compile the policy and
- upload the policies to the device. &quot;all&quot; is suitable for cron or
- jenkins.</pre><pre>Note: please ensure you run 'deploy' inside your ACLHound data directory
+ upload the policies to the device. "all" is suitable for cron or
+ jenkins.
+Note: please ensure you run 'deploy' inside your ACLHound data directory
+ 
+ - reset Delete aclhound directory and fetch copy from repository.
 
- - reset Delete aclhound directory and fetch copy from repository.</pre></div>
+</pre>
 
 
