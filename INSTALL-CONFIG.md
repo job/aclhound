@@ -3,13 +3,13 @@
 Please don't read this how to use aclhound on a daily basis, this is just for configuration and installation.
 
 To install the package, execute the following lines on the commandline:
-<table><tr><td><pre>git clone https://github.com/job/aclhound.git
+<pre>git clone https://github.com/job/aclhound.git
 cd aclhound
 virtualenv .
 source ./bin/activate
 pip install -r requirements.txt
 make test
-python setup.py install</pre></td></tr></table>
+python setup.py install</pre>
 
 ### **Configuration files**
 
@@ -21,7 +21,7 @@ python setup.py install</pre></td></tr></table>
  it contains settings to talke with jenkins &amp; gerrit.
 
  The following is an example configuration file:
-<table><tr><td><pre> ; ACLHound system-wide configuration
+<pre> ; ACLHound system-wide configuration
 [general]
 local_only = false
 policy_output_directory = /opt/aclhound/networkconfigs
@@ -38,8 +38,7 @@ repository = networking
 protocol = ssh
 [user]
 username =
-location =</pre></td></tr></table>
-
+location =</pre>
 
 
 **~/aclhound/.gitreview**
@@ -48,10 +47,10 @@ location =</pre></td></tr></table>
  It contains the parameters to connect to gerrit
 
  Example config:
-<table><tr><td ><pre> [gerrit]
+<pre> [gerrit]
  host=gerrit.remotehost
  port=29418
- project=aclhound-repos.git</pre></td></tr></table>
+ project=aclhound-repos.git</pre>
 
 
 **.netrc**
