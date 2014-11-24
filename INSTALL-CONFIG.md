@@ -56,7 +56,7 @@ location =
 host=gerrit.remotehost
 port=29418
 project=aclhound-repos.git
- </pre>
+</pre>
 
 
 **.netrc**
@@ -82,7 +82,7 @@ not you'd like to clone the repository data (configured in the aclhound.conf)
 
 
 
-#**ACL hound commands**
+## **ACL hound commands**
 <pre>
 - init Initialise aclhound end-user configuration.
  
