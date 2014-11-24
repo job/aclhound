@@ -59,7 +59,15 @@ def deploy(hostname=None, acls=None, transport='ssh'):
         account = Account(name=username, password=password,
                           password2=enable_pass)
     except:
-        account = read_login()
+        print("ERROR: could not find device in ~/.netrc file")
+        print("HINT: either update .netrc or enter username + pass now.")
+        try:
+            account = read_login()
+        except EOFError:
+            print("ERROR: could not find proper username + pass")
+            print("HINT: set username & pass in ~/.netrc for device %s"
+                  % hostname)
+            sys.exit(2)
 
     def s(conn, line):
         print("   %s" % line)
