@@ -89,7 +89,7 @@ class grammarSemantics(object):
                 try:
                     file_h = open(include).read().splitlines()
                 except IOError:
-                    print "could not open file: %s" % include
+                    print "ERROR: could not open file: %s" % include
                     sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
@@ -152,7 +152,7 @@ class grammarSemantics(object):
                 try:
                     file_h = open(include).read().splitlines()
                 except IOError:
-                    print "could not open file: %s" % include
+                    print "ERROR: could not open file: %s" % include
                     import os
                     print os.getcwd()
                     sys.exit(2)
@@ -185,7 +185,7 @@ class grammarSemantics(object):
                 try:
                     file_h = open(include).read().splitlines()
                 except IOError:
-                    print "could not open file: %s" % include
+                    print "ERROR: could not open file: %s" % include
                     sys.exit(2)
                 for line in file_h:
                     if line.startswith('@'):
