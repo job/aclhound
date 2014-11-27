@@ -143,8 +143,8 @@ def render(self, **kwargs):
                         else:
                             line += s_host + " "
 
-                        if s_port != u"any":
-                            line += str(s_port) + " "
+                        if not s_port == "any":
+                            line += "eq %s " % str(s_port)
 
                         if d_host == u'any':
                             line += "any "
