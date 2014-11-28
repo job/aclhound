@@ -24,33 +24,32 @@ In &quot;devices&quot; directory you add the devices which you want under contro
 *   include statements, these mention the policies that you would like to put on the devices. Multiple entries are allowed here.
 
 Example device file:
-<pre>
-mmoerman@aclhound001:~/aclhound$ cat devices/fw001
-vendor ios
-transport ssh
-include nw-management
-include test-policy
-</pre>
+
+	mmoerman@aclhound001:~/aclhound$ cat devices/fw001
+	vendor ios
+	transport ssh
+	include nw-management
+	include test-policy
+
 
 ### Policies
 
 In the 'policy' directory you'll add text files that contain the actual ACL that you are building. The name that you choose here, is also the name of the ACL on the device you deploy the policy to. In this textfile, type the complete ACL as you want it. The syntax for this is a variation of the AFPL2 language and is as following:
 
-<pre>
-&lt; allow | deny > \
-&lt; tcp | udp | any > \
-src &lt; prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ] \
-dst &lt; prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ] \
-[ stateful ] \
-[ expire YYYYMMDD ] [ log ] \
-[ # comment ]
 
-&lt; allow | deny > &lt; icmp > &lt; any | type &lt;code|any> > \ 
-src &lt; prefix | $ip | @hostgroup | any > \
-dst &lt; prefix | $ip | @hostgroup | any > \
-[ expire YYYYMMDD ] [ log ] \
-[ # comment ]
-</pre>
+	< allow | deny > \
+	< tcp | udp | any > \
+	src < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ] \
+	dst < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ] \
+	[ stateful ] \
+	[ expire YYYYMMDD ] [ log ] \
+	[ # comment ]
+
+	< allow | deny > < icmp > < any | type <code|any> > \ 
+	src < prefix | $ip | @hostgroup | any > \
+	dst < prefix | $ip | @hostgroup | any > \
+	[ expire YYYYMMDD ] [ log ] \
+	[ # comment ]
 
 Note the @ sign, the policies allow for inclusion of object files, there are 2 type of object inclusion possibilities: hosts &amp; ports. Now this uses a suffix with their filenames, which is explained in &quot;Objects&quot;.
 
@@ -61,18 +60,18 @@ Now if you want to log certain denied traffic, you can always add a &quot;deny a
 Another thing to keep in mind, remarks are not being pushed towards the device, as it won't make sense once the actual ACL is compiled and being pushed because you'll end up with more (unclear) remarks then actual ACL lines.
 
 Some examples to take a look at:
-<pre>
-allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
-deny tcp src 2.2.2.2 dst 2.2.2.2
-allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-10
-allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
-allow tcp src @mp-servers dst 10.0.0.0/8
-deny tcp src @bgp-peers port any dst @mp-servers port @webports # another comment
-allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4
-allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
-allow icmp 128 0 src any dst 192.0.2.0/24 # icmpv6 echo request
-allow icmp 129 0 src 192.0.2.0/24 dst any # icmpv6 echo reply
-</pre>
+
+	allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
+	deny tcp src 2.2.2.2 dst 2.2.2.2
+	allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-10
+	allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
+	allow tcp src @mp-servers dst 10.0.0.0/8
+	deny tcp src @bgp-peers port any dst @mp-servers port @webports # another comment
+	allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4
+	allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
+	allow icmp 128 0 src any dst 192.0.2.0/24 # icmpv6 echo request
+	allow icmp 129 0 src 192.0.2.0/24 dst any # icmpv6 echo reply
+
 
 
 
@@ -86,19 +85,18 @@ In the 'objects' directory you'll add text files which contain either hosts/subn
 In order for the proper files to be included in the policy, name them accordingly. So for filenames use objectname.ports for a ports file, and use objectname.hosts for a file filled with host entries.
 
 Examples could be:
-<pre>
-mmoerman@aclhound001:~/aclhound$ cat objects/mailcluster.hosts
-10.32.2.0/24
-10.34.2.2
-10.34.2.3
 
-mmoerman@aclhound001:~/aclhound$ cat objects/mailcluster.ports
-25
-110
-143
-993
-465
-</pre>
+	mmoerman@aclhound001:~/aclhound$ cat objects/mailcluster.hosts
+	10.32.2.0/24
+	10.34.2.2
+	10.34.2.3
+	
+	mmoerman@aclhound001:~/aclhound$ cat objects/mailcluster.ports
+	25
+	110
+	143
+	993
+	465
 
 ## Building something real
 
@@ -123,11 +121,10 @@ Create the device by editing a new file in the devices directory:
 *   vi ~/aclhound/devices/fw001
 
 Insert this content:
-<pre>
-vendor asa
-transport ssh
-include ops-web-ticket-067
-</pre>
+
+	vendor asa
+	transport ssh
+	include ops-web-ticket-067
 
 ### **Second step**
 
@@ -144,11 +141,10 @@ Create the actual policy:
 
 *   vi ~/aclhound/policy/ops-web-ticket-067
 *   edit it to contain:
-<pre>
-allow tcp src @ops port any dst @web port 22
-allow tcp src @ops port any dst @web port 80
-allow tcp src @ops port any dst @web port 443
-</pre>
+
+		allow tcp src @ops port any dst @web port 22
+		allow tcp src @ops port any dst @web port 80
+		allow tcp src @ops port any dst @web port 443
 
 You have now created the policies, objects, and the devices.
 
@@ -159,14 +155,15 @@ Now to actually check these ACL's we'll need to compile them into a format that 
 
 Use:
 
-<pre>aclhound build &lt;devicename|all&gt;</pre>
-
+	aclhound build <devicename|all>
+	
 ### **Fifth step**
 
 Once you have done the syntax check above, and you have no problems anymore, you can safely deploy the policies towards the device (assuming you have correctly setup your .netrc file):
 
 Use:
-<pre>aclhound deploy &lt;devicename|all&gt;</pre>
+
+	aclhound deploy <devicename|all>
 
 ## How to work and submit code with aclhound in combination with GIT/Gerrit/Jenkins
 
