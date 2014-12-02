@@ -50,8 +50,10 @@ In the 'policy' directory you'll add text files that contain the actual ACL that
 	dst < prefix | $ip | @hostgroup | any > \
 	[ expire YYYYMMDD ] [ log ] \
 	[ # comment ]
+	
+	@policy_name
 
-Note the @ sign, the policies allow for inclusion of object files, there are 2 type of object inclusion possibilities: hosts &amp; ports. Now this uses a suffix with their filenames, which is explained in &quot;Objects&quot;.
+Note the @ sign, the policies allow for inclusion of object files, there are 3 type of object inclusion possibilities: hosts &amp; ports & policies. Now hosts & ports use a suffix with their filenames, which is explained in &quot;Objects&quot;. Policies can simple be included by just including the policy on a single line (@policy_name).
 
 Keep in mind, that ACLhound automatically adds a &quot;deny any&quot; statement at the end of each ACL, so you don't have to do that yourself, this also keeps behaviour consistent across devices. 
 
@@ -71,7 +73,6 @@ Some examples to take a look at:
 	allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
 	allow icmp 128 0 src any dst 192.0.2.0/24 # icmpv6 echo request
 	allow icmp 129 0 src 192.0.2.0/24 dst any # icmpv6 echo reply
-
 
 
 
@@ -155,7 +156,7 @@ Now to actually check these ACL's we'll need to compile them into a format that 
 
 Use:
 
-	aclhound build <devicename|all>
+	aclhound build <~/aclhound/devices/devicename|all>
 	
 ### **Fifth step**
 
@@ -163,7 +164,7 @@ Once you have done the syntax check above, and you have no problems anymore, you
 
 Use:
 
-	aclhound deploy <devicename|all>
+	aclhound deploy <~/aclhound/devices/devicename|all>
 
 ## How to work and submit code with aclhound in combination with GIT/Gerrit/Jenkins
 
