@@ -32,7 +32,7 @@ from aclhound.parser import grammarParser
 from aclhound.render import Render
 
 
-def generate_policy(filename, startrule='start', trace=True, whitespace=None,
+def generate_policy(filename, startrule='start', trace=False, whitespace=None,
                     afi=4, vendor=None):
     """
     Open a file, run it through the parser, recurse if needed
@@ -62,9 +62,9 @@ def generate_policy(filename, startrule='start', trace=True, whitespace=None,
         for line in f:
             if line.startswith('@'):
                 filename = line.split('#')[0][1:]
-                if filename not in seen:
+                if not filename in seen:
                     seen.append(filename)
-                    policy = policy + walk_file(filename, seen, policy)
+                    policy = walk_file(filename, seen, policy)
             elif line.startswith(('allow', 'deny')) and line not in policy:
                 policy.append(line)
         return policy

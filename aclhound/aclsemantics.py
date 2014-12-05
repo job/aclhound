@@ -34,8 +34,6 @@ import sys
 
 
 class grammarSemantics(object):
-#    def __init__(self):
-#        self._protocol = None
 
     def start(self, ast):
         return ast

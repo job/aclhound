@@ -220,7 +220,8 @@ class ACLHoundClient(object):
             print("ERROR: %s" % " ".join(err.args))
             print("""HINT: possible config corruption, delete it and run 'aclhound init'""")
             sys.exit(2)
-        os.chdir(os.path.expanduser(self._settings.get('user', 'location')))
+        data_dir = os.path.expanduser(self._settings.get('user', 'location'))
+        os.chdir(data_dir)
 
     def task_status(self, args):
         """
@@ -556,6 +557,7 @@ def print_debug(func, *args):
     for arg in args:
         pprint(arg)
     print('-----')
+
 
 
 def main():
