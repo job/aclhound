@@ -62,7 +62,7 @@ def generate_policy(filename, startrule='start', trace=False, whitespace=None,
         for line in f:
             if line.startswith('@'):
                 filename = line.split('#')[0][1:]
-                if not filename in seen:
+                if filename not in seen:
                     seen.append(filename)
                     policy = walk_file(filename, seen, policy)
             elif line.startswith(('allow', 'deny')) and line not in policy:

@@ -559,7 +559,6 @@ def print_debug(func, *args):
     print('-----')
 
 
-
 def main():
     """
     Create an ACLHound client, parse the arguments received on the command
