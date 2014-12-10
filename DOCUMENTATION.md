@@ -12,7 +12,7 @@ In order to fully understand ACLhound and it's working, it is of most importance
 *   objects
 *   networkconfigs (future use)
 
-### Devices
+### Directory:devices
 
 In &quot;devices&quot; directory you add the devices which you want under control of ACLhound. It's just a text file, and it contains a couple of variables.
 
@@ -21,18 +21,23 @@ In &quot;devices&quot; directory you add the devices which you want under contro
     * asa
     * junos
 *   transport, this defines how aclhound should connect to the device to deploy the acl. There's 2 options here: telnet &amp; ssh
+*   save_config, this defines wether you want to save the configuration onto the device after a deployment has been done. There's 2 options here: true & false. If not specified, it defaults to false.
 *   include statements, these mention the policies that you would like to put on the devices. Multiple entries are allowed here.
 
 Example device file:
 
-	mmoerman@aclhound001:~/aclhound$ cat devices/fw001
-	vendor ios
-	transport ssh
-	include nw-management
-	include test-policy
+```
+mmoerman@aclhound001:~/aclhound$ cat devices/fw001
+vendor ios
+transport ssh
+save_config true
+include nw-management
+include test-policy
+```
+	
 
 
-### Policies
+### Directory:policy
 
 In the 'policy' directory you'll add text files that contain the actual ACL that you are building. The name that you choose here, is also the name of the ACL on the device you deploy the policy to. In this textfile, type the complete ACL as you want it. The syntax for this is a variation of the AFPL2 language and is as following:
 
@@ -76,7 +81,7 @@ Some examples to take a look at:
 
 
 
-### Objects
+### Directory:objects
 
 In the 'objects' directory you'll add text files which contain either hosts/subnets or ports
 
@@ -99,11 +104,49 @@ Examples could be:
 	993
 	465
 
+## Building & Deploying with ACLhound
+### Building
+
+Building the ACLs for one or all devices is done by executing:
+
+    aclhound build <devicename|all>
+
+This will perform a syntax check and output the complete ACL's on stdout of what you have build in the object & policy directories for either a specific device, or all of them.
+
+With regards to IPv4 & IPv6, ACLhound doesn't care if you mix and match IPv4 & IPv6 in a policy, it will just build/output 2 ACLs, one for IPv4 , and one for IPv6. These will have the suffix -v4 or -v6.
+
+### Deploying
+
+Building the ACLs for one or all devices is done by executing:
+
+    aclhound deploy <devicename|all>
+
+This will perform a deployment of the of what you have build in the object & policy directories for either a specific device, or all of them.
+
+With regards to IPv4 & IPv6, ACLhound checks during deployment if the device is capable of IPv6, and only deploys these IPv6 ACLs when the device is actually capable of doing so. On Cisco IOS this is done by checking the output of the 'show ipv6 cef' command. Cisco ASA does do proper IPv6 already(keep in mind, current version 1.5 does not support ASA software 9.1.2 or higher).
+
+There's a little trick going on the first time you are deploying ACLs to a device, as it will rename the existing ACLs, and replace them with a -v4 or -v6 suffix. See also next topic on actual binding, and the LOCKSTEP process.
+
+#### ACL bindings / LOCKSTEP process
+Binding of ACLs to specific interfaces is not setup within ACLhound. You do need to configure this on the device itself. This is only for the initial binding of a specific ACL on an interfance. When deploying, ACLHound does detect to which interfaces ACLs are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
+
+This process is as follows:
+
+*   Upload ACL with -LOCKSTEP suffix
+*   Change ACL on interface towards the new ACL with the -LOCKSTEP suffix
+*   Remove old ACL
+*   Upload ACL without suffix
+*   Change ACL on interface towards the new ACL without the suffix
+
+
+---
 ## Building something real
 
 So, let's do an example in 5 steps where we touch everything. The example that is outlined below is only for local usage, it doesn't cover integration with GIT/Gerrit/Jenkins, documentation for this is not finished.
 
-These 5 steps are:
+Let's assume we're creating a simple rule, let's say we want to have an ACL that allows all SSH, HTTP &amp; HTTPS (as requested in ticket-067) traffic from an ops vlan 10.32.1.0/24 towards web vlan 10.32.2.0/24, and we want to apply this on machine fw001.
+
+We will break this down in 5 steps:
 
 *   Creating device file
 *   Creating objects that are mentioned in the device file
@@ -111,15 +154,12 @@ These 5 steps are:
 *   Do syntax checking
 *   Deploy ACL
 
-Keep in mind, bindings of ACL's to specific interfaces are not setup within ACLhound, you do need to configure this on the device itself. However ACLHound does detect during deployment to which interfaces ACL's are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
-
-Let's assume we're creating a simple rule, let's say we want to have an ACL that allows all SSH, HTTP &amp; HTTPS (as requested in ticket-067) traffic from an ops vlan 10.32.1.0/24 towards web vlan 10.32.2.0/24, and we want to apply this on machine fw001.
 
 ### **First step**
 
 Create the device by editing a new file in the devices directory:
 
-*   vi ~/aclhound/devices/fw001
+    vi ~/aclhound/devices/fw001
 
 Insert this content:
 
@@ -156,7 +196,7 @@ Now to actually check these ACL's we'll need to compile them into a format that 
 
 Use:
 
-	aclhound build <~/aclhound/devices/devicename|all>
+	aclhound build <~/aclhound/devices/fw001>
 	
 ### **Fifth step**
 
@@ -164,12 +204,8 @@ Once you have done the syntax check above, and you have no problems anymore, you
 
 Use:
 
-	aclhound deploy <~/aclhound/devices/devicename|all>
+	aclhound deploy <~/aclhound/devices/fw001>
 
-## How to work and submit code with aclhound in combination with GIT/Gerrit/Jenkins
+---
 
-To be written
-
-* * *
-
-Remarks or suggestions about this documentation? Send them to maarten.moerman (at) gmail.com
+######Remarks or suggestions about this documentation? Send them to maarten.moerman (at) gmail.com
