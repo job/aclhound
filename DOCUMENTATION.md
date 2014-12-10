@@ -73,7 +73,7 @@ Policies allow for inclusions, there are 3 type of object inclusion possibilitie
 *    ports
 *    policies
 
-You do these inclusion by adding an @ sign in front of it. Now hosts & ports use a suffix with their filenames, which is explained in &quot;Objects&quot;. Policies can simple be included by just including the policy on a single line (@policy_name).
+You do these inclusions by adding an @ sign in front of it. Now hosts & ports use a suffix with their filenames, which is explained in &quot;Objects&quot;. Policies can simple be included by just including the policy on a single line (@policy_name).
 
 Keep in mind, that ACLhound does automatically add a &quot;deny any&quot; statement at the end of each ACL, so you don't have to do that yourself, this also keeps behaviour consistent across devices. 
 
@@ -147,7 +147,7 @@ With regards to IPv4 & IPv6, ACLhound checks during deployment if the device is 
 There's a little trick going on the first time you are deploying ACLs to a device, as it will rename the existing ACLs, and replace them with a -v4 or -v6 suffix. See also next topic on actual binding, and the LOCKSTEP process.
 
 #### ACL bindings / LOCKSTEP process
-Binding of ACLs to specific interfaces is not setup within ACLhound. You do need to configure this on the device itself. This is only for the initial binding of a specific ACL on an interfance. When deploying, ACLHound does detect to which interfaces ACLs are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
+Binding of ACLs to specific interfaces is not setup within ACLhound. You do need to configure this on the device itself. This is only for the initial binding of a specific ACL on an interface. When deploying, ACLHound does detect to which interfaces ACLs are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
 
 This process is as follows:
 
@@ -226,4 +226,4 @@ Use:
 
 ---
 
-######Documentation written by [Maarten Moerman][docs_maarten-moerman]. Remarks or suggestions are very much welcome.
+######Documentation written by [Maarten Moerman][link_maarten-moerman]. Remarks or suggestions are very much welcome.
