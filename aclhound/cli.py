@@ -479,6 +479,11 @@ overview of previous work")
                         if transport not in ['telnet', 'ssh']:
                             print("ERROR: unknown transport mechanism: %s" % transport)
                             sys.exit(2)
+                    elif line.split(' ')[0] == "save_config":
+                        save_config = line.split(' ')[1]
+                        if save_config not in ['true', 'false']:
+                           print("ERROR: unknown setting for save_config %s" % save_config)
+                           sys.exit(2)
                     elif line.split(' ')[0] == "include":
                         polname = line.split(' ')[1]
                         for afi in [4, 6]:
@@ -490,7 +495,7 @@ overview of previous work")
                                           "name": name,
                                           "policy": policy}
             a = Deploy(hostname=hostname, vendor=vendor, acls=acls,
-                       transport=transport)
+                       transport=transport, save_config=save_config)
             print(a.deploy())
 
         for dev in devices_list:
