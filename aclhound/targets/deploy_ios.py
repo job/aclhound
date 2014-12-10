@@ -48,7 +48,7 @@ from aclhound import textfsm
 from StringIO import StringIO
 
 
-def deploy(hostname=None, acls=None, transport='ssh'):
+def deploy(hostname=None, acls=None, transport='ssh', save_config='false'):
     """
     Deploy code in a safe way o a Cisco IOS device.
     """
@@ -244,3 +244,7 @@ Start
             s(conn, "no ipv6 access-list LOCKSTEP-%s"
               % acls[policy]['name'])
         s(conn, "end")
+
+    if save_config == "true":
+        s(conn, "write")
+

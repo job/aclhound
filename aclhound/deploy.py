@@ -34,11 +34,17 @@ from targets import deploy_asa
 
 class Deploy():
 
-    def __init__(self, hostname=None, acls=[], vendor=None, transport='ssh'):
+    def __init__(self, 
+                 hostname=None, 
+                 acls=[], 
+                 vendor=None, 
+                 transport='ssh', 
+                 save_config='false'):
         self.hostname = hostname
         self.acls = acls
         self.vendor = vendor
         self.transport = transport
+        self.save_config = save_config
 
     def deploy(self):
         if not self.vendor:
@@ -48,12 +54,14 @@ class Deploy():
     def deploy_ios(self):
         return deploy_ios.deploy(hostname=self.hostname,
                                  acls=self.acls,
-                                 transport=self.transport)
+                                 transport=self.transport,
+                                 save_config=self.save_config)
 
     def deploy_asa(self):
         return deploy_asa.deploy(hostname=self.hostname,
                                  acls=self.acls,
-                                 transport=self.transport)
+                                 transport=self.transport,
+                                 save_config=self.save_config)
 # TODO add juniper support
 #    def deploy_junos(self, **kwargs):
 #        return junos.deploy(self, **kwargs)
