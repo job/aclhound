@@ -39,6 +39,7 @@ include test-policy
 
 ### Directory:policy
 
+#### Policy language
 In the 'policy' directory you'll add text files that contain the actual ACL that you are building. The name that you choose here, is also the name of the ACL on the device you deploy the policy to. In this textfile, type the complete ACL as you want it. The syntax for this is a variation of the AFPL2 language and is as following:
 
 
@@ -58,15 +59,23 @@ In the 'policy' directory you'll add text files that contain the actual ACL that
 	
 	@policy_name
 
+Note the expire statement. This is something that does not translate to the device, but is used during the build & deployment process to check if a certain policy is still valid. Once past the date mentiond in the expire statement, it will not be pushed towards the device.
+
+#### Policy behaviour
 Note the @ sign, the policies allow for inclusion of object files, there are 3 type of object inclusion possibilities: hosts &amp; ports & policies. Now hosts & ports use a suffix with their filenames, which is explained in &quot;Objects&quot;. Policies can simple be included by just including the policy on a single line (@policy_name).
 
 Keep in mind, that ACLhound automatically adds a &quot;deny any&quot; statement at the end of each ACL, so you don't have to do that yourself, this also keeps behaviour consistent across devices. 
 
 Now if you want to log certain denied traffic, you can always add a &quot;deny any any log&quot; statement as your last line. (same theory goes for allowing traffic). 
 
+
+With regards to IPv4 & IPv6, ACLhound doesn't care if you mix and match IPv4 & IPv6 in a policy, it will just build/output 2 ACLs, one for IPv4 , and one for IPv6. These will have the suffix -v4 or -v6. 
+
+ACLhound is smart as in, it identifies if rules that are built are IP version specific and puts them in the correct (IPv4 or IPv6) ACL. If they are generic, such as "deny any any log", it will place them in both IPv4 and IPv6 ACLs.
+
 Another thing to keep in mind, remarks are not being pushed towards the device, as it won't make sense once the actual ACL is compiled and being pushed because you'll end up with more (unclear) remarks then actual ACL lines.
 
-Some examples to take a look at:
+####Example:
 
 	allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
 	deny tcp src 2.2.2.2 dst 2.2.2.2
@@ -113,17 +122,15 @@ Building the ACLs for one or all devices is done by executing:
 
 This will perform a syntax check and output the complete ACL's on stdout of what you have build in the object & policy directories for either a specific device, or all of them.
 
-With regards to IPv4 & IPv6, ACLhound doesn't care if you mix and match IPv4 & IPv6 in a policy, it will just build/output 2 ACLs, one for IPv4 , and one for IPv6. These will have the suffix -v4 or -v6.
-
 ### Deploying
 
 Building the ACLs for one or all devices is done by executing:
 
     aclhound deploy <devicename|all>
 
-This will perform a deployment of the of what you have build in the object & policy directories for either a specific device, or all of them.
+This will perform a deployment of what you have build in the object & policy directories for either a specific device, or all of them.
 
-With regards to IPv4 & IPv6, ACLhound checks during deployment if the device is capable of IPv6, and only deploys these IPv6 ACLs when the device is actually capable of doing so. On Cisco IOS this is done by checking the output of the 'show ipv6 cef' command. Cisco ASA does do proper IPv6 already(keep in mind, current version 1.5 does not support ASA software 9.1.2 or higher).
+With regards to IPv4 & IPv6, ACLhound checks during deployment if the device is capable of IPv6, and only deploys these IPv6 ACLs when the device is actually capable of doing so. On Cisco IOS this is done by checking the output of the 'show ipv6 cef' command. Cisco ASA does do proper IPv6 already (keep in mind, currently, version 1.5 does not support ASA software 9.1.2 or higher).
 
 There's a little trick going on the first time you are deploying ACLs to a device, as it will rename the existing ACLs, and replace them with a -v4 or -v6 suffix. See also next topic on actual binding, and the LOCKSTEP process.
 
@@ -142,7 +149,7 @@ This process is as follows:
 ---
 ## Building something real
 
-So, let's do an example in 5 steps where we touch everything. The example that is outlined below is only for local usage, it doesn't cover integration with GIT/Gerrit/Jenkins, documentation for this is not finished.
+So, let's do an example where we touch everything. The example that is outlined below is only for local usage.
 
 Let's assume we're creating a simple rule, let's say we want to have an ACL that allows all SSH, HTTP &amp; HTTPS (as requested in ticket-067) traffic from an ops vlan 10.32.1.0/24 towards web vlan 10.32.2.0/24, and we want to apply this on machine fw001.
 
