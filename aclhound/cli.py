@@ -496,7 +496,7 @@ overview of previous work")
                                           "policy": policy}
             a = Deploy(hostname=hostname, vendor=vendor, acls=acls,
                        transport=transport, save_config=save_config)
-            print(a.deploy())
+            a.deploy()
 
         for dev in devices_list:
             do_deploy(dev)

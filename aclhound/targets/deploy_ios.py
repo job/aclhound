@@ -153,7 +153,7 @@ Start
     conn.auto_app_authorize(account)
     capabilities = {}
     s(conn, "show ipv6 cef")
-    capabilities['ipv6'] = True if conn.response == "%IPv6 CEF not running" else False
+    capabilities['ipv6'] = False if conn.response == "%IPv6 CEF not running" else True
     # map into structure:
     # policyname { (int, afi, direction) }
     map_pol_int = {}
@@ -181,7 +181,7 @@ Start
     print("INFO: interface / policy mapping:")
     pprint(map_pol_int)
 
-    def lock_step(lock, pol):
+    def lock_step(lock, pol, capabilities):
         name = acls[pol]['name']
         afi = acls[pol]['afi']
         if afi == 6 and not capabilities['ipv6']:
@@ -234,7 +234,7 @@ Start
 
     for policy in acls:
         for lock in ["LOCKSTEP-", ""]:
-            lock_step(lock, policy)
+            lock_step(lock, policy, capabilities)
         # cleanup
         s(conn, "configure terminal")
         if acls[policy]['afi'] == 4:
