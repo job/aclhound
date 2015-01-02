@@ -42,25 +42,16 @@ Installation notes
 Step 1: get the code
 
 ```
-git clone https://github.com/job/aclhound.git
-cd aclhound
-virtualenv .
-source ./bin/activate
-pip install -r requirements.txt
-make test
-python setup.py install
+sudo pip install aclhound
 ```
-
-Step 2: intergrate with Gerrit
-
-Install [Jenkins] [2] with the [Gerrit Trigger] [3] plugin.
 
 Copyright and license
 ---------------------
 
-Copyright 2014 Job Snijders. Code and documentation released under the BSD
+Copyright 2014,2015 Job Snijders. Code and documentation released under the BSD
 2-Clause license.
 
+ACLHound's inception was commissioned by the eBay Classifieds Group.
 
 [1]: http://www.lsi.us.es/~quivir/sergio/DEPEND09.pdf "AFPL2"
 [2]: http://jenkins-ci.org/ "Jenkins"
