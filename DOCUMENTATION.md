@@ -1,4 +1,4 @@
-[link_install-config]: https://github.com/job/aclhound/blob/master/INSTALL-CONFIG.md
+	[link_install-config]: https://github.com/job/aclhound/blob/master/INSTALL-CONFIG.md
 [link_maarten-moerman]: https://github.com/mgmoerman
 
 #Working with ACLhound
@@ -64,6 +64,15 @@ The syntax for this is a variation of the AFPL2 language and is as following:
 	
 	@policy_name
 
+##### Range statement
+
+Ranges can be configured in three different ways:
+
+*    Specified as an actual range: 1024-2048 , this specifies port 1024 upto and including 2048
+*    Specified as "greater then": 1024- , this specifies port 1024 up to and including 65535 
+*    Specified as "less then": -1024 , this specifies port 0 up to and including 1024
+
+##### Expire statement
 Note the expire statement. This is something that does not translate as part of an ACL to the device, but is used during the build & deployment process to check if a certain policy/ACL is still valid. Once past the date mentiond in the expire statement, it will not be pushed towards the device.
 
 #### Policy behaviour
