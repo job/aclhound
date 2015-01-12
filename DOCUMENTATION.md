@@ -1,4 +1,4 @@
-	[link_install-config]: https://github.com/job/aclhound/blob/master/INSTALL-CONFIG.md
+[link_install-config]: https://github.com/job/aclhound/blob/master/INSTALL-CONFIG.md
 [link_maarten-moerman]: https://github.com/mgmoerman
 
 #Working with ACLhound
