@@ -223,11 +223,12 @@ class grammarSemantics(object):
             if atom['single']:
                 ports.append(int(atom['single']))
             if atom['range']:
-                low = 0 if atom['range'][0] == "-" else int(atom['range'][0])
-                high = 65535 if atom['range'][1] == "-" else int(atom['range'][1])
+                low, high = map(int, atom['range'])
                 ports = ports + range(low, high + 1)
+        # sort and deduplicate all ports
+        ports = set(ports)
+        # create the smallest amount of port ranges possible
         atoms = []
-        """ compress the port numbers from a single line into ranges """
         for a, b in itertools.groupby(enumerate(ports), lambda(x, y): y - x):
             b = list(b)
             atoms.append(b[0][1] if b[0][1] == b[-1][1]
@@ -244,7 +245,7 @@ class grammarSemantics(object):
             raise FailedSemantics('First port cannot be higher than second \
 port in a range expression')
             sys.exit(2)
-        return ast
+        return [low, high]
 
     def port_number(self, ast):
         port = int(ast)
