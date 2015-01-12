@@ -143,7 +143,9 @@ def render(self, **kwargs):
                         else:
                             line += s_host + " "
 
-                        if not s_port == "any":
+                        if type(s_port) == tuple:
+                            line += "range %s %s " % (s_port[0], s_port[1])
+                        elif not s_port == "any":
                             line += "eq %s " % str(s_port)
 
                         if d_host == u'any':
@@ -156,7 +158,9 @@ def render(self, **kwargs):
                         else:
                             line += d_host + " "
 
-                        if d_port != u"any":
+                        if type(d_port) == tuple:
+                            line += "range %s %s" % (d_port[0], d_port[1])
+                        elif not d_port == "any":
                             line += "eq %s" % str(d_port)
 
                         if logging:
