@@ -6,7 +6,7 @@ major minor patch: bumpversion
 	@echo "push via \`git push origin master --tags\`"
 
 clean:
-	rm -rf build/ dist/ *.egg *.egg-info/
+	rm -rf build/ dist/ *.egg *.egg-info/ .eggs/
 	find . -name '*.py[co]' | xargs rm
 	find . -name '__pycache__' | xargs rm
 
