@@ -207,23 +207,24 @@ class grammarSemantics(object):
         return ast
 
     def NUMBER(self, ast):
-        return ast
+        return int(ast)
 
     def port_atoms(self, ast):
         ports = []
-        """[u'80']
-        [u'5000']
-        [AST({u'range': [u'1', u'10']})]
-        [AST({u'range': [u'5', u'10']})]
-        [u'1']
-        [u'2', AST({u'range': [u'1', u'2']}), u'4']
-        [u'1']
-        [u'2', u'2', u'3', u'4']"""
+        """[AST({u'range': [0, 1024], u'single': None})]
+        [AST({u'range': [1024, 65535], u'single': None})]
+        [AST({u'range': [1023, 65535], u'single': None}),
+            AST({u'range': [0, 1022], u'single': None}),
+            AST({u'single': 1, u'range': None}),
+            AST({u'single': 2, u'range': None}),
+            AST({u'single': 3, u'range': None}),
+            AST({u'single': 4, u'range': None})]"""
+
         for atom in ast:
             if atom['single']:
-                ports.append(int(atom['single']))
+                ports.append(atom['single'])
             if atom['range']:
-                low, high = map(int, atom['range'])
+                low, high = atom['range']
                 ports = ports + range(low, high + 1)
         # sort and deduplicate all ports
         ports = set(ports)
@@ -248,8 +249,7 @@ port in a range expression')
         return [low, high]
 
     def port_number(self, ast):
-        port = int(ast)
-        if not 0 < port < 2 ** 16:
+        if not 0 < ast < 2 ** 16:
             raise FailedSemantics('Port number must be between 0 and 2^16')
         return ast
 
