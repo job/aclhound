@@ -22,7 +22,9 @@ Valid examples:
 
     allow tcp src 10.0.0.0/8 port any dst 2.2.2.2 port 80 stateful # test
     deny tcp src 2.2.2.2 dst 2.2.2.2
-    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-10
+    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15-20 # allow port 15 upto port 20
+    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 15- # allow port 15 upto 65535
+    allow tcp src 2.2.2.2 dst 10.0.0.0/8 port -15 # allow upto port 15
     allow tcp src 2.2.2.2 dst 10.0.0.0/8 port 5-10 expire 20140504
     allow tcp src @mp-servers dst 10.0.0.0/8
     deny tcp src @bgp-peers port any dst @mp-servers port @webports # another comment
@@ -192,6 +194,8 @@ port_expr
 port_range
     =
     @:NUMBER "-" @:NUMBER ~
+    | @:"-" @:NUMBER ~
+    | @:NUMBER @:"-" ~
     ;
 
 port_number

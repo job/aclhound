@@ -223,7 +223,8 @@ class grammarSemantics(object):
             if atom['single']:
                 ports.append(int(atom['single']))
             if atom['range']:
-                low, high = map(int, atom['range'])
+                low = 0 if atom['range'][0] == "-" else int(atom['range'][0])
+                high = 65535 if atom['range'][1] == "-" else int(atom['range'][1])
                 ports = ports + range(low, high + 1)
         atoms = []
         """ compress the port numbers from a single line into ranges """
@@ -237,7 +238,8 @@ class grammarSemantics(object):
         return ast
 
     def port_range(self, ast):
-        low, high = map(int, ast)
+        low = 0 if ast[0] == "-" else int(ast[0])
+        high = 65535 if ast[1] == "-" else int(ast[1])
         if low > high:
             raise FailedSemantics('First port cannot be higher than second \
 port in a range expression')

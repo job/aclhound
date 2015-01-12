@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2014, 11, 10, 16, 51, 18, 0)
+__version__ = (2015, 1, 12, 13, 55, 39, 0)
 
 __all__ = [
     'grammarParser',
@@ -354,12 +354,27 @@ class grammarParser(Parser):
 
     @graken()
     def _port_range_(self):
-        self._NUMBER_()
-        self.ast['@'] = self.last_node
-        self._token('-')
-        self._NUMBER_()
-        self.ast['@'] = self.last_node
-        self._cut()
+        with self._choice():
+            with self._option():
+                self._NUMBER_()
+                self.ast['@'] = self.last_node
+                self._token('-')
+                self._NUMBER_()
+                self.ast['@'] = self.last_node
+                self._cut()
+            with self._option():
+                self._token('-')
+                self.ast['@'] = self.last_node
+                self._NUMBER_()
+                self.ast['@'] = self.last_node
+                self._cut()
+            with self._option():
+                self._NUMBER_()
+                self.ast['@'] = self.last_node
+                self._token('-')
+                self.ast['@'] = self.last_node
+                self._cut()
+            self._error('no available options')
 
     @graken()
     def _port_number_(self):
