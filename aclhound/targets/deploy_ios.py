@@ -154,6 +154,10 @@ Start
     capabilities = {}
     s(conn, "show ipv6 cef")
     capabilities['ipv6'] = False if conn.response == "%IPv6 CEF not running" else True
+    if capabilities['ipv6']:
+        print("INFO: IPv6 support detected")
+    else:
+        print("INFO: NO IPv6 support detected, skipping IPv6 ACLs")
     # map into structure:
     # policyname { (int, afi, direction) }
     map_pol_int = {}
