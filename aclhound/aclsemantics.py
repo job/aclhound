@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2014 Job Snijders <job@instituut.net>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 #
 # This file is part of ACLHound
 #

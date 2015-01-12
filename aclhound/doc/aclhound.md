@@ -29,5 +29,5 @@ Job Snijders <job@instituut.net>
 
 ## COPYRIGHT
 
-ACLHound is Copyright (C) 2014 Job Snijders
+ACLHound is Copyright (C) 2014-2015 Job Snijders
 

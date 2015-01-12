@@ -1,4 +1,4 @@
-# Copyright (C) 2014 Job Snijders <job@instituut.net>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 #
 # This file is part of ACLHound
 #
@@ -28,7 +28,7 @@ import textwrap as _textwrap
 
 
 LICENSE = """
-Copyright (C) 2014 Job Snijders <job@instituut.net>
+Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 
 This file is part of ACLHound
 
@@ -56,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def short_license(info, wrap=True, **kwargs):
     paragraphs = [
-        'Copyright (C) 2014 Job Snijders <job@instituut.net>'.format(**info),
+        'Copyright (C) 2014-2015 Job Snijders <job@instituut.net>'.format(**info),
         'ACLHound comes with ABSOLUTELY NO WARRANTY and is licensed under the BSD 2-Clause license.'.format(**info),
         ]
     if wrap:

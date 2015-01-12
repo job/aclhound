@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.7
-# Copyright (C) 2014 Job Snijders <job@instituut.net>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 #
 # This file is part of ACLHound
 #
@@ -34,11 +34,11 @@ from targets import deploy_asa
 
 class Deploy():
 
-    def __init__(self, 
-                 hostname=None, 
-                 acls=[], 
-                 vendor=None, 
-                 transport='ssh', 
+    def __init__(self,
+                 hostname=None,
+                 acls=[],
+                 vendor=None,
+                 transport='ssh',
                  save_config='false'):
         self.hostname = hostname
         self.acls = acls

@@ -1,4 +1,4 @@
-# Copyright (C) 2014 Job Snijders <job@instituut.net>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 # Copyright (C) 2011-2013 Kristian Larsson, Lukas Garberg
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
