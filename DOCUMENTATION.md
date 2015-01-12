@@ -3,7 +3,7 @@
 
 #Working with ACLhound
 
-If ACLhound hasn't been installed, please see [INSTALL-CONFIG.md][link_install-config]
+If ACLhound hasn't been installed or configured, please see [INSTALL-CONFIG.md][link_install-config]
 
 This documentation will explain to you how to work with ACLhound to get objects into policies, and deploy them to devices.
 
