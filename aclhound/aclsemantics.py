@@ -29,6 +29,7 @@ from grako.exceptions import FailedSemantics
 from parser import grammarParser
 
 import ipaddr
+import itertools
 import re
 import sys
 
@@ -224,7 +225,13 @@ class grammarSemantics(object):
             if atom['range']:
                 low, high = map(int, atom['range'])
                 ports = ports + range(low, high + 1)
-        return list(set(ports))
+        atoms = []
+        """ compress the port numbers from a single line into ranges """
+        for a, b in itertools.groupby(enumerate(ports), lambda(x, y): y - x):
+            b = list(b)
+            atoms.append(b[0][1] if b[0][1] == b[-1][1]
+                         else (b[0][1], b[-1][1]))
+        return list(set(atoms))
 
     def port_expr(self, ast):
         return ast

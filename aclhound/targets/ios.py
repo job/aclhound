@@ -130,11 +130,13 @@ def render(self, **kwargs):
                             line += "host %s " % s_host.split('/')[0]
                         elif afi == 4:
                             line += "%s %s " % (IPNetwork(s_host).network,
-                                               IPNetwork(s_host).hostmask)
+                                                IPNetwork(s_host).hostmask)
                         else:
                             line += s_host + " "
 
-                        if not s_port == "any":
+                        if type(s_port) == tuple:
+                            line += "range %s %s " % (s_port[0], s_port[1])
+                        elif not s_port == "any":
                             line += "eq %s " % str(s_port)
 
                         if d_host == "any":
@@ -143,11 +145,13 @@ def render(self, **kwargs):
                             line += "host %s " % d_host.split('/')[0]
                         elif afi == 4:
                             line += "%s %s " % (IPNetwork(d_host).network,
-                                               IPNetwork(d_host).hostmask)
+                                                IPNetwork(d_host).hostmask)
                         else:
                             line += d_host + " "
 
-                        if not d_port == "any":
+                        if type(d_port) == tuple:
+                            line += "range %s %s " % (d_port[0], d_port[1])
+                        elif not d_port == "any":
                             line += "eq %s " % str(d_port)
 
                         if logging:

@@ -38,12 +38,6 @@ now = datetime.date.today()
 now_stamp = int(now.strftime('%Y%M%d'))
 
 
-def compress_ports_to_range(ports):
-    for a, b in itertools.groupby(enumerate(i), lambda(x, y): y - x):
-        b = list(b)
-        yield b[0][1], b[-1][1]
-
-
 class Render():
 
     def __init__(self, name=None, **kwargs):
@@ -56,11 +50,6 @@ class Render():
         if expire:
             if int(expire) <= now_stamp:
                 return
-        # compress port ranges
-        #
-        #print ast
-        # FIXME normalise src & dst port
-
         self.data.append(ast)
 
     def output(self, vendor=None, afi=None):
