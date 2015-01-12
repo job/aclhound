@@ -1,3 +1,7 @@
+[link_documentation]: https://github.com/job/aclhound/blob/master/DOCUMENTATION.md
+
+
+
 ACLHOUND
 ========
 
@@ -44,6 +48,11 @@ Step 1: get the code
 ```
 sudo pip install aclhound
 ```
+
+Documentation
+-------------
+
+Documentation can be found [here][link_documentation]. This describes directory structure, ACLhound language syntax and examples.
 
 Copyright and license
 ---------------------
