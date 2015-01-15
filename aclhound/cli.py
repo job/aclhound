@@ -226,6 +226,7 @@ class ACLHoundClient(object):
         else:
             data_dir = os.path.expanduser(self._settings.get('user', 'location'))
         os.chdir(data_dir)
+        print("INFO: working with data in %s" % data_dir)
 
     def task_status(self, args):
         """
