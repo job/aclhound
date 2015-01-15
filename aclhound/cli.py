@@ -28,11 +28,12 @@
 """
 The ACLHound command-line client assists in ACL management.
 
-Usage: aclhound [-d] [--version] [--help] <command> [<args>...]
+Usage: aclhound [-d] [-j] [--version] [--help] <command> [<args>...]
 
 Options:
     -h --help       Show this screen
     -d --debug      Enable debugging output
+    -j --jenkins    Use jenkins environmental variables like WORKSPACE
     --version       Show version information
 
 Subcommands, use 'aclhould help <subcommand>' to learn more:
@@ -208,11 +209,11 @@ def run(cmd, return_channel=0, debug=None):
 
 class ACLHoundClient(object):
     """
-    An client which compiles abstract ACL policy into vendor-specific network
+    A client which compiles abstract ACL policy into vendor-specific network
     configurations.
     """
 
-    def __init__(self):
+    def __init__(self, args):
         try:
             self._settings = Settings()
         except Exception as err:
@@ -220,7 +221,10 @@ class ACLHoundClient(object):
             print("ERROR: %s" % " ".join(err.args))
             print("""HINT: possible config corruption, delete it and run 'aclhound init'""")
             sys.exit(2)
-        data_dir = os.path.expanduser(self._settings.get('user', 'location'))
+        if args['jenkins'] and 'WORKSPACE' in os.environ:
+            data_dir = os.environ['WORKSPACE']
+        else:
+            data_dir = os.path.expanduser(self._settings.get('user', 'location'))
         os.chdir(data_dir)
 
     def task_status(self, args):
@@ -386,8 +390,12 @@ overview of previous work")
         """
         Show unified build between last commit and current state.
 
-        Usage: aclhound build <devicename>
-               aclhound build all
+        Usage: aclhound [-d] [-j] build <devicename>
+               aclhound [-d] [-j] build all
+
+        Options:
+            -d --debug      Enable debugging output
+            -j --jenkins    Use jenkins environmental variables like WORKSPACE
 
         Arguments:
           <devicename>
@@ -441,8 +449,12 @@ overview of previous work")
         """
         Deploy a compiled version of the ACLs on a network device
 
-        Usage: aclhound deploy <devicename>
-               aclhound deploy all
+        Usage: aclhound [-d] [-j] deploy <devicename>
+               aclhound [-d] [-j] deploy all
+
+        Options:
+            -d --debug      Enable debugging output
+            -j --jenkins    Use jenkins environmental variables like WORKSPACE
 
         Arguments:
           <devicename>
@@ -457,7 +469,6 @@ overview of previous work")
 
         Note: please ensure you run 'deploy' inside your ACLHound data directory
         """
-
         if args['<devicename>'] == "all":
             import glob
             devices_list = set(glob.glob('devices/*')) - \
@@ -577,10 +588,11 @@ def main():
             sys.exit(0)
     except IndexError:
         pass
-    cli = ACLHoundClient()
     args = docopt(__doc__, version=aclhound.__version__, options_first=True)
     args['debug'] = args.pop('--debug')
+    args['jenkins'] = args.pop('--jenkins')
     cmd = args['<command>']
+    cli = ACLHoundClient(args)
 
     help_flag = True if cmd == "help" else False
 
