@@ -55,6 +55,7 @@ def render(self, **kwargs):
         s_hosts = rule['source']['l3']['ip']
         d_hosts = rule['destination']['l3']['ip']
         logging = rule['keywords']['log']
+        stateful = rule['keywords']['state']
 
         # deal with ICMP
         if "icmp" in rule['protocol']:
@@ -114,48 +115,51 @@ def render(self, **kwargs):
                         if not afi_match(d_host):
                             continue
                         if rule['action'] == "allow":
-                            action = "permit "
+                            action = "permit"
                         else:
-                            action = "deny "
+                            action = "deny"
                         line = action
 
                         if rule['protocol'] == "any":
-                            line += "ip " if afi == 4 else "ipv6 "
+                            line += " ip" if afi == 4 else "ipv6 "
                         else:
-                            line += rule['protocol'] + " "
+                            line += " " + rule['protocol']
 
                         if s_host == "any":
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
-                            line += "host %s " % s_host.split('/')[0]
+                            line += " host %s" % s_host.split('/')[0]
                         elif afi == 4:
-                            line += "%s %s " % (IPNetwork(s_host).network,
+                            line += " %s %s" % (IPNetwork(s_host).network,
                                                 IPNetwork(s_host).hostmask)
                         else:
-                            line += s_host + " "
+                            line += " " + s_host
 
                         if type(s_port) == tuple:
-                            line += "range %s %s " % (s_port[0], s_port[1])
+                            line += " range %s %s" % (s_port[0], s_port[1])
                         elif not s_port == "any":
-                            line += "eq %s " % str(s_port)
+                            line += " eq %s" % str(s_port)
 
                         if d_host == "any":
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
-                            line += "host %s " % d_host.split('/')[0]
+                            line += " host %s" % d_host.split('/')[0]
                         elif afi == 4:
-                            line += "%s %s " % (IPNetwork(d_host).network,
+                            line += " %s %s" % (IPNetwork(d_host).network,
                                                 IPNetwork(d_host).hostmask)
                         else:
-                            line += d_host + " "
+                            line += " " + d_host
 
                         if type(d_port) == tuple:
-                            line += "range %s %s " % (d_port[0], d_port[1])
+                            line += " range %s %s" % (d_port[0], d_port[1])
                         elif not d_port == "any":
-                            line += "eq %s " % str(d_port)
+                            line += " eq %s" % str(d_port)
+
+                        if stateful:
+                            line += " established"
 
                         if logging:
-                            line += "log"
+                            line += " log"
 
                         if line not in config_blob:
                             config_blob.append(line)

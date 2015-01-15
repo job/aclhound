@@ -48,6 +48,7 @@ def render(self, **kwargs):
         rule = rule[0]
         s_hosts = rule['source']['l3']['ip']
         d_hosts = rule['destination']['l3']['ip']
+        stateful = rule['keywords']['state']
         logging = rule['keywords']['log']
 
         # deal with ICMP
@@ -162,6 +163,9 @@ def render(self, **kwargs):
                             line += "range %s %s" % (d_port[0], d_port[1])
                         elif not d_port == "any":
                             line += "eq %s" % str(d_port)
+
+                        if stateful:
+                            line += " established"
 
                         if logging:
                             line += " log"
