@@ -39,7 +39,7 @@ class Deploy():
                  acls=[],
                  vendor=None,
                  transport='ssh',
-                 save_config=false):
+                 save_config=False):
         self.hostname = hostname
         self.acls = acls
         self.vendor = vendor
