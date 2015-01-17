@@ -121,7 +121,7 @@ def render(self, **kwargs):
                         line = action
 
                         if rule['protocol'] == "any":
-                            line += " ip" if afi == 4 else "ipv6 "
+                            line += " ip" if afi == 4 else " ipv6"
                         else:
                             line += " " + rule['protocol']
 
