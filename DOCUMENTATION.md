@@ -37,7 +37,6 @@ save_config true
 include nw-management
 include test-policy
 ```
-	
 
 
 ### Directory : policy

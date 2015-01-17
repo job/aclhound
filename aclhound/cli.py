@@ -492,10 +492,7 @@ overview of previous work")
                             print("ERROR: unknown transport mechanism: %s" % transport)
                             sys.exit(2)
                     elif line.split(' ')[0] == "save_config":
-                        save_config = line.split(' ')[1]
-                        if save_config not in ['true', 'false']:
-                           print("ERROR: unknown setting for save_config %s" % save_config)
-                           sys.exit(2)
+                        save_config = str2bool(line.split(' ')[1])
                     elif line.split(' ')[0] == "include":
                         polname = line.split(' ')[1]
                         for afi in [4, 6]:
@@ -575,7 +572,8 @@ def print_debug(func, *args):
         pprint(arg)
     print('-----')
 
-
+def str2bool(configstring):
+    return configstring.lower() in ("yes", "true", "t", "1")
 
 def main():
     """
