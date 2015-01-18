@@ -3,6 +3,4 @@ ipaddr==2.1.11
 jenkins==1.0.2
 pip>=1.2.1
 docopt==0.6.2
-git-review==1.24
-gitpython==0.1.7
 -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript

@@ -1,0 +1,12 @@
+allow any src @jobhome dst any
+allow any src @irime dst any
+deny tcp src any dst any port 101-105,106,107 # test1
+permit tcp src any dst any port 101- # test1
+deny tcp src any dst any port 102 stateful # test2 
+deny tcp src any dst any port 103 # test3
+deny tcp src any dst any port 22  # ssh
+deny tcp src any dst any port 23  # telnet
+deny udp src any dst any port 123 # ntp
+deny udp src any dst any port 161 # snmp
+allow icmp @ping6 src any dst @irime # icmp ping6 is all cool
+allow any src any dst any

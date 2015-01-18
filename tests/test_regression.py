@@ -88,15 +88,34 @@ class TestAclhound(unittest.TestCase):
                        'devices/s2-asa.meerval.net', u'<command>': 'build',
                        u'debug': False, u'jenkins': True})
         predefined_output = open('build_asa.txt').read().splitlines()
-        # remove first line, as this contains system specific output
         output.pop(0)
         predefined_output.pop(0)
         output = "\n".join(output)
         predefined_output = "\n".join(predefined_output)
-        # compare generated & predefined output blob, should be same
         self.maxDiff = None
         self.assertEquals(output, predefined_output)
 
+    def test_03__deploy_ios(self):
+        if not "TRAVIS" in os.environ:
+            self.skipTest("Not inside Travis")
+            return
+        elif not os.environ["TRAVIS_REPO_SLUG"] == "job/aclhound":
+            self.skipTest("Skipping this test when triggered by a fork")
+            return
+        os.environ["WORKSPACE"] = os.getcwd()
+        with Capturing() as output:
+            cli = ACLHoundClient({u'--help': False, u'--version': False,
+                                  u'<args>': ['all'], u'<command>': 'deploy',
+                                  u'debug': False, u'jenkins': True})
+            cli.deploy({u'--help': False, u'--version': False, u'<devicename>':
+                        'devices/concepts-ict.mu.meerval.net',
+                        u'<command>': 'deploy', u'debug': False,
+                        u'jenkins': True})
+#        predefined_output = open('deploy_ios.txt').read().splitlines()
+#        output = "\n".join(output)
+#        predefined_output = "\n".join(predefined_output)
+#        self.maxDiff = None
+#        self.assertEquals(output, predefined_output)
 
 #        self.assertTrue(parse_examples('policy/generic_policy'))
 #        self.assertTrue(True)

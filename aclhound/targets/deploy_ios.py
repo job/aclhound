@@ -52,7 +52,6 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=False):
     """
     Deploy code in a safe way o a Cisco IOS device.
     """
-
     try:
         username, enable_pass, password = \
             netrc.netrc().authenticators(hostname)

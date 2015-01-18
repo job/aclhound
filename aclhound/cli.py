@@ -52,7 +52,6 @@ from __future__ import print_function, division, absolute_import, \
 
 from docopt import docopt
 from docopt import DocoptExit
-from git import Repo
 from grako.exceptions import * # noqa
 from grako.parsing import * # noqa
 from subprocess import call, Popen, PIPE, check_output
@@ -232,19 +231,9 @@ class ACLHoundClient(object):
         """
         Show status of current working directory and branch.
 
-        Usage: aclhound [-d] task status
+        Usage: aclhound task status
         """
-        repo = Repo(os.getcwd())
-        branch = repo.active_branch
-        if branch == "master":
-            print("INFO: you are currently in the master copy of the policy repository")
-            print("HINT: use 'aclhound task (start | edit) <taskname>' for changes")
-        else:
-            print("INFO: you are currently working on task: %s" % branch)
-            print
-            ret = run(['git', 'branch', '--merged'])
-            for line in ret.split('\n'):
-                pass
+        print("DEPRECATED: use native git commands like 'git branch'")
 
     def task_list(self, args):
         """
@@ -308,8 +297,10 @@ class ACLHoundClient(object):
             you would like to submit.
         """
 
-        repo = Repo(os.getcwd())
-        branch = repo.active_branch
+        for line in run(['git', 'branch'], return_channel=1).split('\n'):
+            if line.startswith('* '):
+                branch = line.strip().split(' ')[1]
+                break
         if branch == "master":
             print("ERROR: working on master branch, use \
 'aclhound task edit <taskname>' before submitting")

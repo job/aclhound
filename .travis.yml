@@ -1,17 +1,17 @@
 language: python
 
 python:
-  - "2.7"
+  - '2.7'
 
 install:
-  - sudo pip install -U pip setuptools virtualenv
   - pip install coveralls
-  - pip install -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript
-  - pip install https://pypi.python.org/packages/source/g/git-review/git-review-1.24.tar.gz
+  - pip install -r requirements.txt
   - sudo mkdir -p /etc/aclhound ~/.aclhound/
   - sudo chown travis /etc/aclhound ~/.aclhound/
   - sudo cp tests/data/aclhound.conf /etc/aclhound
   - sudo cp tests/data/client.conf ~/.aclhound/client.conf
+  - echo "machine concepts-ict.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
+  - chmod 0600 ~/.netrc
   - python setup.py install
 
 script:
@@ -19,3 +19,9 @@ script:
 
 after_success:
   - coveralls
+  - rm ~/.netrc
+
+env:
+  global:
+  - secure: ACdHcbuJHkkprJ0s1hbREXq3tOr3cMnA2kZEaUduE9Hb8r8o978jFHdmGjHDhdrqQ/psYuN3nX62R6V7NDGYeEu2tS7FJO/OzUEoh09R3QR9AzUOTs+2drR3GOTjPWg7WibRqf71+pX9PXtQQRgVu5GIDzgXF3AQx85XZZl/ChQ=
+  - secure: F/hDnmKvrSWAozGI8bYa5zk80Ike3dNBOeMwOI0TTpNajt+RnLI6mhsgH0JVVwwlWgw2tORzZniImwphgDg5EAXyG3DVTsIml5iyffeJdfaQ9bpkZ2EUtWKXjabq7D1qfUtw/sM8RrAKtThW6JX9gVzHaK9qsw//RRvMw4vLE9U=
