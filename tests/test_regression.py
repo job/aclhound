@@ -59,24 +59,44 @@ class TestAclhound(unittest.TestCase):
         state = parser.parse(grammar, filename=None)
         self.assertTrue(state)
 
-    def test_01__build_all(self):
-        """ run equivalent of 'aclhound build all' and compare STDOUT
-        of the run with a predefined text blob """
+    def test_01__build_ios(self):
         os.environ["WORKSPACE"] = os.getcwd() + "/tests/data"
         with Capturing() as output:
             cli = ACLHoundClient({u'--help': False, u'--version': False,
                                   u'<args>': ['all'], u'<command>': 'build',
                                   u'debug': False, u'jenkins': True})
             cli.build({u'--help': False, u'--version': False, u'<devicename>':
-                       'all', u'<command>': 'build', u'debug': False,
-                       u'jenkins': True})
-        predefined_output = open('build_all_output.txt').read().splitlines()
+                       'devices/s2-ios.meerval.net', u'<command>': 'build',
+                       u'debug': False, u'jenkins': True})
+        predefined_output = open('build_ios.txt').read().splitlines()
         # remove first line, as this contains system specific output
         output.pop(0)
         predefined_output.pop(0)
-
+        output = "\n".join(output)
+        predefined_output = "\n".join(predefined_output)
         # compare generated & predefined output blob, should be same
+        self.maxDiff = None
         self.assertEquals(output, predefined_output)
+
+    def test_02__build_asa(self):
+        os.environ["WORKSPACE"] = os.getcwd()
+        with Capturing() as output:
+            cli = ACLHoundClient({u'--help': False, u'--version': False,
+                                  u'<args>': ['all'], u'<command>': 'build',
+                                  u'debug': False, u'jenkins': True})
+            cli.build({u'--help': False, u'--version': False, u'<devicename>':
+                       'devices/s2-asa.meerval.net', u'<command>': 'build',
+                       u'debug': False, u'jenkins': True})
+        predefined_output = open('build_asa.txt').read().splitlines()
+        # remove first line, as this contains system specific output
+        output.pop(0)
+        predefined_output.pop(0)
+        output = "\n".join(output)
+        predefined_output = "\n".join(predefined_output)
+        # compare generated & predefined output blob, should be same
+        self.maxDiff = None
+        self.assertEquals(output, predefined_output)
+
 
 #        self.assertTrue(parse_examples('policy/generic_policy'))
 #        self.assertTrue(True)

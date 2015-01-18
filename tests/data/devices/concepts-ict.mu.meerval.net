@@ -1,4 +1,0 @@
-vendor ios
-transport ssh
-save_config true
-include ddt-internet-in
