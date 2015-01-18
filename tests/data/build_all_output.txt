@@ -13,6 +13,7 @@ Seed policy name: ddt-internet-in
    deny tcp any any eq 23
    deny udp any any eq 123
    deny udp any any eq 161
+    permit icmp any host 94.142.241.204 128 0
    permit ip any any
    deny ip any any
      ---------
@@ -42,6 +43,7 @@ Seed policy name: ddt-internet-in
    deny tcp any any eq 23
    deny udp any any eq 123
    deny udp any any eq 161
+    permit icmp any host 94.142.241.204 128 0
    permit ip any any
    deny ip any any
      ---------
@@ -127,6 +129,7 @@ Seed policy name: ddt-internet-in
    deny tcp any any eq 23
    deny udp any any eq 123
    deny udp any any eq 161
+    permit icmp any host 94.142.241.204 128 0
    permit ip any any
    deny ip any any
      ---------

@@ -70,34 +70,34 @@ def render(self, **kwargs):
                             action = "permit"
                         else:
                             action = "deny"
-                        extended = "extended " if afi == 4 else ""
-                        yes_v6 = "ipv6 " if afi == 6 else ""
-                        line = "%saccess-list %s %s%s icmp " \
+                        extended = " extended" if afi == 4 else ""
+                        yes_v6 = " ipv6" if afi == 6 else ""
+                        line = " %saccess-list %s %s%s icmp" \
                             % (yes_v6, self.name + "-v%s" % afi,
                                extended, action)
 
                         if s_host == u'any':
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
-                            line += "host %s " % s_host.split('/')[0]
+                            line += " host %s" % s_host.split('/')[0]
                         # IPv4 must be with netmask, IPv6 in CIDR notation
                         elif afi == 4:
-                            line += "%s " % IPNetwork(s_host).with_netmask.replace('/', ' ')
+                            line += " %s" % IPNetwork(s_host).with_netmask.replace('/', ' ')
                         else:
-                            line += s_host + " "
+                            line += " " + s_host
 
                         if d_host == u'any':
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
-                            line += "host %s " % d_host.split('/')[0]
+                            line += " host %s" % d_host.split('/')[0]
                         # IPv4 must be with netmask, IPv6 in CIDR notation
                         elif afi == 4:
-                            line += "%s " % IPNetwork(d_host).with_netmask.replace('/', ' ')
+                            line += " %s" % IPNetwork(d_host).with_netmask.replace('/', ' ')
                         else:
-                            line += d_host + " "
+                            line += " " + d_host
 
                         if not entry == "any":
-                            line += str(entry['icmp_type'])
+                            line += " " + str(entry['icmp_type'])
 
                         if logging:
                             line += " log"

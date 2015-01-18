@@ -8,4 +8,5 @@ deny tcp src any dst any port 22  # ssh
 deny tcp src any dst any port 23  # telnet
 deny udp src any dst any port 123 # ntp
 deny udp src any dst any port 161 # snmp
+allow icmp @ping6 src any dst @irime # icmp ping6 is all cool
 allow any src any dst any
