@@ -70,9 +70,9 @@ def render(self, **kwargs):
                             action = "permit"
                         else:
                             action = "deny"
-                        extended = " extended" if afi == 4 else ""
-                        yes_v6 = " ipv6" if afi == 6 else ""
-                        line = " %saccess-list %s %s%s icmp" \
+                        extended = "extended " if afi == 4 else ""
+                        yes_v6 = "ipv6 " if afi == 6 else ""
+                        line = "%saccess-list %s %s%s icmp" \
                             % (yes_v6, self.name + "-v%s" % afi,
                                extended, action)
 

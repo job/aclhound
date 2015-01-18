@@ -45,9 +45,6 @@ class grammarSemantics(object):
     def optional_keywords(self, ast):
         return ast
 
-    def options(self, ast):
-        return ast
-
     def state_expr(self, ast):
         return ast
 
