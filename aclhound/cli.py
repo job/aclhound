@@ -484,6 +484,9 @@ overview of previous work")
                             sys.exit(2)
                     elif line.split(' ')[0] == "save_config":
                         save_config = str2bool(line.split(' ')[1])
+                    elif line.split(' ')[0] == "timeout":
+                        timeout = int(line.split(' ')[1])
+
                     elif line.split(' ')[0] == "include":
                         polname = line.split(' ')[1]
                         for afi in [4, 6]:
@@ -495,7 +498,8 @@ overview of previous work")
                                           "name": name,
                                           "policy": policy}
             a = Deploy(hostname=hostname, vendor=vendor, acls=acls,
-                       transport=transport, save_config=save_config)
+                       transport=transport, save_config=save_config,
+                       timeout=timeout)
             a.deploy()
 
         for dev in devices_list:

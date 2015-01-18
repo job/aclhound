@@ -39,12 +39,14 @@ class Deploy():
                  acls=[],
                  vendor=None,
                  transport='ssh',
-                 save_config=False):
+                 save_config=False,
+                 timeout=60):
         self.hostname = hostname
         self.acls = acls
         self.vendor = vendor
         self.transport = transport
         self.save_config = save_config
+        self.timeout = timeout
 
     def deploy(self):
         if not self.vendor:
@@ -55,7 +57,8 @@ class Deploy():
         return deploy_ios.deploy(hostname=self.hostname,
                                  acls=self.acls,
                                  transport=self.transport,
-                                 save_config=self.save_config)
+                                 save_config=self.save_config,
+                                 timeout=self.timeout)
 
     def deploy_asa(self):
         return deploy_asa.deploy(hostname=self.hostname,

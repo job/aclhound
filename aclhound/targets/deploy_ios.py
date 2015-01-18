@@ -48,7 +48,8 @@ from aclhound import textfsm
 from StringIO import StringIO
 
 
-def deploy(hostname=None, acls=None, transport='ssh', save_config=False):
+def deploy(hostname=None, acls=None, transport='ssh', save_config=False,
+           timeout=60):
     """
     Deploy code in a safe way o a Cisco IOS device.
     """
@@ -66,6 +67,7 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=False):
             print("ERROR: could not find proper username + pass")
             print("HINT: set username & pass in ~/.netrc for device %s"
                   % hostname)
+            import sys
             sys.exit(2)
 
     def s(conn, line):
@@ -138,7 +140,7 @@ Start
 
     # main flow of the program starts here
     if transport == 'ssh':
-        conn = SSH2(verify_fingerprint=False, debug=0)
+        conn = SSH2(verify_fingerprint=False, debug=0, timeout=timeout)
     elif transport == 'telnet':
         conn = Telnet(debug=0)
     else:
