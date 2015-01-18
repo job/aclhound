@@ -1,6 +1,0 @@
-allow tcp src any port any dst @webservers port @webports
-allow tcp src any port any dst @mailservers port 25-30
-allow icmp @default_icmp src any dst any
-deny icmp any src any dst any
-allow udp src any dst @nameservers port 53
-@second_example

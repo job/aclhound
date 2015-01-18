@@ -1,0 +1,144 @@
+INFO: working with data in /Users/job/source/aclhound/tests/data
+INFO: building configuration for devices/yourorg.mu.meerval.net
+
+
+Seed policy name: ddt-internet-in
+   IPv4:
+   permit ip 37.77.58.0 0.0.0.63 any
+   permit ip host 94.142.241.204 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ip any any
+   deny ip any any
+     ---------
+   IPv6:
+   permit ipv6 2001:67c:208c:10::/64 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ipv6 any any
+   deny any any
+
+INFO: building configuration for devices/concepts-ict.mu.meerval.net
+
+
+Seed policy name: ddt-internet-in
+   IPv4:
+   permit ip 37.77.58.0 0.0.0.63 any
+   permit ip host 94.142.241.204 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ip any any
+   deny ip any any
+     ---------
+   IPv6:
+   permit ipv6 2001:67c:208c:10::/64 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ipv6 any any
+   deny any any
+
+INFO: building configuration for devices/s2.meerval.net
+
+
+Seed policy name: s2-internet-in
+   IPv4:
+   access-list s2-internet-in-v4 extended permit ip 37.77.58.0 255.255.255.192 any 
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.49 any 
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.204 any 
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.51 any 
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.52 any 
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.54 any 
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any range 0 1024
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any range 0 1024
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any range 0 1024
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any range 0 1024
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any range 0 1024
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any range 1024 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any range 1024 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any range 1024 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any range 1024 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any range 1024 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any range 0 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any range 0 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any range 0 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any range 0 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any range 0 65535
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any eq 443
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any eq 443
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any eq 443
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any eq 443
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any eq 443
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any eq 80
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any eq 80
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any eq 80
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any eq 80
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any eq 80
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any eq 8080 established
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any eq 8080 established
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any eq 8080 established
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any eq 8080 established
+   access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any eq 8080 established
+   access-list s2-internet-in-v4 extended permit tcp host 1.2.3.4 any eq 7777 log
+   access-list s2-internet-in-v4 extended permit tcp host 1.2.3.5 any eq 7778 established log
+   access-list s2-internet-in-v4 extended deny ip any any
+     ---------
+   IPv6:
+   ipv6 access-list s2-internet-in-v6 permit ip 2001:67c:208c:10::/64 any 
+   ipv6 access-list s2-internet-in-v6 permit ip 2a02:898:52:ffff::/64 any 
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 0 1024
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 1024 65535
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 0 65535
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any eq 443
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any eq 80
+   ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any eq 8080 established
+   ipv6 access-list s2-internet-in-v6 deny ip any any
+
+INFO: building configuration for devices/steffann.mu.meerval.net
+
+
+Seed policy name: ddt-internet-in
+   IPv4:
+   permit ip 37.77.58.0 0.0.0.63 any
+   permit ip host 94.142.241.204 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ip any any
+   deny ip any any
+     ---------
+   IPv6:
+   permit ipv6 2001:67c:208c:10::/64 any
+   deny tcp any any range 101 107
+   deny tcp any any eq 102 established
+   deny tcp any any eq 103
+   deny tcp any any eq 22
+   deny tcp any any eq 23
+   deny udp any any eq 123
+   deny udp any any eq 161
+   permit ipv6 any any
+   deny any any
+

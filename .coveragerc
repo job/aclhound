@@ -6,3 +6,4 @@ source = .
 [report]
 omit =
   setup.py
+  aclhound/textfsm.py

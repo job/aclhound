@@ -8,8 +8,10 @@ install:
   - pip install coveralls
   - pip install -e git+https://github.com/knipknap/exscript.git@1af983e188879b5b78231821b839162a8dbca9cb#egg=Exscript
   - pip install https://pypi.python.org/packages/source/g/git-review/git-review-1.24.tar.gz
-  - sudo mkdir -p /etc/aclhound
-  - sudo chown travis /etc/aclhound
+  - sudo mkdir -p /etc/aclhound ~/.aclhound/
+  - sudo chown travis /etc/aclhound ~/.aclhound/
+  - sudo cp tests/data/aclhound.conf /etc/aclhound
+  - sudo cp tests/data/client.conf ~/.aclhound/client.conf
   - python setup.py install
 
 script:

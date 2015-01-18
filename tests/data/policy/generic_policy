@@ -1,2 +1,0 @@
-deny tcp src any dst 1.2.3.4 port 45 # magic server
-@example_acl1

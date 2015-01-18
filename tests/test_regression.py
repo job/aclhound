@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2014 Job Snijders <job@instituut.net>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 #
 # This file is part of ACLHound
 #
@@ -30,15 +30,24 @@ import sys
 import unittest
 
 import os
-from os.path import dirname, realpath, join
 
 from grako.parsing import * # noqa
 from grako.exceptions import * # noqa
 
-from aclhound.parser import grammarParser
-from aclhound.aclsemantics import grammarSemantics
-from aclhound.render import Render
-from aclhound.generate import generate_policy
+from aclhound.cli import ACLHoundClient
+
+from cStringIO import StringIO
+
+
+class Capturing(list):
+    def __enter__(self):
+        self._stdout = sys.stdout
+        sys.stdout = self._stringio = StringIO()
+        return self
+
+    def __exit__(self, *args):
+        self.extend(self._stringio.getvalue().splitlines())
+        sys.stdout = self._stdout
 
 
 class TestAclhound(unittest.TestCase):
@@ -50,8 +59,25 @@ class TestAclhound(unittest.TestCase):
         state = parser.parse(grammar, filename=None)
         self.assertTrue(state)
 
-#    def test_01__asa_create_policies(self):
-#
+    def test_01__build_all(self):
+        """ run equivalent of 'aclhound build all' and compare STDOUT
+        of the run with a predefined text blob """
+        os.environ["WORKSPACE"] = os.getcwd() + "/tests/data"
+        with Capturing() as output:
+            cli = ACLHoundClient({u'--help': False, u'--version': False,
+                                  u'<args>': ['all'], u'<command>': 'build',
+                                  u'debug': False, u'jenkins': True})
+            cli.build({u'--help': False, u'--version': False, u'<devicename>':
+                       'all', u'<command>': 'build', u'debug': False,
+                       u'jenkins': True})
+        predefined_output = open('build_all_output.txt').read().splitlines()
+        # remove first line, as this contains system specific output
+        output.pop(0)
+        predefined_output.pop(0)
+
+        # compare generated & predefined output blob, should be same
+        self.assertEquals(output, predefined_output)
+
 #        self.assertTrue(parse_examples('policy/generic_policy'))
 #        self.assertTrue(True)
 #        tree = radix.Radix()

@@ -1,0 +1,10 @@
+allow any src @jobhome dst any
+allow any src @coloclue dst any
+allow tcp src @coloclue dst any port -1024
+allow tcp src @coloclue dst any port 1024-
+allow tcp src @coloclue dst any port 1023-,0-1022,1,2,3,4
+allow tcp src @coloclue dst any port @web_services
+allow tcp src @coloclue dst any port 8080 stateful
+allow tcp src 1.2.3.4 dst any port 7777 log
+allow tcp src 1.2.3.5 dst any port 7778 stateful log
+allow udp src any dst any port 123 expire 20110101 # this is an expired rule
