@@ -55,6 +55,20 @@ class Render():
             u'protocol': u'any',
     """
 
+    """
+    [AST({u'action': u'allow', u'source': AST({u'l4': {'ports': ['any']},
+    u'l3': {'ip': [u'2a02:898:52:ffff::/64', u'94.142.241.49/32',
+    u'94.142.241.204', u'94.142.241.51', u'94.142.241.52/32',
+    u'94.142.241.54/32']}}), u'destination': AST({u'l4': AST({u'include': None,
+                                                              u'ports': [(0,
+                                                                          1024)]}),
+                                                  u'l3': AST({u'ip': [u'any'],
+                                                              u'include':
+                                                              None})}),
+    u'protocol': u'tcp', u'keywords': AST({u'comment': None, u'state': None,
+                                           u'expire': None, u'log': None})})]
+    """
+
     def add(self, ast):
         # only add policy to object if it is not expired
         expire = ast[0]['keywords']['expire']
