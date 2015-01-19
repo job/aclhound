@@ -44,6 +44,17 @@ class Render():
         self.data = []
         self.name = name
 
+    """ relevant keys for compression/deduplication:
+        AST({
+            u'source':
+                AST({u'l4': {'ports': ['any']},
+                     u'l3': AST({u'ip': [u'any'], })}),
+            u'destination':
+                AST({u'l4': {'ports': ['any']},
+                     u'l3': AST({u'ip': [u'any'], })}),
+            u'protocol': u'any',
+    """
+
     def add(self, ast):
         # only add policy to object if it is not expired
         expire = ast[0]['keywords']['expire']
