@@ -155,7 +155,7 @@ def render(self, **kwargs):
                         elif not d_port == "any":
                             line += " eq %s" % str(d_port)
 
-                        if stateful:
+                        if stateful and rule['protocol'] == "tcp":
                             line += " established"
 
                         if logging:
