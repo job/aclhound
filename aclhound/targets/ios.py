@@ -76,7 +76,7 @@ def render(self, **kwargs):
                             action = "permit"
                         else:
                             action = "deny"
-                        line = " %s icmp" % action
+                        line = "%s icmp" % action
 
                         for host in [s_host, d_host]:
                             if host == "any":

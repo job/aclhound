@@ -6,16 +6,18 @@ INFO: IPv6 support detected
    show ipv6 int  | i ine pro|access list
    show run | begin ^line vty
 INFO: interface / policy mapping:
-{'': [{'afi': 6, 'dir': 'in', 'int': 'Loopback0'}],
- 'ddt-internet-in-v4': [{'afi': 4, 'dir': 'in', 'int': 'GigabitEthernet0/0'},
-                        {'afi': 4, 'dir': 'in', 'int': 'Loopback0'}],
- 'ddt-internet-in-v6': [{'afi': 6, 'dir': 'in', 'int': 'Loopback0'}],
+{'': [{'afi': 6, 'dir': 'in', 'int': 'Loopback1'}],
+ 'ddt-internet-in-v4': [{'afi': 4, 'dir': 'in', 'int': 'Loopback0'}],
  'not set': [{'afi': 4, 'dir': 'in', 'int': 'GigabitEthernet0/0'},
+             {'afi': 4, 'dir': 'out', 'int': 'GigabitEthernet0/0'},
              {'afi': 4, 'dir': 'out', 'int': 'Loopback0'},
+             {'afi': 4, 'dir': 'out', 'int': 'Loopback1'},
              {'afi': 4, 'dir': 'in', 'int': 'vty 5 15'},
              {'afi': 4, 'dir': 'out', 'int': 'vty 5 15'},
              {'afi': 6, 'dir': 'in', 'int': 'vty 5 15'},
-             {'afi': 6, 'dir': 'out', 'int': 'vty 5 15'}]}
+             {'afi': 6, 'dir': 'out', 'int': 'vty 5 15'}],
+ 'test-s2-internet-in-v4': [{'afi': 4, 'dir': 'in', 'int': 'Loopback1'}],
+ 'test-s2-internet-in-v6': [{'afi': 6, 'dir': 'in', 'int': 'Loopback1'}]}
 INFO: uploading name: test-ddt-internet-in-v6, afi: 6
    configure terminal
    no ipv6 access-list LOCKSTEP-test-ddt-internet-in-v6
@@ -62,7 +64,7 @@ INFO: uploading name: test-ddt-internet-in-v4, afi: 4
    deny tcp any any eq 23
    deny udp any any eq 123
    deny udp any any eq 161
-    permit icmp any host 94.142.241.204 128 0
+   permit icmp any host 94.142.241.204 128 0
    permit ip any any
    deny ip any any
    end
@@ -79,7 +81,7 @@ INFO: uploading name: test-ddt-internet-in-v4, afi: 4
    deny tcp any any eq 23
    deny udp any any eq 123
    deny udp any any eq 161
-    permit icmp any host 94.142.241.204 128 0
+   permit icmp any host 94.142.241.204 128 0
    permit ip any any
    deny ip any any
    end
@@ -128,8 +130,13 @@ INFO: uploading name: test-s2-internet-in-v4, afi: 4
    permit tcp host 94.142.241.54 any eq 8080 established
    permit tcp host 1.2.3.4 any eq 7777 log
    permit tcp host 1.2.3.5 any eq 7778 established log
-    permit icmp host 1.2.3.6 any
+   permit icmp host 1.2.3.6 any
    deny ip any any
+   end
+INFO: lockstepping policy test-s2-internet-in-v4 afi 4
+   configure terminal
+   interface Loopback1
+   ip access-group LOCKSTEP-test-s2-internet-in-v4 in
    end
 INFO: uploading name: test-s2-internet-in-v4, afi: 4
    configure terminal
@@ -173,8 +180,13 @@ INFO: uploading name: test-s2-internet-in-v4, afi: 4
    permit tcp host 94.142.241.54 any eq 8080 established
    permit tcp host 1.2.3.4 any eq 7777 log
    permit tcp host 1.2.3.5 any eq 7778 established log
-    permit icmp host 1.2.3.6 any
+   permit icmp host 1.2.3.6 any
    deny ip any any
+   end
+INFO: lockstepping policy test-s2-internet-in-v4 afi 4
+   configure terminal
+   interface Loopback1
+   ip access-group test-s2-internet-in-v4 in
    end
    configure terminal
    no ip access-list extended LOCKSTEP-test-s2-internet-in-v4
@@ -193,8 +205,13 @@ INFO: uploading name: test-s2-internet-in-v6, afi: 6
    permit tcp 2a02:898:52:ffff::/64 any eq 8080 established
    permit tcp host 2000::1 any eq 7777 log
    permit tcp host 2001::2 any eq 7778 established log
-    permit icmp 2000::/3 any
+   permit icmp 2000::/3 any
    deny any any
+   end
+INFO: lockstepping policy test-s2-internet-in-v6 afi 6
+   configure terminal
+   interface Loopback1
+   ipv6 traffic-filter LOCKSTEP-test-s2-internet-in-v6 in
    end
 INFO: uploading name: test-s2-internet-in-v6, afi: 6
    configure terminal
@@ -210,8 +227,13 @@ INFO: uploading name: test-s2-internet-in-v6, afi: 6
    permit tcp 2a02:898:52:ffff::/64 any eq 8080 established
    permit tcp host 2000::1 any eq 7777 log
    permit tcp host 2001::2 any eq 7778 established log
-    permit icmp 2000::/3 any
+   permit icmp 2000::/3 any
    deny any any
+   end
+INFO: lockstepping policy test-s2-internet-in-v6 afi 6
+   configure terminal
+   interface Loopback1
+   ipv6 traffic-filter test-s2-internet-in-v6 in
    end
    configure terminal
    no ipv6 access-list LOCKSTEP-test-s2-internet-in-v6
