@@ -4,12 +4,12 @@ INFO: building configuration for devices/s2-asa.meerval.net
 
 Seed policy name: s2-internet-in
    IPv4:
-   access-list s2-internet-in-v4 extended permit ip 37.77.58.0 255.255.255.192 any 
-   access-list s2-internet-in-v4 extended permit ip host 94.142.241.49 any 
-   access-list s2-internet-in-v4 extended permit ip host 94.142.241.204 any 
-   access-list s2-internet-in-v4 extended permit ip host 94.142.241.51 any 
-   access-list s2-internet-in-v4 extended permit ip host 94.142.241.52 any 
-   access-list s2-internet-in-v4 extended permit ip host 94.142.241.54 any 
+   access-list s2-internet-in-v4 extended permit ip 37.77.58.0 255.255.255.192 any
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.49 any
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.204 any
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.51 any
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.52 any
+   access-list s2-internet-in-v4 extended permit ip host 94.142.241.54 any
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.49 any range 0 1024
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.204 any range 0 1024
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.51 any range 0 1024
@@ -46,8 +46,8 @@ Seed policy name: s2-internet-in
    access-list s2-internet-in-v4 extended deny ip any any
      ---------
    IPv6:
-   ipv6 access-list s2-internet-in-v6 permit ip 2001:67c:208c:10::/64 any 
-   ipv6 access-list s2-internet-in-v6 permit ip 2a02:898:52:ffff::/64 any 
+   ipv6 access-list s2-internet-in-v6 permit ip 2001:67c:208c:10::/64 any
+   ipv6 access-list s2-internet-in-v6 permit ip 2a02:898:52:ffff::/64 any
    ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 0 1024
    ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 1024 65535
    ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any range 0 65535
@@ -62,8 +62,8 @@ Seed policy name: s2-internet-in
 
 Seed policy name: ddt-internet-in
    IPv4:
-   access-list ddt-internet-in-v4 extended permit ip 37.77.58.0 255.255.255.192 any 
-   access-list ddt-internet-in-v4 extended permit ip host 94.142.241.204 any 
+   access-list ddt-internet-in-v4 extended permit ip 37.77.58.0 255.255.255.192 any
+   access-list ddt-internet-in-v4 extended permit ip host 94.142.241.204 any
    access-list ddt-internet-in-v4 extended deny tcp any any range 101 107
    access-list ddt-internet-in-v4 extended deny tcp any any eq 102 established
    access-list ddt-internet-in-v4 extended deny tcp any any eq 103
@@ -72,11 +72,11 @@ Seed policy name: ddt-internet-in
    access-list ddt-internet-in-v4 extended deny udp any any eq 123
    access-list ddt-internet-in-v4 extended deny udp any any eq 161
    access-list ddt-internet-in-v4 extended permit icmp any host 94.142.241.204 128
-   access-list ddt-internet-in-v4 extended permit ip any any 
+   access-list ddt-internet-in-v4 extended permit ip any any
    access-list ddt-internet-in-v4 extended deny ip any any
      ---------
    IPv6:
-   ipv6 access-list ddt-internet-in-v6 permit ip 2001:67c:208c:10::/64 any 
+   ipv6 access-list ddt-internet-in-v6 permit ip 2001:67c:208c:10::/64 any
    ipv6 access-list ddt-internet-in-v6 deny tcp any any range 101 107
    ipv6 access-list ddt-internet-in-v6 deny tcp any any eq 102 established
    ipv6 access-list ddt-internet-in-v6 deny tcp any any eq 103
@@ -84,6 +84,6 @@ Seed policy name: ddt-internet-in
    ipv6 access-list ddt-internet-in-v6 deny tcp any any eq 23
    ipv6 access-list ddt-internet-in-v6 deny udp any any eq 123
    ipv6 access-list ddt-internet-in-v6 deny udp any any eq 161
-   ipv6 access-list ddt-internet-in-v6 permit ip any any 
+   ipv6 access-list ddt-internet-in-v6 permit ip any any
    ipv6 access-list ddt-internet-in-v6 deny ip any any
 
