@@ -125,44 +125,44 @@ def render(self, **kwargs):
                         line = "%saccess-list %s %s" \
                             % (yes_v6, self.name + "-v%s" % afi, extended)
                         if rule['action'] == "allow":
-                            action = "permit "
+                            action = "permit"
                         else:
-                            action = "deny "
+                            action = "deny"
                         line += action
                         if rule['protocol'] == "any":
-                            line += "ip "
+                            line += " ip"
                         else:
-                            line += rule['protocol'] + " "
+                            line += " " + rule['protocol']
 
                         if s_host == u'any':
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(s_host).prefixlen in [32, 128]:
-                            line += "host %s " % s_host.split('/')[0]
+                            line += " host %s" % s_host.split('/')[0]
                         # IPv4 must be with netmask, IPv6 in CIDR notation
                         elif afi == 4:
-                            line += "%s " % IPNetwork(s_host).with_netmask.replace('/', ' ')
+                            line += " %s" % IPNetwork(s_host).with_netmask.replace('/', ' ')
                         else:
-                            line += s_host + " "
+                            line += " " + s_host
 
                         if type(s_port) == tuple:
-                            line += "range %s %s " % (s_port[0], s_port[1])
+                            line += " range %s %s" % (s_port[0], s_port[1])
                         elif not s_port == "any":
-                            line += "eq %s " % str(s_port)
+                            line += " eq %s" % str(s_port)
 
                         if d_host == u'any':
-                            line += "any "
+                            line += " any"
                         elif IPNetwork(d_host).prefixlen in [32, 128]:
-                            line += "host %s " % d_host.split('/')[0]
+                            line += " host %s" % d_host.split('/')[0]
                         # IPv4 must be with netmask, IPv6 in CIDR notation
                         elif afi == 4:
-                            line += "%s " % IPNetwork(d_host).with_netmask.replace('/', ' ')
+                            line += " %s" % IPNetwork(d_host).with_netmask.replace('/', ' ')
                         else:
-                            line += d_host + " "
+                            line += " " + d_host
 
                         if type(d_port) == tuple:
-                            line += "range %s %s" % (d_port[0], d_port[1])
+                            line += " range %s %s" % (d_port[0], d_port[1])
                         elif not d_port == "any":
-                            line += "eq %s" % str(d_port)
+                            line += " eq %s" % str(d_port)
 
                         if stateful and rule['protocol'] == "tcp":
                             line += " established"

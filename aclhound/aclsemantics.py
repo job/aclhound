@@ -46,7 +46,12 @@ class grammarSemantics(object):
         return ast
 
     def state_expr(self, ast):
-        return ast
+        if not self._protocol == "tcp":
+            raise FailedSemantics('Only TCP entries can be stateful')
+        if ast == "stateful":
+            return True
+        else:
+            return False
 
     def log_expr(self, ast):
         if ast == "log":
