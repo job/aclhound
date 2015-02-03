@@ -473,6 +473,8 @@ overview of previous work")
             acls = {}
             hostname = os.path.basename(filename)
             with open(filename, 'r') as f:
+                timeout = 60
+                transport = "ssh"
                 for line in f:
                     line = line.strip()
                     if line.split(' ')[0] == "vendor":
