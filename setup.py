@@ -47,7 +47,7 @@ if sys.argv[-1] == 'publish':
     print("  git push --tags")
     sys.exit()
 
-install_reqs = parse_requirements('requirements.txt')
+install_reqs = parse_requirements('requirements.txt', session="")
 reqs = [str(ir.req) for ir in install_reqs]
 
 
