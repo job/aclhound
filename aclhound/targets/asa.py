@@ -96,7 +96,7 @@ def render(self, **kwargs):
                         else:
                             line += " " + d_host
 
-                        if not entry == "any":
+                        if not entry['icmp_type'] == "any":
                             line += " " + str(entry['icmp_type'])
 
                         if logging:
