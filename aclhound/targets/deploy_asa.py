@@ -107,6 +107,7 @@ Start
         print("ERROR: Username or Password incorrect for %s" % hostname)
         print("HINT: verify authentication details in your .netrc file")
         sys.exit(2)
+    s(conn, "terminal pager 0")
 
     map_pol_int = collect_interfaces(conn)
     pprint(map_pol_int)
