@@ -42,7 +42,7 @@ Seed policy name: s2-internet-in
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any eq 8080 established
    access-list s2-internet-in-v4 extended permit tcp host 1.2.3.4 any eq 7777 log
    access-list s2-internet-in-v4 extended permit tcp host 1.2.3.5 any eq 7778 established log
-   access-list s2-internet-in-v4 extended permit icmp host 1.2.3.6 any any
+   access-list s2-internet-in-v4 extended permit icmp host 1.2.3.6 any
    access-list s2-internet-in-v4 extended deny ip any any
      ---------
    IPv6:
@@ -56,7 +56,7 @@ Seed policy name: s2-internet-in
    ipv6 access-list s2-internet-in-v6 permit tcp 2a02:898:52:ffff::/64 any eq 8080 established
    ipv6 access-list s2-internet-in-v6 permit tcp host 2000::1 any eq 7777 log
    ipv6 access-list s2-internet-in-v6 permit tcp host 2001::2 any eq 7778 established log
-   ipv6 access-list s2-internet-in-v6 permit icmp 2000::/3 any any
+   ipv6 access-list s2-internet-in-v6 permit icmp 2000::/3 any
    ipv6 access-list s2-internet-in-v6 deny ip any any
 
 
