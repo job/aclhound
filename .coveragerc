@@ -8,3 +8,4 @@ omit =
   setup.py
   aclhound/textfsm.py
   aclhound/license.py
+  aclhound/__init__.py
