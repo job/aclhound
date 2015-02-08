@@ -6,7 +6,7 @@ ACLHOUND
 ========
 
 [![Build Status](https://travis-ci.org/job/aclhound.svg?branch=master)](https://travis-ci.org/job/aclhound)
-[![Coverage Status](https://coveralls.io/repos/job/aclhound/badge.png)](https://coveralls.io/r/job/aclhound)
+[![Coverage Status](https://coveralls.io/repos/job/aclhound/badge.svg?branch=master)](https://coveralls.io/r/job/aclhound?branch=master)
 
 Summary
 -------
