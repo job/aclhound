@@ -15,7 +15,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from grako.parsing import graken, Parser
 
 
-__version__ = (2015, 1, 12, 13, 55, 39, 0)
+__version__ = (2015, 2, 17, 12, 13, 40, 1)
 
 __all__ = [
     'grammarParser',
@@ -153,6 +153,10 @@ class grammarParser(Parser):
                 self.ast['@'] = self.last_node
                 self._cut()
             with self._option():
+                self._token('tcpudp')
+                self.ast['@'] = self.last_node
+                self._cut()
+            with self._option():
                 self._token('any')
                 self.ast['@'] = self.last_node
                 self._cut()
@@ -160,7 +164,7 @@ class grammarParser(Parser):
                 self._icmp_expr_()
                 self.ast['icmp'] = self.last_node
                 self._cut()
-            self._error('expecting one of: any tcp udp')
+            self._error('expecting one of: any tcp tcpudp udp')
 
         self.ast._define(
             ['icmp'],

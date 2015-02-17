@@ -41,6 +41,8 @@ Seed policy name: s2-internet-in
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.52 any eq 8080 established
    access-list s2-internet-in-v4 extended permit tcp host 94.142.241.54 any eq 8080 established
    access-list s2-internet-in-v4 extended permit tcp host 1.2.3.4 any eq 7777 log
+   access-list s2-internet-in-v4 extended permit tcp any host 8.8.8.8 eq 53
+   access-list s2-internet-in-v4 extended permit udp any host 8.8.8.8 eq 53
    access-list s2-internet-in-v4 extended permit tcp host 1.2.3.5 any eq 7778 established log
    access-list s2-internet-in-v4 extended permit icmp host 1.2.3.6 any
    access-list s2-internet-in-v4 extended deny ip any any

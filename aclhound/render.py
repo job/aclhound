@@ -75,6 +75,20 @@ class Render():
         if expire:
             if int(expire) <= now_stamp:
                 return
+
+        # convert protocol 'tcpudp' to two entries
+        if ast[0]['protocol'] == "tcpudp":
+            for protocol in ["tcp", "udp"]:
+                # because grako's AST() replaced __setitem__ with 'add'
+                # functionality, a copy is created and modified
+                ast_copy = {}
+                for key in ["action", "source", "destination", "keywords"]:
+                    ast_copy[key] = ast[0][key]
+                ast_copy['protocol'] = protocol
+                self.data.append([ast_copy])
+            return
+
+        # no special operations apply, just add it
         self.data.append(ast)
 
     def output(self, vendor=None, afi=None):

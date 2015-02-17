@@ -4,7 +4,7 @@ This grammar defines the aclhound normalised syntax
 1 rule per line
 
 < allow | deny > \
-< tcp | udp | any > \
+< tcp | udp | any | tcpudp > \
 src < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ]
 dst < prefix | $ip | @hostgroup | any > [ port number | range | @portgroup | any ]
 [ stateful ] \
@@ -30,6 +30,7 @@ Valid examples:
     deny tcp src @bgp-peers port any dst @mp-servers port @webports # another comment
     allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,1-2,4
     allow tcp src 2.2.2.2 port 1 dst 10.0.0.0/8 port 2,2,3,4
+    allow tcpudp src 2.2.2.2 port 53 dst 10.0.0.0/8 port any
     allow icmp 128 0 src any dst 192.0.2.0/24 # icmpv6 echo request
     allow icmp 129 0 src 192.0.2.0/24 dst any # icmpv6 echo reply
 
@@ -88,6 +89,7 @@ protocol_expr
     =
     @:"udp" ~
     | @:"tcp" ~
+    | @:"tcpudp" ~
     | @:"any" ~
     | icmp:icmp_expr ~
     ;

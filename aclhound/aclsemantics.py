@@ -111,12 +111,8 @@ class grammarSemantics(object):
     def protocol_expr(self, ast):
         if "icmp" in ast:
             self._protocol = "icmp"
-        elif ast == u'udp':
-            self._protocol = "udp"
-        elif ast == u'tcp':
-            self._protocol = "tcp"
-        elif ast == u'any':
-            self._protocol = "any"
+        elif ast in ["tcp", "tcpudp", "udp", "any"]:
+            self._protocol = str(ast)
         else:
             raise FailedSemantics('No idea what protocol we are dealing with here')
         return ast
@@ -135,7 +131,7 @@ class grammarSemantics(object):
 
     def endpoint_tuple(self, ast):
         # when port specifications are omitted any is assumed
-        if self._protocol not in ["tcp", "udp"] and ast['l4'] is not None:
+        if self._protocol not in ["tcp", "tcpudp", "udp"] and ast['l4'] is not None:
             raise FailedSemantics('Cannot combine layer 4 information (ports) with ICMP protocol')
         if not ast['l4']:
             ast['l4'] = {}
