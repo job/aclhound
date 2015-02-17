@@ -199,7 +199,9 @@ class grammarSemantics(object):
 
     def prefix(self, ast):
         try:
-            ipaddr.IPNetwork(ast)
+            prefix = ipaddr.IPNetwork(ast)
+            if not prefix.ip == prefix.network:
+                raise FailedSemantics('Not a valid IP address or prefix!')
         except:
             raise FailedSemantics('Not a valid IP address or prefix!')
         return ast

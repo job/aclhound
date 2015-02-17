@@ -40,8 +40,6 @@ Subcommands, use 'aclhould help <subcommand>' to learn more:
 
     init        Initialise aclhound end-user configuration.
     fetch       Retrieve latest ACLHound policy from repository server.
-    task        Manage change proposals (creation, submission, etc)
-    diff        Compare current working directory with the previous version.
     build       Compile policy into network configuration, output on STDOUT
     deploy      Deploy compiled configuration to a network device
     reset       Delete aclhound directory and fetch copy from repository.
@@ -227,129 +225,6 @@ class ACLHoundClient(object):
         os.chdir(data_dir)
         print("INFO: working with data in %s" % data_dir)
 
-    def task_status(self, args):
-        """
-        Show status of current working directory and branch.
-
-        Usage: aclhound task status
-        """
-        print("DEPRECATED: use native git commands like 'git branch'")
-
-    def task_list(self, args):
-        """
-        Show list of all local branches
-
-        Usage: aclhound [-d] task list
-        """
-        run(['git', 'branch'])
-
-    def task_edit(self, args):
-        """
-        Switch to git branch to continue work
-
-        Usage: aclhound [-d] task edit <taskname>
-
-        Arguments:
-          <taskname>
-            Name of the task you are working on.
-            Use 'aclhound task list' to see local tasks.
-
-        """
-        run(['git', 'checkout', args['<taskname>']])
-
-
-    def task(self, args):
-        """
-        Start, continue or submit a piece of work for review.
-
-        Usage: aclhound [-d] task list
-               aclhound [-d] task submit
-               aclhound [-d] task start <taskname>
-               aclhound [-d] task edit <taskname>
-               aclhound [-d] task status
-               aclhound [-d] task clean
-
-        Arguments:
-            list        List locally stored branches
-            submit      Submit current task for review
-            start       Create a new branch to work on a task
-            edit        Continue working on a task/branch
-            status      Show current task information
-            clean       Clean up old tasks (which have been merged)
-
-          <taskname>
-            Taskname refers to for example a JIRA ticket, or other reference by
-            which the change will be known in the review system.
-
-        See 'aclhound help task <action>' for more information.
-        """
-        pass
-
-    def task_submit(self, args=None):
-        """
-        Submit current piece of work (a task) for review to Gerrit.
-
-        Usage: aclhound task submit
-
-        Note:
-            This command will not work on the master branch.
-            Use 'aclhound task edit <taskname>' to switch to the work
-            you would like to submit.
-        """
-
-        for line in run(['git', 'branch'], return_channel=1).split('\n'):
-            if line.startswith('* '):
-                branch = line.strip().split(' ')[1]
-                break
-        if branch == "master":
-            print("ERROR: working on master branch, use \
-'aclhound task edit <taskname>' before submitting")
-            print("HINT: use 'aclhound task list' for an \
-overview of previous work")
-            sys.exit(2)
-#        self.diff_all(args)
-        run(['git', 'add', '-A', '*'])
-        run(['git', 'commit', '-a'])
-        run(['git', 'review'])
-        print("INFO: submitted changes, returning to master branch")
-        run(['git', 'checkout', 'master'])
-
-    def task_start(self, args):
-        """
-        Start change process.
-
-        Usage: aclhound [-d] task start <taskname>
-
-        Arguments:
-            <taskname>
-                Taskname refers to a JIRA ticket, or other reference by which
-                the change will be known in the review system.
-        """
-        taskname = args['<taskname>']
-        run(['git', 'checkout', '-b', taskname])
-        print("INFO: You can now work on change %s" % taskname)
-        print("INFO: When you are finished, type 'aclhound task submit'")
-
-    def task_clean(self, args):
-        """
-        Cleanup old tasks which have been accepted into the main repository.
-
-        Usage: aclhound [-d] task clean
-
-        Note:
-            'task clean' will only remove fully merged tasks.
-        """
-        p = run(['git', 'branch', '--color=never', '--merged'], 1)
-        counter = 0
-        for line in p.split('\n')[:-1]:
-            branch_name = line.replace('* ', '')
-            if branch_name == "master" or not branch_name:
-                continue
-            counter += 1
-            run(['git', 'branch', '-d', line.replace('* ', '')])
-        if not counter:
-            print("INFO: nothing to clean")
-
     def fetch(self, args):
         """
         Retrieve latest changes in 'master' from the repository server.
@@ -360,23 +235,6 @@ overview of previous work")
         run(['git', 'remote', 'update'])
         run(['git', 'pull', '--rebase'])
         run(['git', 'pull', '--all', '--prune'])
-
-    def diff(self, args):
-        """
-        Show unified diff between last commit and current state.
-
-        Usage: aclhound diff <filename>
-               aclhound diff all
-
-        Arguments:
-          <filename>
-            The policy or device file for which a unified diff must be
-            generated.
-
-        Note: please ensure you run 'diff' inside your ACLHound data directory
-        """
-        print(args)
-        print("ERROR: 'diff' not implemented yet")
 
     def build(self, args):
         """
@@ -591,11 +449,6 @@ def main():
     cli = ACLHoundClient(args)
 
     help_flag = True if cmd == "help" else False
-
-    # concat together words after the task subcommand, so the docopt
-    # methodology can deal with it.
-    if cmd == "task" and len(args['<args>']) > 0 and not help_flag:
-        cmd = "task_%s" % args['<args>'][0]
 
     # first parse commands in help context
     if help_flag:
