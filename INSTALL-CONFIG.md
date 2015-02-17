@@ -94,38 +94,11 @@ Options:
  --batch Automatically guess all settings (non-interactive mode).
  
  
- - fetch Retrieve latest ACLHound policy from repository server.
-- task Manage change proposals (creation, submission, etc)
-Start, continue or submit a piece of work for review.
-Usage: aclhound [-d] task list
- aclhound [-d] task submit
- aclhound [-d] task start <taskname>
- aclhound [-d] task edit <taskname>
- aclhound [-d] task status
- aclhound [-d] task clean
-Arguments:
- list List locally stored branches
- submit Submit current task for review
- start Create a new branch to work on a task
- edit Continue working on a task/branch
- status Show current task information
- clean Clean up old tasks (which have been merged)
-<taskname>
- Taskname refers to for example a JIRA ticket, or other reference by
- which the change will be known in the review system.
- 
-- diff Compare current working directory with the previous version.
-Show unified diff between last commit and current state.
-Usage: aclhound diff <filename>
- aclhound diff all
-Arguments:
- <filename>
- The policy or device file for which a unified diff must be
- generated.
-Note: please ensure you run 'diff' inside your ACLHound data directory
+- fetch Retrieve latest ACLHound policy from repository server.
+
 - build Compile policy into network configuration, output on STDOUT
  
-Show unified build between last commit and current state.
+Show unified build for both IPv4 and IPv6 for a device.
 Usage: aclhound build <devicename>
  aclhound build all
 Arguments:

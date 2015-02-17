@@ -1,6 +1,6 @@
 vendor ios
 transport ssh
 save_config false
-timeout 120
+timeout 300
 include test-s2-internet-in
 include test-ddt-internet-in
