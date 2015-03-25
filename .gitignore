@@ -8,3 +8,9 @@ bin/*
 lib/python2.7
 include/*
 *.pyc
+.coverage
+.eggs/
+aclhound.egg-info/
+build/
+dist/
+src/
