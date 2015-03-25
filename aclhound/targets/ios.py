@@ -43,12 +43,7 @@ def render(self, **kwargs):
 #        config_blob.append("ipv6 access-list %s-v6" % self.name)
 
     def afi_match(host):
-        if host == "any":
-            return True
-        elif IPNetwork(host).version == afi:
-            return True
-        else:
-            return False
+        return host == "any" or IPNetwork(host).version == afi
 
     for rule in policy:
         rule = rule[0]

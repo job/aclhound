@@ -300,18 +300,19 @@ class ACLHoundClient(object):
         Deploy a compiled version of the ACLs on a network device
 
         Usage: aclhound [-d] [-j] deploy <devicename>
-               aclhound [-d] [-j] deploy all
+               aclhound [-d] [-j] deploy [-p N] all
 
         Options:
-            -d --debug      Enable debugging output
-            -j --jenkins    Use jenkins environmental variables like WORKSPACE
+            -p --parallel N  Deploy to N devices in parallel
+            -d --debug       Enable debugging output
+            -j --jenkins     Use jenkins environmental variables like WORKSPACE
 
         Arguments:
           <devicename>
             Hostname of the device on which the generated ACLs must be
             deployed.
 
-         <all>
+         all
             ACLHound will take all device files from devices/ (except
             filenames with a '.ignore' suffix), compile the policy and
             upload the policies to the device. "all" is suitable for cron or
@@ -319,7 +320,8 @@ class ACLHoundClient(object):
 
         Note: please ensure you run 'deploy' inside your ACLHound data directory
         """
-        if args['<devicename>'] == "all":
+
+        if args['<devicename>'] == "all" or args['<args>'][-1]:
             import glob
             devices_list = set(glob.glob('devices/*')) - \
                 set(glob.glob('devices/*.ignore'))
@@ -362,8 +364,31 @@ class ACLHoundClient(object):
                        timeout=timeout)
             a.deploy()
 
-        for dev in devices_list:
-            do_deploy(dev)
+        if not args['--parallel']:
+            for dev in devices_list:
+                do_deploy(dev)
+        else:
+            print("INFO: parallel deployment with %s workers"
+                  % args['--parallel'])
+            import threading
+            import Queue
+
+            def deploy_worker():
+                while True:
+                    dev = deploy_queue.get()
+                    do_deploy(dev)
+                    deploy_queue.task_done()
+
+            deploy_queue = Queue.Queue()
+
+            for dev in devices_list:
+                deploy_queue.put(dev)
+
+            for i in range(int(args['--parallel'])):
+                t = threading.Thread(target=deploy_worker)
+                t.setDaemon(True)
+                t.start()
+            deploy_queue.join()
 
     def reset(self, args):
         """

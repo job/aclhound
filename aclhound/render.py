@@ -92,9 +92,6 @@ class Render():
         self.data.append(ast)
 
     def output(self, vendor=None, afi=None):
-        if not vendor:
-            print('This class needs a vendor to output data correctly')
-            return False
         return getattr(self, 'output_' + vendor)(afi=afi)
 
     def output_ios(self, **kwargs):
@@ -105,6 +102,3 @@ class Render():
 
     def output_junos(self, **kwargs):
         return junos.render(self, **kwargs)
-
-#    def __str__(self):
-#        return '\n'.join(self.output(vendor=self.vendor, afi=self.afi))
