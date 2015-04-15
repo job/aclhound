@@ -1,5 +1,5 @@
 pip>=1.2.1
-grako==3.4.1
-ipaddr==2.1.11
-docopt==0.6.2
-exscript==2.1.440
+grako>=3.4.1
+ipaddr>=2.1.11
+docopt>=0.6.2
+exscript>=2.1.440
