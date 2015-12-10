@@ -11,6 +11,7 @@ install:
   - sudo cp tests/data/aclhound.conf /etc/aclhound
   - sudo cp tests/data/client.conf ~/.aclhound/client.conf
   - echo "machine concepts-ict.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
+  - echo "machine 194.50.70.111 login ${ARISTA_DEPLOY_USERNAME} password ${ARISTA_DEPLOY_PASSWORD} account ${ARISTA_DEPLOY_PASSWORD}" > ~/.netrc
   - chmod 0600 ~/.netrc
   - python setup.py install
 
@@ -23,5 +24,7 @@ after_success:
 
 env:
   global:
-  - secure: "UwknUnSACIea1Lp20daKB9Dei6AZWKr0DIzZYdpVOoJk9vJ2PlOReofaEm7SBpCfH0RFmxhnei3ykANQeiekHCb0voob3Aq1XNiF6dwPJ+O0StmuYMzrOQYMGl9To9CzfhWsLjwvXqSgd948DdmJa1KY0dag/EhbuuKnmkwDKGU="
-  - secure: "cCshr1SyGg99y1h/IWRuVImIASaKhm+sQUmF7WBwpwwBk2L6i2nRbW/GqIN2tLKmmAo0E5IiJUh31ouG3g2knG/K0TG7Em1A7h1+1kD8sXqLo9b9Ow4vfXt6PLDwMv2AR5DO7m4xSGMithtlllKfckhvFOhxkLVSPKWQ1AEQvmE="
+  - secure: UwknUnSACIea1Lp20daKB9Dei6AZWKr0DIzZYdpVOoJk9vJ2PlOReofaEm7SBpCfH0RFmxhnei3ykANQeiekHCb0voob3Aq1XNiF6dwPJ+O0StmuYMzrOQYMGl9To9CzfhWsLjwvXqSgd948DdmJa1KY0dag/EhbuuKnmkwDKGU=
+  - secure: cCshr1SyGg99y1h/IWRuVImIASaKhm+sQUmF7WBwpwwBk2L6i2nRbW/GqIN2tLKmmAo0E5IiJUh31ouG3g2knG/K0TG7Em1A7h1+1kD8sXqLo9b9Ow4vfXt6PLDwMv2AR5DO7m4xSGMithtlllKfckhvFOhxkLVSPKWQ1AEQvmE=
+  - secure: TtHIX/BwAkP0zoSPSoBKcQuN04yooq8fpsxTY3gprfz/ywWo8IMGzuyzgu3ePjNvNIf1vaBHdBtK7cBNLyS/4GGgPJllh5GGIAcAoswjUKvxeaYZlVFY4q+vvmS0z1FL2GhClx0k1IQHGyieSWTMeE1ybzWEzdMC6KvUjn5DgdQ=
+  - secure: lxJ6jKSme0S//KMaUgUT/M1kuCpoQezCVJG8//jY2S9ZDc+5BJSKMt3AZLb9lbJranVJn14saf2IwLXi04GcETnyBrB4lmrALBlkjBZD4wJhvrV44bhxM/rAaocz93nB2nbZL6zWCVqS26y5TORolna5k31qKgah2FOAnsy4IFw=
