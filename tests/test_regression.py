@@ -109,7 +109,7 @@ class TestAclhound(unittest.TestCase):
                                   u'<args>': ['all'], u'<command>': 'deploy',
                                   u'debug': False, u'jenkins': True})
             cli.deploy({u'--help': False, u'--version': False, u'<devicename>':
-                        'devices/concepts-ict.mu.meerval.net',
+                        'devices/steffann.mu.meerval.net',
                         u'<command>': 'deploy', u'debug': False,
                         u'jenkins': True})
 #        predefined_output = open('deploy_ios.txt').read().splitlines()
