@@ -1,33 +1,27 @@
 language: python
-
 sudo: required
-
 python:
-  - '2.7'
-
+- '2.7'
 install:
-  - pip install coveralls
-  - pip install -r requirements.txt
-  - sudo mkdir -p /etc/aclhound ~/.aclhound/
-  - sudo chown travis /etc/aclhound ~/.aclhound/
-  - sudo cp tests/data/aclhound.conf /etc/aclhound
-  - sudo cp tests/data/client.conf ~/.aclhound/client.conf
-  - echo "194.50.70.111 arista.eby" | sudo tee -a /etc/hosts
-  - echo "machine concepts-ict.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
-  - echo "machine arista.eby login ${ARISTA_DEPLOY_USERNAME} password ${ARISTA_DEPLOY_PASSWORD} account ${ARISTA_DEPLOY_PASSWORD}" >> ~/.netrc
-  - chmod 0600 ~/.netrc
-  - python setup.py install
-
+- pip install coveralls
+- pip install -r requirements.txt
+- sudo mkdir -p /etc/aclhound ~/.aclhound/
+- sudo chown travis /etc/aclhound ~/.aclhound/
+- sudo cp tests/data/aclhound.conf /etc/aclhound
+- sudo cp tests/data/client.conf ~/.aclhound/client.conf
+- echo "194.50.70.111 arista.eby" | sudo tee -a /etc/hosts
+- echo "machine concepts-ict.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
+- echo "machine arista.eby login ${ARISTA_DEPLOY_USERNAME} password ${ARISTA_DEPLOY_PASSWORD} account ${ARISTA_DEPLOY_PASSWORD}" >> ~/.netrc
+- chmod 0600 ~/.netrc
+- python setup.py install
 script:
-  - python setup.py nosetests
-
+- python setup.py nosetests
 after_success:
-  - coveralls
-  - rm ~/.netrc
-
+- coveralls
+- rm ~/.netrc
 env:
   global:
-  - secure: UwknUnSACIea1Lp20daKB9Dei6AZWKr0DIzZYdpVOoJk9vJ2PlOReofaEm7SBpCfH0RFmxhnei3ykANQeiekHCb0voob3Aq1XNiF6dwPJ+O0StmuYMzrOQYMGl9To9CzfhWsLjwvXqSgd948DdmJa1KY0dag/EhbuuKnmkwDKGU=
-  - secure: cCshr1SyGg99y1h/IWRuVImIASaKhm+sQUmF7WBwpwwBk2L6i2nRbW/GqIN2tLKmmAo0E5IiJUh31ouG3g2knG/K0TG7Em1A7h1+1kD8sXqLo9b9Ow4vfXt6PLDwMv2AR5DO7m4xSGMithtlllKfckhvFOhxkLVSPKWQ1AEQvmE=
-  - secure: TtHIX/BwAkP0zoSPSoBKcQuN04yooq8fpsxTY3gprfz/ywWo8IMGzuyzgu3ePjNvNIf1vaBHdBtK7cBNLyS/4GGgPJllh5GGIAcAoswjUKvxeaYZlVFY4q+vvmS0z1FL2GhClx0k1IQHGyieSWTMeE1ybzWEzdMC6KvUjn5DgdQ=
-  - secure: lxJ6jKSme0S//KMaUgUT/M1kuCpoQezCVJG8//jY2S9ZDc+5BJSKMt3AZLb9lbJranVJn14saf2IwLXi04GcETnyBrB4lmrALBlkjBZD4wJhvrV44bhxM/rAaocz93nB2nbZL6zWCVqS26y5TORolna5k31qKgah2FOAnsy4IFw=
+  - secure: Va4l6IGc4mZnDMfOu4Kxegi8GfnMH+HN+W8qAyX/divk58rUzCUFvwdiUyMfdi6KWyu+pG+XpptyM/m7LhpISz2XtAnUJG7sSKZUJq93GvrpEnQ19zrG2wV0CGzffyOIEIkobn2W8b/RhVRjmkcuS2sK43Nz3o5XLsfJNMPUmfs=
+  - secure: XhJ1sRLpk37cT5fYV4PSaa77VBhOZisBCsMuYmalLUN8wWW7LGnL4q9m/M9ihMgbQaQluimsIeaxzXvvC2EErzmUL8Ramgrdjj+lL3nN4FaFVz70SgifvEN5Vegfp4ZswTIf+KYK/whyCp/pMRxpfJs0IVLdHJptqRd/7zqmX8w=
+  - secure: IGCB+ox5rHooKPv7K4m0im/fXnOgi7GSlxC33kUFbCeBr1t5gI8w7h7z9616ZGJHs5FE7Q0plTdoFRej4mWJlEtD7LJlC7PNwt3MSVpecU48Q0kiCcjsI+wl15cP6HIdTOQHXX2MljOLimNWEvwHHC9v+C1W5gsOLsxZmog9DVs=
+  - secure: LLpw09w5aYsChv/O5X8/oSAU6LxSweb+UBYnnPqwpjkxlSbi2UflIJEuHezWrieoHxlza4TYOuo9t6/zXJuE+d54lxpSdu+vvpIB2h4Wo63ZeYl0jRnJ74Dy4qGzcFs+KuD7MHJFMo01tOTNC8arwrRlQdODiLZ7CnuD8EL1EjY=
