@@ -30,6 +30,7 @@ import json
 import ipaddr
 import itertools
 
+from targets import arista
 from targets import asa
 from targets import ios
 from targets import junos
@@ -99,6 +100,9 @@ class Render():
 
     def output_ios(self, **kwargs):
         return ios.render(self, **kwargs)
+
+    def output_arista(self, **kwargs):
+        return arista.render(self, **kwargs)
 
     def output_asa(self, **kwargs):
         return asa.render(self, **kwargs)

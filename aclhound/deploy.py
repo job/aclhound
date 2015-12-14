@@ -27,8 +27,9 @@
 
 import sys
 
-from targets import deploy_ios
+from targets import deploy_arista
 from targets import deploy_asa
+from targets import deploy_ios
 #from targets import deploy_junos
 
 
@@ -52,6 +53,13 @@ class Deploy():
         if not self.vendor:
             sys.exit(2)
         return getattr(self, 'deploy_' + self.vendor)()
+
+    def deploy_arista(self):
+        return deploy_arista.deploy(hostname=self.hostname,
+                                 acls=self.acls,
+                                 transport=self.transport,
+                                 save_config=self.save_config,
+                                 timeout=self.timeout)
 
     def deploy_ios(self):
         return deploy_ios.deploy(hostname=self.hostname,
