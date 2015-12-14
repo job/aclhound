@@ -147,7 +147,7 @@ Start
         print("ERROR: Unknown transport mechanism: %s"
               % transport)
         sys.exit(2)
-    conn.set_driver('arista')
+    conn.set_driver('arista_eos')
     conn.connect(hostname)
     conn.login(account)
     conn.execute('terminal length 0')
