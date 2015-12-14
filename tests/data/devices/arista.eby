@@ -1,4 +1,4 @@
-vendor ios
+vendor arista
 transport ssh
 save_config false
 timeout 300
