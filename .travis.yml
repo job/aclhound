@@ -10,7 +10,7 @@ install:
 - sudo cp tests/data/aclhound.conf /etc/aclhound
 - sudo cp tests/data/client.conf ~/.aclhound/client.conf
 - echo "194.50.70.111 arista.eby" | sudo tee -a /etc/hosts
-- echo "machine concepts-ict.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
+- echo "machine steffann.mu.meerval.net login ${IOS_DEPLOY_USERNAME} password ${IOS_DEPLOY_PASSWORD} account ${IOS_DEPLOY_PASSWORD}" > ~/.netrc
 - echo "machine arista.eby login ${ARISTA_DEPLOY_USERNAME} password ${ARISTA_DEPLOY_PASSWORD} account ${ARISTA_DEPLOY_PASSWORD}" >> ~/.netrc
 - chmod 0600 ~/.netrc
 - python setup.py install
