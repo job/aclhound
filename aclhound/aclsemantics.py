@@ -227,7 +227,7 @@ class grammarSemantics(object):
                 low, high = atom['range']
                 ports = ports + range(low, high + 1)
         # sort and deduplicate all ports
-        ports = set(ports)
+        ports = sorted(set(ports))
         # create the smallest amount of port ranges possible
         atoms = []
         for a, b in itertools.groupby(enumerate(ports), lambda(x, y): y - x):
