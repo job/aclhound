@@ -14,3 +14,4 @@ aclhound.egg-info/
 build/
 dist/
 src/
+.Python
