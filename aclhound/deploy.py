@@ -30,7 +30,7 @@ import sys
 from targets import deploy_arista
 from targets import deploy_asa
 from targets import deploy_ios
-#from targets import deploy_junos
+from targets import deploy_junos
 
 
 class Deploy():
@@ -63,6 +63,13 @@ class Deploy():
 
     def deploy_ios(self):
         return deploy_ios.deploy(hostname=self.hostname,
+                                 acls=self.acls,
+                                 transport=self.transport,
+                                 save_config=self.save_config,
+                                 timeout=self.timeout)
+
+    def deploy_junos(self):
+        return deploy_junos.deploy(hostname=self.hostname,
                                  acls=self.acls,
                                  transport=self.transport,
                                  save_config=self.save_config,
