@@ -9,9 +9,17 @@ cd aclhound
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
+sudo python setup.py install
+sudo cp /etc/aclhound/aclhound.conf.dist /etc/aclhound/aclhound.conf
+aclhound init
 make test
-python setup.py install
 </pre>
+
+Notes:
+
+* `setup.py` is run with sudo as it writes to `/etc/`
+* `aclhound init` creates the `~/.aclhound` directory
+* install and configuration are needed for `make test` to run
 
 ### **Configuration files**
 
