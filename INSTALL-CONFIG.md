@@ -6,8 +6,8 @@ To install the package, execute the following lines on the commandline:
 <pre>
 git clone https://github.com/job/aclhound.git
 cd aclhound
-virtualenv .
-source ./bin/activate
+virtualenv venv
+source venv/bin/activate
 pip install -r requirements.txt
 make test
 python setup.py install
