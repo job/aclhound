@@ -41,25 +41,25 @@ Seed policy name: test-s2-internet-in
    edit firewall filter test-s2-internet-in term 9
    set from protocol tcp
    set from source-address 94.142.241.204
-   set from destination-port (0, 1024)
+   set from destination-port 0-1024
    set then accept
    top
    edit firewall filter test-s2-internet-in term 10
    set from protocol tcp
    set from source-address 94.142.241.51
-   set from destination-port (0, 1024)
+   set from destination-port 0-1024
    set then accept
    top
    edit firewall filter test-s2-internet-in term 11
    set from protocol tcp
    set from source-address 94.142.241.52/32
-   set from destination-port (0, 1024)
+   set from destination-port 0-1024
    set then accept
    top
    edit firewall filter test-s2-internet-in term 12
    set from protocol tcp
    set from source-address 94.142.241.54/32
-   set from destination-port (0, 1024)
+   set from destination-port 0-1024
    set then accept
    top
    edit firewall filter test-s2-internet-in term 13
@@ -71,25 +71,25 @@ Seed policy name: test-s2-internet-in
    edit firewall filter test-s2-internet-in term 14
    set from protocol tcp
    set from source-address 94.142.241.204
-   set from destination-port (1024, 65535)
+   set from destination-port 1024-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 15
    set from protocol tcp
    set from source-address 94.142.241.51
-   set from destination-port (1024, 65535)
+   set from destination-port 1024-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 16
    set from protocol tcp
    set from source-address 94.142.241.52/32
-   set from destination-port (1024, 65535)
+   set from destination-port 1024-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 17
    set from protocol tcp
    set from source-address 94.142.241.54/32
-   set from destination-port (1024, 65535)
+   set from destination-port 1024-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 18
@@ -101,25 +101,25 @@ Seed policy name: test-s2-internet-in
    edit firewall filter test-s2-internet-in term 19
    set from protocol tcp
    set from source-address 94.142.241.204
-   set from destination-port (0, 65535)
+   set from destination-port 0-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 20
    set from protocol tcp
    set from source-address 94.142.241.51
-   set from destination-port (0, 65535)
+   set from destination-port 0-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 21
    set from protocol tcp
    set from source-address 94.142.241.52/32
-   set from destination-port (0, 65535)
+   set from destination-port 0-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 22
    set from protocol tcp
    set from source-address 94.142.241.54/32
-   set from destination-port (0, 65535)
+   set from destination-port 0-65535
    set then accept
    top
    edit firewall filter test-s2-internet-in term 23

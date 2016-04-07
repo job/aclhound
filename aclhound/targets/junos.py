@@ -86,22 +86,18 @@ def render(self, **kwargs):
                             config_blob.append("set from source-address {}".format(s_host))
                         if d_host != "any":
                             config_blob.append("set from destination-address {}".format(d_host))
+
                         if type(s_port) == list:
                             s_port = s_port[0]
-                            if type(s_port) == tuple:
-                                config_blob.append("set from source-port {}-{}".format(s_port[0], s_port[1]))
-                            else:
-                                config_blob.append("set from source-port {}".format(s_port))
+                        if type(s_port) == tuple:
+                            config_blob.append("set from source-port {}-{}".format(s_port[0], s_port[1]))
                         elif s_port != "any":
                             config_blob.append("set from source-port {}".format(str(s_port)))
 
                         if type(d_port) == list:
                             d_port = d_port[0]
-                            if type(d_port) == tuple:
-                                config_blob.append("set from destination-port {}-{}".format(d_port[0], d_port[1]))
-                            else:
-                               config_blob.append("set from destination-port {}".format(d_port))
-
+                        if type(d_port) == tuple:
+                           config_blob.append("set from destination-port {}-{}".format(d_port[0], d_port[1]))
                         elif d_port != "any":
                             config_blob.append("set from destination-port {}".format(str(d_port)))
                         if action == "accept":
