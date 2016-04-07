@@ -6,6 +6,6 @@ source = .
 [report]
 omit =
   setup.py
-  aclhound/textfsm.py
+  *textfsm*
   aclhound/license.py
   aclhound/__init__.py
