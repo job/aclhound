@@ -28,8 +28,8 @@ In the &quot;devices&quot; directory you'll add the devices which you want under
     * ios
     * asa
     * junos
-*   transport, this defines how ACLhound should connect to the device to deploy ACLs. There's 2 options here: telnet &amp; ssh
-*   save_config, this defines wether you want to save the configuration onto the device after a deployment has been done. There's 2 options here: true & false. If not specified, it defaults to false.
+*   transport, this defines how ACLhound should connect to the device to deploy ACLs. There are 2 options here: telnet &amp; ssh
+*   save_config, this defines whether you want to save the configuration onto the device after a deployment has been done. There's 2 options here: true & false. If not specified, it defaults to false.
 *   include statements, these mention the policies that you would like to put on the devices. Multiple entries are allowed here.
 
 Example device file:
