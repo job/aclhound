@@ -96,7 +96,24 @@ class TestAclhound(unittest.TestCase):
         self.maxDiff = None
         self.assertEquals(output, predefined_output)
 
-    def test_03__deploy_ios(self):
+    def test_03__build_junos(self):
+        os.environ["WORKSPACE"] = os.getcwd()
+        with Capturing() as output:
+            cli = ACLHoundClient({u'--help': False, u'--version': False,
+                                  u'<args>': ['all'], u'<command>': 'build',
+                                  u'debug': False, u'jenkins': True})
+            cli.build({u'--help': False, u'--version': False, u'<devicename>':
+                       'devices/junos.eby', u'<command>': 'build',
+                       u'debug': False, u'jenkins': True})
+        predefined_output = open('build_junos.txt').read().splitlines()
+        output.pop(0)
+        predefined_output.pop(0)
+        output = "\n".join(output)
+        predefined_output = "\n".join(predefined_output)
+        self.maxDiff = None
+        self.assertEquals(output, predefined_output)
+
+    def test_04__deploy_ios(self):
         if not "TRAVIS" in os.environ:
             self.skipTest("Not inside Travis")
             return

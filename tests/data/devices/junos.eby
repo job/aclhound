@@ -1,0 +1,6 @@
+vendor junos
+transport ssh
+save_config true
+timeout 300
+include test-s2-internet-in
+include test-ddt-internet-in
