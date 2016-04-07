@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.7
-# Copyright (C) 2016-201s65 Vladimir Lazarenko <favoretti@gmail.com>
+# Copyright (C) 2016 Vladimir Lazarenko <favoretti@gmail.com>
 #
 # This file is part of ACLHound
 #
@@ -30,19 +30,10 @@ from grako.contexts import Closure
 import pprint
 import sys
 
-#FIXME figure out extended versus standard access-lists
-#FIXME deal with deny any any any which ASA compresses
-
-
 def render(self, **kwargs):
     policy = self.data
     afi = kwargs['afi']
     config_blob = []
-
-#    if afi == 4:
-#        config_blob.append("ip access-list extended %s-v4" % self.name)
-#    if afi == 6:
-#        config_blob.append("ipv6 access-list %s-v6" % self.name)
 
     def afi_match(host):
         if host == "any":
@@ -103,12 +94,14 @@ def render(self, **kwargs):
                                 config_blob.append("set from source-port {}".format(s_port))
                         elif s_port != "any":
                             config_blob.append("set from source-port {}".format(str(s_port)))
+
                         if type(d_port) == list:
                             d_port = d_port[0]
                             if type(d_port) == tuple:
                                 config_blob.append("set from destination-port {}-{}".format(d_port[0], d_port[1]))
                             else:
-                                config_blob.append("set from destination-port {}".format(d_port))
+                               config_blob.append("set from destination-port {}".format(d_port))
+
                         elif d_port != "any":
                             config_blob.append("set from destination-port {}".format(str(d_port)))
                         if action == "accept":

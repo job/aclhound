@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.7
 # Copyright (C) 2016 Vladimir Lazarenko <favoretti@gmail.com>
+# Copyright (C) 2014-2015 Job Snijders <job@instituut.net>
 #
 # This file is part of ACLHound
 #
@@ -26,7 +27,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 """
-Upload ACLs to Cisco IOS devices
+Upload ACLs to JunOS devices
 
 The following process is followed to ensure zero impact
 
@@ -48,7 +49,7 @@ from StringIO import StringIO
 from tempfile import NamedTemporaryFile
 
 
-def deploy(hostname=None, acls=None, transport='ssh', save_config=False,
+def deploy(hostname=None, acls=None, transport='ssh', save_config=True,
            timeout=60):
     """
     Deploy code to a JunOS device
@@ -91,23 +92,22 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=False,
             tr.close()
             f.close()
 
-    if save_config == True:
-        if transport == 'ssh':
-            conn = SSH2(verify_fingerprint=False, debug=1, timeout=timeout)
-        elif transport == 'telnet':
-            conn = Telnet(debug=0)
-        else:
-            print("ERROR: Unknown transport mechanism: %s"
-                  % transport)
-            sys.exit(2)
-        conn.set_driver('junos')
-        conn.connect(hostname)
-        conn.login(account)
+    if transport == 'ssh':
+        conn = SSH2(verify_fingerprint=False, debug=1, timeout=timeout)
+    elif transport == 'telnet':
+        conn = Telnet(debug=0)
+    else:
+        print("ERROR: Unknown transport mechanism: %s"
+              % transport)
+        sys.exit(2)
+    conn.set_driver('junos')
+    conn.connect(hostname)
+    conn.login(account)
 
-        conn.execute("cli")
-        conn.execute("edit")
-        for policy in acls:
-            if acls[policy]['afi'] == 4:
-                s(conn, "load set {}".format(policy))
-                s(conn, "commit")
+    conn.execute("cli")
+    conn.execute("edit")
+    for policy in acls:
+        if acls[policy]['afi'] == 4:
+            s(conn, "load set {}".format(policy))
+            s(conn, "commit")
 
