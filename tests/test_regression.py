@@ -47,8 +47,10 @@ class Capturing(list):
         return self
 
     def __exit__(self, *args):
+        self._stringio.write('EXCEPTION RAISED')
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
+        return True  # Ignore any exception
 
 
 class TestAclhound(unittest.TestCase):
@@ -69,6 +71,7 @@ class TestAclhound(unittest.TestCase):
             cli.build({u'--help': False, u'--version': False, u'<devicename>':
                        'devices/s2-ios.meerval.net', u'<command>': 'build',
                        u'debug': False, u'jenkins': True})
+        self.assertNotIn('ERROR', '\n'.join(output))
         predefined_output = open('build_ios.txt').read().splitlines()
         # remove first line, as this contains system specific output
         output.pop(0)
@@ -88,6 +91,7 @@ class TestAclhound(unittest.TestCase):
             cli.build({u'--help': False, u'--version': False, u'<devicename>':
                        'devices/s2-asa.meerval.net', u'<command>': 'build',
                        u'debug': False, u'jenkins': True})
+        self.assertNotIn('ERROR', '\n'.join(output))
         predefined_output = open('build_asa.txt').read().splitlines()
         output.pop(0)
         predefined_output.pop(0)

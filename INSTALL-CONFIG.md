@@ -6,12 +6,20 @@ To install the package, execute the following lines on the commandline:
 <pre>
 git clone https://github.com/job/aclhound.git
 cd aclhound
-virtualenv .
-source ./bin/activate
+virtualenv venv
+source venv/bin/activate
 pip install -r requirements.txt
+sudo python setup.py install
+sudo cp /etc/aclhound/aclhound.conf.dist /etc/aclhound/aclhound.conf
+aclhound init
 make test
-python setup.py install
 </pre>
+
+Notes:
+
+* `setup.py` is run with sudo as it writes to `/etc/`
+* `aclhound init` creates the `~/.aclhound` directory
+* install and configuration are needed for `make test` to run
 
 ### **Configuration files**
 
@@ -20,7 +28,7 @@ python setup.py install
  This can be found in the /etc/aclhound/ directory.
 
  This configuration file is used to configure some base settings for aclhound itself, and
- it contains settings to talke with jenkins &amp; gerrit.
+ it contains settings to talk with jenkins &amp; gerrit.
 
  The following is an example configuration file:
 <pre>
@@ -74,7 +82,7 @@ has the ACLHound software installed, and type:
 
  &quot;aclhound init&quot;
 
-This little setup part of ACLHound asks you 3 questions: username, location and wether or
+This little setup part of ACLHound asks you 3 questions: username, location and whether or
 not you'd like to clone the repository data (configured in the aclhound.conf)
 
 ## **Jenkins integration**
