@@ -7,8 +7,13 @@ If ACLhound hasn't been installed or configured, please see [INSTALL-CONFIG.md][
 
 This documentation will explain to you how to work with ACLhound to get objects into policies, and deploy them to devices.
 
-##Directory structure/Syntax</span>
-In order to fully understand ACLhound and it's working, it is of most importance that you understand it's directory structure, as this is where you'll be spending most of your time when building ACLs. These are the directories:
+##Directory structure/Syntax
+
+In order to fully understand ACLhound and its operation, it is of most importance that you understand its directory structure, as this is where you'll be spending most of your time when building ACLs.
+
+The root directory containing the ACLs is defined in `~/.aclhound/client.conf` (e.g., `location = ~/aclhound`).  This directory should be checked into version control, and an appropriate workflow defined for reviewing and accepting changes.
+
+The root directory contains the following subdirectories:
 
 *   devices
 *   policy
@@ -23,8 +28,8 @@ In the &quot;devices&quot; directory you'll add the devices which you want under
     * ios
     * asa
     * junos
-*   transport, this defines how ACLhound should connect to the device to deploy ACLs. There's 2 options here: telnet &amp; ssh
-*   save_config, this defines wether you want to save the configuration onto the device after a deployment has been done. There's 2 options here: true & false. If not specified, it defaults to false.
+*   transport, this defines how ACLhound should connect to the device to deploy ACLs. There are 2 options here: telnet &amp; ssh
+*   save_config, this defines whether you want to save the configuration onto the device after a deployment has been done. There's 2 options here: true & false. If not specified, it defaults to false.
 *   include statements, these mention the policies that you would like to put on the devices. Multiple entries are allowed here.
 
 Example device file:
