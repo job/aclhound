@@ -108,6 +108,7 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=True,
     conn.execute("edit")
     for policy in acls:
         if acls[policy]['afi'] == 4:
+            s(conn, "delete {}".format(policy))
             s(conn, "load set {}".format(policy))
             s(conn, "commit")
 
