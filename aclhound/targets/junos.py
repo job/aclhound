@@ -47,7 +47,7 @@ def render(self, **kwargs):
         return config_blob
 
 
-    config_blob.append("edit firewall filter {} term 1".format(self.name))
+    config_blob.append("edit firewall filter {} term 1".format("{}-v4".format(self.name)))
     config_blob.append("set from protocol icmp")
     config_blob.append("set then accept")
     config_blob.append("top")
@@ -79,7 +79,7 @@ def render(self, **kwargs):
                     for d_host in d_hosts:
                         if not afi_match(d_host):
                             continue
-                        config_blob.append("edit firewall filter {} term {}".format(self.name, term_count))
+                        config_blob.append("edit firewall filter {} term {}".format("{}-v4".format(self.name), term_count))
                         if protocol != "any":
                             config_blob.append("set from protocol {}".format(protocol))
                         if s_host != "any":
@@ -109,6 +109,6 @@ def render(self, **kwargs):
                         term_count = term_count + 1
 
 
-    config_blob.append("set firewall filter {} term DROP_ALL then syslog".format(self.name))
-    config_blob.append("set firewall filter {} term DROP_ALL then discard".format(self.name))
+    config_blob.append("set firewall filter {} term DROP_ALL then syslog".format("{}-v4".format(self.name)))
+    config_blob.append("set firewall filter {} term DROP_ALL then discard".format("{}-v4".format(self.name)))
     return config_blob
