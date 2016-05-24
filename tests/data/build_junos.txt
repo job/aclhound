@@ -1,231 +1,231 @@
-INFO: working with data in /home/ubuntu/datafiles
+INFO: working with data in /Users/vlazarenko/REPOS/ecg-networking
 INFO: building configuration for devices/junos.eby
 
 
 Seed policy name: test-s2-internet-in
    IPv4:
-   edit firewall filter test-s2-internet-in term 1
+   edit firewall filter test-s2-internet-in-v4 term 1
    set from protocol icmp
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 2
+   edit firewall filter test-s2-internet-in-v4 term 2
    set from source-address 37.77.58.0/26
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 3
+   edit firewall filter test-s2-internet-in-v4 term 3
    set from source-address 94.142.241.49/32
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 4
+   edit firewall filter test-s2-internet-in-v4 term 4
    set from source-address 94.142.241.204
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 5
+   edit firewall filter test-s2-internet-in-v4 term 5
    set from source-address 94.142.241.51
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 6
+   edit firewall filter test-s2-internet-in-v4 term 6
    set from source-address 94.142.241.52/32
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 7
+   edit firewall filter test-s2-internet-in-v4 term 7
    set from source-address 94.142.241.54/32
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 8
+   edit firewall filter test-s2-internet-in-v4 term 8
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 0-1024
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 9
+   edit firewall filter test-s2-internet-in-v4 term 9
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 0-1024
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 10
+   edit firewall filter test-s2-internet-in-v4 term 10
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 0-1024
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 11
+   edit firewall filter test-s2-internet-in-v4 term 11
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 0-1024
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 12
+   edit firewall filter test-s2-internet-in-v4 term 12
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 0-1024
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 13
+   edit firewall filter test-s2-internet-in-v4 term 13
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 1024-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 14
+   edit firewall filter test-s2-internet-in-v4 term 14
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 1024-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 15
+   edit firewall filter test-s2-internet-in-v4 term 15
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 1024-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 16
+   edit firewall filter test-s2-internet-in-v4 term 16
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 1024-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 17
+   edit firewall filter test-s2-internet-in-v4 term 17
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 1024-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 18
+   edit firewall filter test-s2-internet-in-v4 term 18
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 0-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 19
+   edit firewall filter test-s2-internet-in-v4 term 19
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 0-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 20
+   edit firewall filter test-s2-internet-in-v4 term 20
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 0-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 21
+   edit firewall filter test-s2-internet-in-v4 term 21
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 0-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 22
+   edit firewall filter test-s2-internet-in-v4 term 22
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 0-65535
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 23
+   edit firewall filter test-s2-internet-in-v4 term 23
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 443
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 24
+   edit firewall filter test-s2-internet-in-v4 term 24
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 443
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 25
+   edit firewall filter test-s2-internet-in-v4 term 25
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 443
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 26
+   edit firewall filter test-s2-internet-in-v4 term 26
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 443
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 27
+   edit firewall filter test-s2-internet-in-v4 term 27
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 443
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 28
+   edit firewall filter test-s2-internet-in-v4 term 28
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 80
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 29
+   edit firewall filter test-s2-internet-in-v4 term 29
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 80
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 30
+   edit firewall filter test-s2-internet-in-v4 term 30
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 80
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 31
+   edit firewall filter test-s2-internet-in-v4 term 31
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 80
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 32
+   edit firewall filter test-s2-internet-in-v4 term 32
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 80
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 33
+   edit firewall filter test-s2-internet-in-v4 term 33
    set from protocol tcp
    set from source-address 94.142.241.49/32
    set from destination-port 8080
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 34
+   edit firewall filter test-s2-internet-in-v4 term 34
    set from protocol tcp
    set from source-address 94.142.241.204
    set from destination-port 8080
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 35
+   edit firewall filter test-s2-internet-in-v4 term 35
    set from protocol tcp
    set from source-address 94.142.241.51
    set from destination-port 8080
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 36
+   edit firewall filter test-s2-internet-in-v4 term 36
    set from protocol tcp
    set from source-address 94.142.241.52/32
    set from destination-port 8080
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 37
+   edit firewall filter test-s2-internet-in-v4 term 37
    set from protocol tcp
    set from source-address 94.142.241.54/32
    set from destination-port 8080
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 38
+   edit firewall filter test-s2-internet-in-v4 term 38
    set from protocol tcp
    set from source-address 1.2.3.4
    set from destination-port 7777
    set then accept
    top
-   edit firewall filter test-s2-internet-in term 39
+   edit firewall filter test-s2-internet-in-v4 term 39
    set from protocol tcp
    set from source-address 1.2.3.5
    set from destination-port 7778
    set then accept
    top
-   set firewall filter test-s2-internet-in term DROP_ALL then syslog
-   set firewall filter test-s2-internet-in term DROP_ALL then discard
+   set firewall filter test-s2-internet-in-v4 term DROP_ALL then syslog
+   set firewall filter test-s2-internet-in-v4 term DROP_ALL then discard
      ---------
    IPv6:
    
@@ -233,51 +233,51 @@ Seed policy name: test-s2-internet-in
 
 Seed policy name: test-ddt-internet-in
    IPv4:
-   edit firewall filter test-ddt-internet-in term 1
+   edit firewall filter test-ddt-internet-in-v4 term 1
    set from protocol icmp
    set then accept
    top
-   edit firewall filter test-ddt-internet-in term 2
+   edit firewall filter test-ddt-internet-in-v4 term 2
    set from source-address 37.77.58.0/26
    set then accept
    top
-   edit firewall filter test-ddt-internet-in term 3
+   edit firewall filter test-ddt-internet-in-v4 term 3
    set from source-address 94.142.241.204
    set then accept
    top
-   edit firewall filter test-ddt-internet-in term 4
+   edit firewall filter test-ddt-internet-in-v4 term 4
    set from protocol tcp
    set from destination-port 101-107
    top
-   edit firewall filter test-ddt-internet-in term 5
+   edit firewall filter test-ddt-internet-in-v4 term 5
    set from protocol tcp
    set from destination-port 102
    top
-   edit firewall filter test-ddt-internet-in term 6
+   edit firewall filter test-ddt-internet-in-v4 term 6
    set from protocol tcp
    set from destination-port 103
    top
-   edit firewall filter test-ddt-internet-in term 7
+   edit firewall filter test-ddt-internet-in-v4 term 7
    set from protocol tcp
    set from destination-port 22
    top
-   edit firewall filter test-ddt-internet-in term 8
+   edit firewall filter test-ddt-internet-in-v4 term 8
    set from protocol tcp
    set from destination-port 23
    top
-   edit firewall filter test-ddt-internet-in term 9
+   edit firewall filter test-ddt-internet-in-v4 term 9
    set from protocol udp
    set from destination-port 123
    top
-   edit firewall filter test-ddt-internet-in term 10
+   edit firewall filter test-ddt-internet-in-v4 term 10
    set from protocol udp
    set from destination-port 161
    top
-   edit firewall filter test-ddt-internet-in term 11
+   edit firewall filter test-ddt-internet-in-v4 term 11
    set then accept
    top
-   set firewall filter test-ddt-internet-in term DROP_ALL then syslog
-   set firewall filter test-ddt-internet-in term DROP_ALL then discard
+   set firewall filter test-ddt-internet-in-v4 term DROP_ALL then syslog
+   set firewall filter test-ddt-internet-in-v4 term DROP_ALL then discard
      ---------
    IPv6:
    
