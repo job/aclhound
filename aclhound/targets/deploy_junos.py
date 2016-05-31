@@ -81,11 +81,19 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=True,
         # deal with ipv4 only for now
         if acls[policy]['afi'] == 4:
             f = NamedTemporaryFile(delete=True)
+            print f.name
             f.write(acls[policy]['policy'])
+            f.flush()
             tr = paramiko.Transport((hostname, 22))
             tr.connect(username = username, password = password)
 
             sftp = paramiko.SFTPClient.from_transport(tr)
+            try:
+                sftp.remove(f.name)
+            except IOError, e:
+                if e.errno != 2:
+                    print "Something wrong while uploading"
+                    sys.exit(1)
             sftp.put(f.name, "./{}".format(policy))
             sftp.close()
 
@@ -108,6 +116,7 @@ def deploy(hostname=None, acls=None, transport='ssh', save_config=True,
     conn.execute("edit")
     for policy in acls:
         if acls[policy]['afi'] == 4:
+            s(conn, "delete firewall filter {}".format(policy))
             s(conn, "load set {}".format(policy))
             s(conn, "commit")
 
