@@ -155,12 +155,19 @@ This will perform a deployment of what you have defined in the object & policy d
 
 ACLhound expects a properly set up .netrc file if you want it to run automated. Otherwise it will just ask you to authenticate for all of the devices you are deploying to.
 
-With regards to IPv4 & IPv6, ACLhound checks during deployment if the device is capable of IPv6, and only deploys these IPv6 ACLs when the device is actually capable of doing so. On Cisco IOS this is done by checking the output of the 'show ipv6 cef' command. Cisco ASA does do proper IPv6 already (keep in mind, currently, version 1.5 does not support ASA software 9.1.2 or higher).
+On Cisco devices, there's a little trick going on the first time you are deploying ACLs to a device, as it will rename the existing ACLs, and replace them with a -v4 or -v6 suffix. See also next topic on actual binding, and the LOCKSTEP process.
 
-There's a little trick going on the first time you are deploying ACLs to a device, as it will rename the existing ACLs, and replace them with a -v4 or -v6 suffix. See also next topic on actual binding, and the LOCKSTEP process.
+On Juniper, this does not happen, as ACLs need to be fully sent to the device first, and are committed at once during 'commit' time. The name of the acl is the same of the policy described in ACLhound
+
+###IPv6 Challenges:
+
+Some devices handle IPv6 differently, so for Cisco IOS ACLhound checks during deployment if the device is capable of IPv6, and only deploys these IPv6 ACLs when the device is actually capable of doing so. On Cisco IOS this is done by checking the output of the 'show ipv6 cef' command. Cisco ASA does do proper IPv6 already (keep in mind, currently, version 1.5 does not support ASA software 9.1.2 or higher).
+
 
 #### ACL bindings / LOCKSTEP process
-Binding of ACLs to specific interfaces is not setup within ACLhound. You do need to configure this on the device itself. This is only for the initial binding of a specific ACL on an interface. When deploying, ACLHound does detect to which interfaces ACLs are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
+Binding of ACLs to specific interfaces is not setup within ACLhound. You do need to configure this on the device itself. This is only for the initial binding of a specific ACL on an interface. 
+
+On Cisco, when deploying, ACLHound does detect to which interfaces ACLs are bound, and does a neat trick with some switching (LOCKSTEP process) during uploading/applying to have the new ACL applied without any impact.
 
 This process is as follows:
 
@@ -170,6 +177,7 @@ This process is as follows:
 *   Upload ACL without suffix
 *   Change ACL on interface towards the new ACL without the suffix
 
+On Juniper this is not needed, as the complete ACL is uploaded, and committed as a whole during 'commit' time
 
 ---
 ## Building something real
