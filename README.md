@@ -1,6 +1,6 @@
 [link_documentation]: https://github.com/job/aclhound/blob/master/DOCUMENTATION.md
 
-** ACLHound is superceded by [!AccessNinja](https://github.com/favoretti/accessninja)**
+**ACLHound is superceded by [AccessNinja](https://github.com/favoretti/accessninja)**
 
 ACLHOUND
 ========
