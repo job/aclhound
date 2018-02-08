@@ -41,7 +41,7 @@ The following process is followed to ensure zero impact
 
 from Exscript.util.interact import read_login
 from Exscript.protocols import SSH2, Telnet, Account
-from Exscript.protocols.Exception import LoginFailure
+from Exscript.protocols.exception import LoginFailure
 
 import netrc
 
